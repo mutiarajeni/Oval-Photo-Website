@@ -11,23 +11,24 @@
 <div class="row">
   <div class="col-md-6 mb-4">
     <div class="card shadow-sm rounded-4 h-100">
-      <div class="card-body d-flex flex-column justify-content-between h-100">
-        <div>
-          <h5 class="fw-bold">Halo Pemilik!</h5>
-          <p class="mb-2">
-            Selamat datang kembali! Hari ini ada
-            <span class="text-danger fw-semibold">{{ jumlah_pesanan_hari_ini }}</span> klien yang telah
-            melakukan pemesanan layanan fotografi.
-          </p>
+        <div class="card-body d-flex flex-column justify-content-between h-100">
+            <div>
+              <h5 class="fw-bold">Halo Pemilik!</h5>
+              <p class="mb-2">
+                Selamat datang kembali! bulan ini kamu telah menghasilkan
+                <span class="text-success fw-bold">{{ total_pendapatan_bulan_ini | rupiah }}</span> 
+                dari layanan fotografi, lihat selengkapnya 
+              </p>
+            </div>
+            <div class="text-end mt-auto">
+              <a
+               href="{{ url_for('pemilik_pendapatan') }}" 
+                class="fw-bold text-dark text-decoration-underline"
+                >Lihat</a
+              >
+            </div>
+            {# Bagian link di bawah tidak diperlukan lagi karena sudah ada di dalam kalimat #}
         </div>
-        <div class="text-end mt-auto">
-          <a
-            href="{{ url_for('admin_pesanan') }}"
-            class="fw-bold text-dark text-decoration-underline"
-            >Lihat Pesanan</a
-          >
-        </div>
-      </div>
     </div>
   </div>
 

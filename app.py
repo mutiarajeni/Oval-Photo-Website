@@ -4342,20 +4342,16 @@ def pemilik_dashboard():
         start_of_year = datetime(selected_year, 1, 1)
         end_of_year = datetime(selected_year + 1, 1, 1)
 
-        # Pipeline agregasi untuk menghitung TOTAL PENDAPATAN per bulan
-        # PENTING: Pastikan field 'total_harga' ada di koleksi 'pesanan'.
         pipeline = [
             {
                 "$match": {
                     "created_at": {"$gte": start_of_year, "$lt": end_of_year},
-                    # Opsi: Anda bisa filter hanya untuk pesanan yang sudah lunas/dibayar
-                    # "status_pembayaran": {"$in": ["Lunas", "Deposit Dibayar"]} 
                 }
             },
             {
                 "$group": {
                     "_id": {"month": {"$month": "$created_at"}},
-                    "total": {"$sum": "$total_harga"} # Ganti 'total_harga' jika nama field berbeda
+                    "total": {"$sum": "$total_harga"}
                 }
             }
         ]
@@ -4377,7 +4373,16 @@ def pemilik_dashboard():
         
         total_pendapatan_tahun_ini = sum(chart_data)
 
-        # 4. RENDER TEMPLATE
+        # 4. LOGIKA DATA KARTU STATISTIK (Tambahan untuk pendapatan bulan ini) # <-- BARU
+        pendapatan_bulan_ini_pipeline = [ # <-- BARU
+            {"$match": {"created_at": {"$gte": this_month_start}}}, # <-- BARU
+            {"$group": {"_id": None, "total": {"$sum": "$total_harga"}}} # <-- BARU
+        ] # <-- BARU
+        hasil_pendapatan_bulan_ini = list(db.pesanan.aggregate(pendapatan_bulan_ini_pipeline)) # <-- BARU
+         # <-- BARU
+        total_pendapatan_bulan_ini = hasil_pendapatan_bulan_ini[0]['total'] if hasil_pendapatan_bulan_ini else 0 # <-- BARU
+
+        # 5. RENDER TEMPLATE
         return render_template(
             'pemilik/dashboard.html',
             jumlah_pesanan_hari_ini=jumlah_pesanan_hari_ini,
@@ -4387,13 +4392,13 @@ def pemilik_dashboard():
             selected_year=selected_year,
             chart_labels=json.dumps(chart_labels),
             chart_data=json.dumps(chart_data),
-            total_pendapatan_tahun_ini=total_pendapatan_tahun_ini
+            total_pendapatan_tahun_ini=total_pendapatan_tahun_ini,
+            total_pendapatan_bulan_ini=total_pendapatan_bulan_ini # <-- BARU
         )
 
     except Exception as e:
         flash(f"Terjadi kesalahan saat memuat dashboard: {e}", "danger")
         app.logger.error(f"Error in pemilik_dashboard: {e}", exc_info=True)
-        # Sediakan nilai default jika terjadi error untuk mencegah crash
         return render_template(
             'pemilik/dashboard.html',
             jumlah_pesanan_hari_ini=0,
@@ -4403,8 +4408,12 @@ def pemilik_dashboard():
             selected_year=datetime.now().year,
             chart_labels=json.dumps([]),
             chart_data=json.dumps([]),
-            total_pendapatan_tahun_ini=0
+            total_pendapatan_tahun_ini=0,
+            total_pendapatan_bulan_ini=0 # <-- BARU
         )
+    
+
+    
 
 @app.route('/pemilik_login')
 def pemilik_login_page():
