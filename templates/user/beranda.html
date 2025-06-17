@@ -1,0 +1,265 @@
+{% extends 'user/base_user.html' %}{% block content %}
+<!-- Hero Section -->
+<section class="hero" id="beranda">
+  <main class="content">
+    <h1>Abadikan Momen Kamu Bersama Oval Photo</h1>
+    <p>Momen indah tercipta karena kehadiranmu</p>
+    <a href="/katalog_layanan" class="cta">Pesan Sekarang</a>
+  </main>
+</section>
+
+<!--Isi Konten-->
+<div class="subutama-container" role="main">
+
+  <!--Content Section 1 (Kenapa?)-->
+  <div class="kenapa-container">
+    <div class="kenapa-image">
+      <img src="static/img/studio.jpg" alt="Studio Oval Photo"/>
+    </div>
+    <div class="kenapa-content">
+      <h2>Kenapa Oval Photo?</h2>
+      <p>
+        Oval Photo adalah pilihan tepat untuk kamu yang menginginkan hasil fotografi terbaik dan berkualitas. Kami mengutamakan keindahan dan kepuasan klien, didukung oleh tim profesional berpengalaman dan teknologi modern. Kami menyediakan layanan yang disesuaikan dengan kebutuhan kamu.
+      </p>
+      <a href="/tentang-kami" class="kenapa-button">Selengkapnya</a>
+    </div>
+  </div>
+
+  <!--Content Section 2 (Galeri)-->  
+  <div class="gallery">
+   <h2>Galeri</h2>
+    <div class="gallery-grid">
+        {% if random_gallery_images %}
+            {# Loop melalui gambar yang dikirim dari backend #}
+            {% for image_filename in random_gallery_images %}
+                {# Terapkan kelas 'wide' untuk setiap gambar kedua, atau 'tall' untuk setiap gambar ketiga #}
+                {# Ini adalah contoh sederhana untuk variasi. Anda bisa menggunakan logika yang lebih kompleks jika diinginkan. #}
+                {% set loop_index = loop.index %}
+                <img
+                    src="{{ url_for('static', filename='images/imgGaleri/' + image_filename) }}"
+                    alt="Foto Galeri {{ loop_index }}"
+                    {# Tambahkan kelas 'wide' atau 'tall' secara bergantian untuk demo tata letak #}
+                    {% if loop_index % 3 == 0 %} class="tall"
+                    {% elif loop_index % 2 == 0 %} class="wide"
+                    {% endif %}
+                />
+            {% endfor %}
+        {% else %}
+            <p>Tidak ada foto galeri yang tersedia untuk ditampilkan.</p>
+        {% endif %}
+    </div>
+
+    <!--Button Selengkapnya-->
+      <div class="btn-container-gallery" type="button" onclick="window.location.href='/galeri'">
+        <button>Selengkapnya</button>
+      </div>
+
+  </div>
+
+  <!--Content Section 3 (Katalog Layanan)-->
+  <div class="layanan">
+    <div class="layanan">
+                <h2>Katalog Layanan</h2>
+                <div class="layanan-container">
+                    {% if layanan %} {# Tambahkan pengecekan ini untuk memastikan 'layanan' tidak kosong #}
+                        {% for layanan_item in layanan %}
+                        <div class="layanan-card">
+                            <img
+                                src="{{ url_for('static', filename='images/imgLayanan/' ~ layanan_item.gambar) }}"
+                                alt="{{ layanan_item.nama }}"
+                            />
+                            <div class="layanan-card-content">
+                                <h3>{{ layanan_item.nama }}</h3>
+                                <p>{{ layanan_item.deskripsi }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>Belum ada layanan yang tersedia saat ini.</p>
+                    {% endif %}
+                </div>
+            </div>
+    <!--Button Selengkapnya-->
+      <div class="Ly-btn-container" type="button" onclick="window.location.href='/katalog_layanan'">
+        <button>Selengkapnya</button>
+      </div>
+
+  </div>
+
+</div>
+
+<!--Content Section 4 (Tahapan)-->
+<h2 class="subutama-container"  style="font-size: clamp(20px, 4vw, 28px); color: #000000; line-height: 1.3; text-align: justify; margin-bottom:20px; font-weight: 600"
+  >Tahapan Pemesanan
+</h2>
+
+<section class="timeline-section">
+  <div class="timeline-wrapper">
+
+    <!-- Baris atas -->
+    <div class="timeline-row row-top">
+      <div class="step"><span class="circle">1</span><p>Pilih layanan fotografi yang kamu inginkan</p></div>
+      <div class="step"><span class="circle">2</span><p>Pilih paket layanan sesuai dengan kebutuhan kamu</p></div>
+      <div class="step"><span class="circle">3</span><p>Lakukan pengisian formulir pemesanan </p></div>
+      <div class="step step-down"><span class="circle">4</span><p>Tunggu selama 1x24 jam untuk dikonfirmasi</p></div>
+    </div>
+
+    <!-- Baris bawah -->
+    <div class="timeline-row row-bottom">
+      <div class="step"><span class="circle">5</span><p>Lakukan pembayaran deposit </p></div>
+      <div class="step"><span class="circle">6</span><p>Sesi pemotretan dan pembayaran pelunasan</p></div>
+      <div class="step"><span class="circle">7</span><p>Menerima hasil foto dan keuntungan lainnya sesuai dengan paket layanan yang dipesan</p></div>
+      <div class="step"><span class="circle">8</span><p>Memberikan penilaian dan ulasan terhadap layanan yang diberikan</p></div>
+    </div>
+</section>
+
+
+<!-- Ulasan -->
+<h2 class="subutama-container" style="font-size: clamp(20px, 4vw, 28px); color: #000000; line-height: 1.3; text-align: justify; margin-bottom:20px; font-weight: 600">
+  Penilaian dan Ulasan dari Klien
+</h2>
+
+<section aria-label="Testimonial Section" class="testimonial-section">
+  <p>
+    <a aria-label="Selengkapnya" class="testimonial-button" href="{{ url_for('ulasan') }}">
+      Selengkapnya
+    </a>
+  </p>
+
+  {% if testimonials %}
+    <div aria-atomic="true" aria-live="polite" class="testimonial-card" id="testimonial-card" role="region">
+      <div class="testimonial-profile">
+        <img alt="{{ testimonials[0].imgAlt }}" height="90" src="{{ testimonials[0].imgSrc }}" width="90"/>
+      </div>
+
+      <div class="testimonial-content">
+        <div class="testimonial-header">
+          <h3 id="testimonial-name">{{ testimonials[0].name }}</h3>
+          <span class="testimonial-date" id="testimonial-date">{{ testimonials[0].date }}</span>
+        </div>
+        <div aria-label="Rating bintang {{ testimonials[0].stars }} dari 5" class="testimonial-stars" id="testimonial-stars">
+          </div>
+        <div class="testimonial-package" id="testimonial-package">
+          {{ testimonials[0].package }}
+        </div>
+        <p class="testimonial-text" id="testimonial-text">
+          "{{ testimonials[0].text }}"
+        </p>
+      </div>
+    </div>
+
+    <div aria-label="Navigasi testimonial" class="testimonial-navigation" role="tablist">
+      {% for testimonial in testimonials %}
+        <span aria-controls="testimonial-card"
+              aria-selected="{{ 'true' if loop.first else 'false' }}"
+              class="dot {{ 'active' if loop.first else '' }}"
+              data-index="{{ loop.index0 }}"
+              role="tab"
+              tabindex="{{ '0' if loop.first else '-1' }}">
+        </span>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p style="text-align: center; margin-top: 20px; color: #555;">Belum ada ulasan untuk ditampilkan.</p>
+  {% endif %}
+</section>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Mengambil data testimoni yang sudah di-passing dari backend Flask.
+  // Filter `tojson` memastikan data aman untuk disisipkan ke dalam JavaScript.
+  const testimonials = {{ testimonials|tojson }};
+
+  // Hanya jalankan skrip jika ada testimoni
+  if (testimonials && testimonials.length > 0) {
+    const testimonialCard = document.getElementById("testimonial-card");
+    const nameEl = document.getElementById("testimonial-name");
+    const dateEl = document.getElementById("testimonial-date");
+    const starsEl = document.getElementById("testimonial-stars"); // Pilih berdasarkan ID baru
+    const packageEl = document.getElementById("testimonial-package");
+    const textEl = document.getElementById("testimonial-text");
+    const profileImg = testimonialCard.querySelector(".testimonial-profile img");
+    const dots = document.querySelectorAll(".dot");
+
+    let currentIndex = 0;
+    let intervalId;
+
+    // Fungsi untuk memperbarui konten testimoni dengan efek fade
+    function updateTestimonial(index) {
+      if (index === currentIndex && document.activeElement !== dots[index]) return; // Hindari update yang tidak perlu
+      
+      testimonialCard.style.opacity = '0'; // Mulai fade out
+
+      setTimeout(() => {
+        const t = testimonials[index];
+        nameEl.textContent = t.name;
+        dateEl.textContent = t.date;
+        packageEl.textContent = t.package;
+        textEl.textContent = `"${t.text}"`; // Tambahkan tanda kutip
+        profileImg.src = t.imgSrc;
+        profileImg.alt = t.imgAlt;
+
+        // Generate bintang
+        starsEl.innerHTML = "★".repeat(t.stars) + "☆".repeat(5 - t.stars);
+        starsEl.setAttribute("aria-label", `Rating bintang ${t.stars} dari 5`);
+
+        // Perbarui status 'active' pada dots
+        dots.forEach((dot, i) => {
+          const isActive = i === index;
+          dot.classList.toggle("active", isActive);
+          dot.setAttribute("aria-selected", isActive);
+          dot.setAttribute("tabindex", isActive ? "0" : "-1");
+        });
+
+        testimonialCard.style.opacity = '1'; // Selesaikan dengan fade in
+        currentIndex = index;
+      }, 300); // Waktu harus cocok dengan durasi transisi CSS
+    }
+
+    // Fungsi untuk slide otomatis
+    function startAutoSlide() {
+      clearInterval(intervalId); // Hapus interval sebelumnya untuk menghindari duplikasi
+      intervalId = setInterval(() => {
+        const nextIndex = (currentIndex + 1) % testimonials.length;
+        updateTestimonial(nextIndex);
+      }, 6000); // Ganti testimoni setiap 6 detik
+    }
+
+    // Event listener untuk klik pada dots
+    dots.forEach(dot => {
+      dot.addEventListener("click", () => {
+        const index = parseInt(dot.getAttribute("data-index"));
+        clearInterval(intervalId); // Hentikan slide otomatis saat interaksi manual
+        updateTestimonial(index);
+        startAutoSlide(); // Mulai lagi slide otomatis setelah interaksi
+      });
+      // Untuk aksesibilitas keyboard
+      dot.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          dot.click();
+        }
+      });
+    });
+    
+    // Inisialisasi: Tambahkan transisi CSS dan generate bintang untuk item pertama
+    const style = document.createElement('style');
+    style.innerHTML = `#testimonial-card { transition: opacity 0.3s ease-in-out; }`;
+    document.head.appendChild(style);
+    
+    // Generate bintang untuk ulasan pertama yang sudah di-render server
+    starsEl.innerHTML = "★".repeat(testimonials[0].stars) + "☆".repeat(5 - testimonials[0].stars);
+
+    // Mulai slide otomatis
+    startAutoSlide();
+  }
+});
+</script>
+
+
+<!--Jarak Tambahan-->
+<div class="jarak-section"></div>
+
+
+{% endblock %}

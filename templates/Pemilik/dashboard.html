@@ -1,0 +1,255 @@
+{% extends "pemilik/base_pemilik.html" %} 
+
+{% block title %} 
+    Dashboard Pemilik | Oval Photo 
+{% endblock %} 
+
+{% block content %}
+<h4 class="fw-bold mb-4">Dashboard</h4>
+
+<!-- Kartu Statistik Dinamis -->
+<div class="row">
+  <div class="col-md-6 mb-4">
+    <div class="card shadow-sm rounded-4 h-100">
+      <div class="card-body d-flex flex-column justify-content-between h-100">
+        <div>
+          <h5 class="fw-bold">Halo Pemilik!</h5>
+          <p class="mb-2">
+            Selamat datang kembali! Hari ini ada
+            <span class="text-danger fw-semibold">{{ jumlah_pesanan_hari_ini }}</span> klien yang telah
+            melakukan pemesanan layanan fotografi.
+          </p>
+        </div>
+        <div class="text-end mt-auto">
+          <a
+            href="{{ url_for('admin_pesanan') }}"
+            class="fw-bold text-dark text-decoration-underline"
+            >Lihat Pesanan</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3 mb-4">
+    <div class="card shadow-sm rounded-4 h-100">
+      <div class="card-body d-flex flex-column justify-content-between h-100">
+        <div class="d-flex">
+          <div class="me-3">
+            <i class="bi bi-card-checklist display-4 text-dark"></i>
+          </div>
+          <div class="flex-grow-1 text-end">
+            <h5 class="fw-bold fs-5 mb-0">Jumlah Pesanan/bln</h5>
+          </div>
+        </div>
+        <h2 class="fw-bold text-end mb-0 mt-2">{{ jumlah_pesanan_bulan_ini }}</h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3 mb-4">
+    <div class="card shadow-sm rounded-4 h-100">
+      <div class="card-body d-flex flex-column justify-content-between h-100">
+        <div class="d-flex">
+          <div class="me-3">
+            <i class="bi bi-people-fill display-4 text-dark"></i>
+          </div>
+          <div class="flex-grow-1 text-end">
+            <h5 class="fw-bold fs-5 mb-0">Jumlah Akun Klien</h5>
+          </div>
+        </div>
+        <h2 class="fw-bold text-end mb-0 mt-2">{{ jumlah_akun_klien }}</h2>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Style untuk Filter -->
+<style>
+    .filter-card .form-select {
+        border: none !important;
+        box-shadow: none !important;
+    }
+    .filter-card .input-group-text {
+        border: none !important;
+        background-color: transparent !important;
+    }
+</style>
+
+<!-- Filter Tahun Dinamis -->
+<div class="row mb-4">
+    <div class="col-md-4 col-lg-3 ms-auto me-2 filter-card" style="background-color: white; border-radius: 0.5rem; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15); max-width: 150px;">
+        <form action="{{ url_for('pemilik_dashboard') }}" method="GET" id="yearFilterForm">
+            <div class="input-group">
+                <span class="input-group-text" ></span>
+                <select class="form-select" id="yearSelect" name="year" style="font-size: 12px;" onchange="this.form.submit()">
+                    {% for year in available_years %}
+                        <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>
+                            Tahun {{ year }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Grafik Pendapatan Dinamis -->
+<div class="container-fluid my-5 px-0">
+  <div class="row mt-4 justify-content-center">
+    <div class="col-12">
+      <div
+        class="card bg-white rounded-3 shadow-lg"
+        style="
+          position: relative;
+          overflow: visible;
+          border: none;
+          box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+          height: 480px;
+        "
+      >
+        <div
+          class="rounded-3"
+          style="
+            position: absolute;
+            top: -24px;
+            left: 20px;
+            right: 24px;
+            z-index: 2;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1),
+              0 1px 3px rgba(0, 0, 0, 0.08);
+            background: linear-gradient(to right, #212529, #343a40);
+          "
+        >
+          <div class="py-3 pe-1">
+            <div style="height: 320px">
+              <canvas
+                aria-label="Grafik batang menunjukkan pendapatan per bulan"
+                id="incomeChart"
+                role="img"
+                class="w-100 h-100"
+                style="padding: 20px; font-size: 12px"
+              ></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="card-body px-4 pb-4 d-flex flex-column justify-content-end"
+          style="padding-top: 0"
+        >
+          <h6 class="mb-0 text-dark fw-semibold">Pendapatan Tahun {{ selected_year }}</h6>
+          <p class="text-secondary" style="font-size: 12px; margin-top: 5px">
+            Total pendapatan per bulan untuk tahun yang dipilih.
+          </p>
+
+          <hr
+            style="
+              border-top: 1px solid rgba(0, 0, 0, 0.1);
+              opacity: 0.25;
+              margin-top: 0.5rem;
+              margin-bottom: 0.5rem;
+            "
+          />
+
+          <div class="d-flex justify-content-between flex-wrap">
+            <!-- INI BAGIAN YANG DIPERBAIKI -->
+            <h6 class="mb-0 text-dark fw-semibold me-2">Total Pendapatan di Tahun Ini: {{ total_pendapatan_tahun_ini | rupiah }}</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+  // Mengambil data dari backend
+  const chartLabels = {{ chart_labels | safe }};
+  const chartData = {{ chart_data | safe }};
+
+  // Inisialisasi grafik Chart.js
+  const ctx = document.getElementById("incomeChart").getContext("2d");
+  const incomeChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: chartLabels,
+      datasets: [
+        {
+          label: "Pendapatan",
+          data: chartData,
+          backgroundColor: "rgba(255, 255, 255, 0.8)",
+          borderRadius: 4,
+          barPercentage: 0.6,
+          categoryPercentage: 0.6,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          grid: { display: false, drawBorder: false },
+          ticks: {
+            color: "white",
+            font: { size: 12, weight: "normal" },
+          },
+        },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            color: "white",
+            font: { size: 10, weight: "normal" },
+            // Callback untuk format sumbu Y menjadi format mata uang
+            callback: function (value, index, values) {
+              if (value === 0) return 'Rp 0';
+              if (value >= 1000000) {
+                return "Rp " + (value / 1000000).toLocaleString("id-ID") + "jt";
+              }
+              if (value >= 1000) {
+                return "Rp " + (value / 1000).toLocaleString("id-ID") + "rb";
+              }
+              return "Rp " + value.toLocaleString("id-ID");
+            },
+          },
+          grid: {
+            color: "rgba(255,255,255,0.2)",
+            borderColor: "white",
+            borderWidth: 1,
+            drawBorder: true,
+            drawTicks: false,
+          },
+        },
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          enabled: true,
+          backgroundColor: "#000",
+          titleColor: "#fff",
+          bodyColor: "#fff",
+          // Callback untuk format tooltip menjadi Rupiah
+          callbacks: {
+            label: function (context) {
+              let label = context.dataset.label || "";
+              if (label) {
+                label += ": ";
+              }
+              if (context.parsed.y !== null) {
+                label += new Intl.NumberFormat("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
+                  minimumFractionDigits: 0,
+                }).format(context.parsed.y);
+              }
+              return label;
+            },
+          },
+        },
+      },
+    },
+  });
+</script>
+
+{% endblock %}

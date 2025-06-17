@@ -1,0 +1,136 @@
+{% extends "admin/base_admin.html" %} {% block title %} Photo {% endblock %} {%
+block content %}
+<div class="row">
+  <div class="col-12">
+    <div class="card my-4">
+      <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+        <div class="bg-admin shadow-dark border-radius-lg pt-4 pb-3">
+          <div class="row">
+            <div class="col-6 d-flex align-items-center">
+              <h5 class="text-white text-capitalize ps-3">Jadwal</h5>
+            </div>
+            <div class="col-6 text-end">
+              <div
+                class="d-flex flex-wrap justify-content-end align-items-center gap-2 gap-md-3 me-4 text-end"
+              >
+                <div
+                  class="position-relative w-100 w-sm-auto mb-2 mb-sm-0 fs-6"
+                >
+                  <i
+                    class="bi bi-search position-absolute start-0 ms-3"
+                    style="
+                      top: 50%;
+                      transform: translateY(-50%);
+                      color: #6c757d;
+                    "
+                  ></i>
+                  <input
+                    type="text"
+                    class="form-control ps-5 fs-6"
+                    placeholder="Cari di sini"
+                    id="searchInput"
+                    style="background-color: white"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body px-0 pb-2">
+        <div class="table-responsive p-0">
+          <table id="dataTable" class="table align-items-center mb-0">
+            <thead>
+              <tr>
+                <th
+                  class="text-center text-dark fs-7 fw-bold"
+                  style="width: 50px"
+                ></th>
+                <th class="text-center fs-7 fw-bold">Waktu Acara</th>
+                <th class="text-center fs-7 fw-bold">Nama Klien</th>
+                <th class="text-center fs-7 fw-bold">Layanan</th>
+                <th class="text-center fs-7 fw-bold">Paket</th>
+                <th class="text-center fs-7 fw-bold">Lokasi Acara</th>
+                <th class="text-center fs-7 fw-bold">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for pesanan in pesanan %}
+              <tr>
+                <td class="text-center align-middle">{{ loop.index }}.</td>
+                <td class="text-center align-middle">
+                  <span class="mb-0" style="font-weight: normal"
+                    >{{ pesanan.jam_acara }} WIB,
+                    {{pesanan.tanggal_mulai_acara_formatted}}-{{pesanan.tanggal_selesai_acara_formatted}}</span
+                  >
+                </td>
+                <td class="text-center align-middle">
+                  <span class="mb-0" style="font-weight: normal"
+                    >{{ pesanan.nama_klien }}</span
+                  >
+                </td>
+                <td class="text-center align-middle">
+                  <span class="mb-0" style="font-weight: normal"
+                    >{{ pesanan.layanan }}</span
+                  >
+                </td>
+                <td class="text-center align-middle">
+                  <span class="mb-0" style="font-weight: normal"
+                    >{{ pesanan.paket }}</span
+                  >
+                </td>
+                <td class="text-center align-middle">
+                  <span class="mb-0" style="font-weight: normal"
+                    >{{ pesanan.lokasi }}</span
+                  >
+                </td>
+
+                <td class="text-center align-middle">
+                  <!-- Tombol Ubah -->
+                  <div class="d-inline-flex align-items-center align-middle">
+                    <a
+                      href="/admin_jadwal_ubah/{{ pesanan._id }}"
+                      class="text-dark d-flex align-items-center text-decoration-none"
+                    >
+                      <i class="material-icons me-1">edit</i>
+                      <span class="mb-0" style="font-weight: normal; margin-top:5px">Ubah</span>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Menambahkan event listener ke input pencarian dengan id "searchInput"
+  document.getElementById("searchInput").addEventListener("keyup", function () {
+    // 1. Mengambil teks yang diketik dan mengubahnya menjadi huruf kecil
+    let filter = this.value.toLowerCase();
+
+    // 2. Mengambil tabel dan semua baris (tr) di dalam tbody
+    let table = document.getElementById("dataTable");
+    let tr = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+
+    // 3. Melakukan perulangan pada setiap baris tabel
+    for (let i = 0; i < tr.length; i++) {
+      // Mengambil seluruh konten teks dari satu baris
+      let rowText = tr[i].textContent || tr[i].innerText;
+
+      // 4. Memeriksa apakah teks baris mengandung kata kunci pencarian
+      if (rowText.toLowerCase().indexOf(filter) > -1) {
+        // Jika cocok, baris akan ditampilkan
+        tr[i].style.display = "";
+      } else {
+        // Jika tidak cocok, baris akan disembunyikan
+        tr[i].style.display = "none";
+      }
+    }
+  });
+</script>
+{% endblock %}

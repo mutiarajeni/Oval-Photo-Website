@@ -1,0 +1,63 @@
+{% extends "user/base_user.html" %}{% block content %}
+<header class="header">
+  <div class="header-content text-center">
+    <h1>Penilaian dan Ulasan</h1>
+    <p>Lihat semua testimoni dari pelanggan kami!</p>
+  </div>
+</header>
+
+<div class="triutama-container">
+  <button class="back-btn" type="button" onclick="window.location.href='/'">
+    <i class="bi bi-arrow-left"></i>
+    Kembali
+  </button>
+</div>
+
+<div class="subutama-container" role="main">
+  <p
+    style="
+      text-align: center;
+      font-size: 14px;
+      line-height: 20px;
+      margin-bottom: 30px;
+      margin-top: -20px;
+      font-weight: 400;
+    "
+  >
+   Penilaian dan Ulasan dari klien yang sudah menggunakan layanan fotografi Oval Photo, berikan juga penilaian dan ulasan kamu dengan menceritakan pengalaman kamu untuk membantu kami terus memberikan layanan terbaik
+  </p>
+
+  {% if reviews %} {% for review in reviews %}
+  <article class="Kulasan-review">
+    <div class="Kulasan-review-header">
+      <div class="Kulasan-reviewer">
+        <img
+          src="{{ review.profile_pic }}"
+          alt="Foto profil {{ review.user_name }}"
+          width="40"
+          height="40"
+        />
+        <span class="Kulasan-reviewer-name">{{ review.user_name }}</span>
+      </div>
+      <span class="Kulasan-review-date">{{ review.review_date }}</span>
+    </div>
+    <div
+      class="Kulasan-review-stars"
+      aria-label="Rating bintang {{ review.rating }}"
+    >
+      {% for i in range(1, 6) %} {% if i <= review.rating %}
+      <i class="bi bi-star-fill" aria-hidden="true"></i>
+      {% else %}
+      <i class="bi bi-star Kulasan-star-blue" aria-hidden="true"></i>
+      {% endif %} {% endfor %}
+    </div>
+    <p class="Kulasan-review-package">{{ review.service_package }}</p>
+    <p class="Kulasan-review-text" style="margin-right: 40px">
+      "{{ review.comment }}"
+    </p>
+  </article>
+  {% endfor %} {% else %}
+  <p class="text-center">Belum ada ulasan yang tersedia.</p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,303 @@
+{% extends "admin/base_admin.html" %} 
+{% block title %} Ubah Jadwal | Oval Photo {% endblock %} 
+
+{% block content %}
+<div class="row">
+  <div class="col-12">
+    <div class="card my-4">
+      <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+        <div class="bg-admin shadow-dark border-radius-lg pt-4 pb-3">
+          <h6 class="text-white text-capitalize ps-3">Ubah Jadwal</h6>
+        </div>
+      </div>
+      <div class="card-body px-0 pb-2">
+        <div class="table-responsive p-0">
+          <div class="container mt-5">
+            <form id="ubahJadwalForm" method="POST" action="/admin_jadwal_ubah/{{ data._id }}" enctype="multipart/form-data">
+              <input type="hidden" class="form-control" name="_id" value="{{ data._id }}" />
+              <table class="table table-borderless">
+                <tbody>
+                  <tr>
+                    <td><label for="periode">Waktu Acara</label></td>
+                    <td>
+                      <div style="display: flex; align-items: center;">
+                        <input type="time" class="form-control" name="jam_acara" id="jam_acara" required style="border: 1px solid #ccc; border-radius: 5px; padding: 6px 10px; width: 90px;" value="{{ data.jam_acara }}" />
+                        <input type="date" class="form-control" name="tanggal_mulai_acara" id="tanggal_mulai_acara" required value="{{ formatted_tanggal_mulai }}" style="border: 1px solid #ccc; border-radius: 5px; padding: 6px 10px; width: 140px; margin-left: 5px;" placeholder="Tanggal Mulai" />
+                        <span style="margin: 0 5px;">-</span>
+                        <input type="date" class="form-control" name="tanggal_selesai_acara" id="tanggal_selesai_acara" required value="{{ formatted_tanggal_selesai }}" style="border: 1px solid #ccc; border-radius: 5px; padding: 6px 10px; width: 140px;" placeholder="Tanggal Selesai" />
+                      </div>
+                      <div id="date-range-error" class="text-danger" style="display: none; font-size: 0.9em; margin-top: 8px;">
+                        Tanggal atau rentang tanggal yang dipilih sudah tidak tersedia. Silakan pilih tanggal lain.
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="nama_klien">Nama Klien</label></td>
+                    <td>
+                      <div class="input-group input-group-outline">
+                        <input type="text" class="form-control" id="nama_klien" name="nama_klien" required value="{{ data.nama_klien }}" disabled />
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="layananSelect">Layanan</label></td>
+                    <td>
+                      <div class="input-group input-group-outline">
+                        <select class="form-control" id="layanan" name="layanan" required disabled>
+                          {% for l in layanan %}
+                          <option value="{{ l._id }}" {% if l._id == data.layanan_id %} selected {% endif %}>
+                            {{ l.nama }}
+                          </option>
+                          {% endfor %}
+                        </select>
+                        <i class="bi bi-chevron-down"
+                           style="
+                             position: absolute;
+                             right: 8px; /* Sesuaikan posisi horizontal */
+                             top: 50%;
+                             transform: translateY(-50%);
+                             pointer-events: none;
+                             color: #b9babb !important; /* Warna abu-abu standar */
+                             font-size: 12px; /* Ukuran ikon, sesuaikan agar sesuai */
+                             z-index: 2;
+                           "></i>
+                        <input type="hidden" name="layanan" value="{{ data.layanan_id }}">
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="paketSelect">Paket</label></td>
+                    <td>
+                      <div class="input-group input-group-outline">
+                        <select class="form-control" id="paket" name="paket" required disabled>
+                          {% for l in paket %}
+                          <option value="{{ l._id }}" {% if l._id == data.paket_id %} selected {% endif %}>
+                            {{ l.nama }}
+                          </option>
+                          {% endfor %}
+                        </select>
+                        <i class="bi bi-chevron-down"
+                           style="
+                             position: absolute;
+                             right: 8px; /* Sesuaikan posisi horizontal */
+                             top: 50%;
+                             transform: translateY(-50%);
+                             pointer-events: none;
+                             color: #b9babb !important; /* Warna abu-abu standar */
+                             font-size: 12px; /* Ukuran ikon, sesuaikan agar sesuai */
+                             z-index: 2;
+                           "></i>
+                        <input type="hidden" name="paket" value="{{ data.paket_id }}">
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                      <td><label for="lokasiSelect">Lokasi</label></td>
+                      <td>
+                        <div class="input-group input-group-outline">
+                          {% if data.lokasi_id %}
+                            <select class="form-control" id="lokasi" name="lokasi" required disabled>
+                              {% for l in lokasi %}
+                                <option value="{{ l._id }}" {% if l._id == data.lokasi_id %} selected {% endif %}>
+                                  {{ l.nama }}
+                                </option>
+                              {% endfor %}
+                            </select>
+                            <i class="bi bi-chevron-down"
+                           style="
+                             position: absolute;
+                             right: 8px; /* Sesuaikan posisi horizontal */
+                             top: 50%;
+                             transform: translateY(-50%);
+                             pointer-events: none;
+                             color: #b9babb !important; /* Warna abu-abu standar */
+                             font-size: 12px; /* Ukuran ikon, sesuaikan agar sesuai */
+                             z-index: 2;
+                           "></i>
+                            <input type="hidden" name="lokasi" value="{{ data.lokasi_id }}">
+                          {% else %}
+                            <input type="text" class="form-control" value="Pilih lokasi saya sendiri" disabled>
+                          {% endif %}
+                        </div>
+                      </td>
+                    </tr>
+                  <tr>
+                    <td><label for="alamat">Alamat</label></td>
+                    <td>
+                      <div class="input-group input-group-outline">
+                        <textarea class="form-control" id="alamat" name="alamat" rows="5" required disabled>{{ data.alamat_lokasi_acara }}</textarea>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="link_maps">Link Maps</label></td>
+                    <td>
+                      <div class="input-group input-group-outline">
+                        <textarea class="form-control" id="link_maps" name="link_maps" rows="5" required disabled>{{ data.link_maps_acara }}</textarea>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="text-end mt-3">
+                <a href="/admin_jadwal" class="btn btn-outline-dark me-2 fw-normal" style="text-transform: none; font-size: 1rem">Kembali</a>
+                <button type="submit" class="btn btn-dark fw-normal" style="text-transform: none; font-size: 1rem" id="submitButton" disabled>
+                  Simpan
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let initialJamAcara;
+  let initialTanggalMulai;
+  let initialTanggalSelesai;
+
+  
+  const bookedRanges = {{ booked_date_ranges|tojson|safe }};
+
+  
+  function validateDateRange() {
+    const tanggalMulaiInput = document.getElementById("tanggal_mulai_acara");
+    const tanggalSelesaiInput = document.getElementById("tanggal_selesai_acara");
+    const errorDiv = document.getElementById("date-range-error");
+
+    const startDateValue = tanggalMulaiInput.value;
+    const endDateValue = tanggalSelesaiInput.value;
+
+    errorDiv.style.display = "none";
+
+    if (startDateValue && endDateValue) {
+      const startDate = new Date(startDateValue);
+      const endDate = new Date(endDateValue);
+
+      if (endDate < startDate) {
+        errorDiv.innerText = "Tanggal akhir tidak boleh sebelum tanggal mulai.";
+        errorDiv.style.display = "block";
+        return;
+      }
+
+      let isOverlap = false;
+      for (const range of bookedRanges) {
+        const bookedStart = new Date(range.start);
+        const bookedEnd = new Date(range.end);
+        if (startDate <= bookedEnd && endDate >= bookedStart) {
+          isOverlap = true;
+          break;
+        }
+      }
+
+      if (isOverlap) {
+        errorDiv.innerText = "Tanggal atau rentang tanggal yang dipilih sudah tidak tersedia. Silakan pilih tanggal lain.";
+        errorDiv.style.display = "block";
+      }
+    }
+  }
+  
+
+
+  
+  function checkChanges() {
+    const jamAcara = document.getElementById("jam_acara").value;
+    const tanggalMulai = document.getElementById("tanggal_mulai_acara").value;
+    const tanggalSelesai = document.getElementById("tanggal_selesai_acara").value;
+    const submitButton = document.getElementById("submitButton");
+
+    const isDateErrorVisible = document.getElementById('date-range-error').style.display !== 'none';
+    const hasChanged = jamAcara !== initialJamAcara || tanggalMulai !== initialTanggalMulai || tanggalSelesai !== initialTanggalSelesai;
+
+    if (hasChanged && !isDateErrorVisible) {
+      submitButton.disabled = false;
+    } else {
+      submitButton.disabled = true;
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    initialJamAcara = document.getElementById("jam_acara").value;
+    initialTanggalMulai = document.getElementById("tanggal_mulai_acara").value;
+    initialTanggalSelesai = document.getElementById("tanggal_selesai_acara").value;
+
+    // --- Logic untuk tanggal ---
+    const todayString = new Date().toISOString().split("T")[0];
+    const tanggalMulaiInput = document.getElementById("tanggal_mulai_acara");
+    const tanggalSelesaiInput = document.getElementById("tanggal_selesai_acara");
+    
+    // Memberi batasan tanggal minimum
+    tanggalMulaiInput.min = todayString;
+    tanggalSelesaiInput.min = todayString;
+
+    // Event listener untuk jam
+    document.getElementById("jam_acara").addEventListener("input", checkChanges);
+
+    // Event listener untuk tanggal mulai (alur disamakan dengan tambah pesanan 1)
+    tanggalMulaiInput.addEventListener('change', function() {
+      if (tanggalMulaiInput.value) {
+        tanggalSelesaiInput.min = tanggalMulaiInput.value;
+        if (tanggalSelesaiInput.value && tanggalSelesaiInput.value < tanggalMulaiInput.value) {
+          tanggalSelesaiInput.value = '';
+        }
+      }
+      validateDateRange();
+      checkChanges();
+    });
+
+    // Event listener untuk tanggal selesai (alur disamakan dengan tambah pesanan 1)
+    tanggalSelesaiInput.addEventListener('change', function() {
+      validateDateRange();
+      checkChanges();
+    });
+    
+
+    // Menjalankan pengecekan awal saat halaman dimuat
+    checkChanges();
+  });
+
+ 
+  document.getElementById("ubahJadwalForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+    const form = this;
+
+    validateDateRange(); // Jalankan validasi terakhir
+    if (document.getElementById('date-range-error').style.display !== 'none') {
+      Swal.fire({
+        title: "Jadwal Tidak Valid!",
+        text: "Harap periksa kembali tanggal acara yang Anda pilih.",
+        icon: "error",
+      });
+      return;
+    }
+
+    
+    Swal.fire({
+      title: "Apakah kamu yakin?",
+      text: "Perubahan jadwal akan disimpan.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, simpan!",
+      cancelButtonText: "Batal",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: "Berhasil!",
+          text: "Perubahan jadwal berhasil disimpan.",
+          icon: "success",
+          timer: 2000,
+          timerProgressBar: true,
+          willClose: () => {
+            form.submit();
+          },
+        });
+      }
+    });
+  });
+</script>
+
+{% endblock %}

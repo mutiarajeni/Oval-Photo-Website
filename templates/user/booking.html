@@ -1,0 +1,874 @@
+{% extends "user/base_user.html" %} {% block content %}
+<header class="header">
+  <div class="header-content text-center">
+    <h1>Formulir Pemesanan</h1>
+    <p>
+      <i class="bi bi-headset" style="margin-right: 5px"></i>
+      Butuh Bantuan? Hubungi Kita Sekarang!
+    </p>
+    <p style="margin-left: 80px">
+      <span style="color: #b9d3fa; font-weight: 600">+62 813-6233-8236</span>
+      (Telepon atau WhatsApp)
+    </p>
+  </div>
+</header>
+
+<div class="subutama-container" role="main">
+  <form
+    class="formlayanan-form"
+    id="bookingForm"
+    action="/booking"
+    method="POST"
+    enctype="multipart/form-data"
+  >
+    <input
+      type="hidden"
+      id="layanan_id"
+      name="layanan_id"
+      value="{{ selected_layanan_id }}"
+    />
+    <input
+      type="hidden"
+      id="paket_id"
+      name="paket_id"
+      value="{{ selected_paket_id }}"
+    />
+    <input
+      type="hidden"
+      id="harga_paket_dasar"
+      name="harga_paket_dasar"
+      value="{{ selected_paket_harga_raw }}"
+    />
+    <input
+      type="hidden"
+      id="deposit_paket_dasar"
+      name="deposit_paket_dasar"
+      value="{{ selected_paket_deposit_raw }}"
+    />
+    <input
+      type="hidden"
+      id="tanggal_pemesanan"
+      name="tanggal_pemesanan"
+      value=""
+    />
+    <input
+      type="hidden"
+      id="biaya_transportasi"
+      name="biaya_transportasi"
+      value="0"
+    />
+
+    <div>
+      <small
+        >Simbol bintang (<span class="text-red-catatan">*</span>) menandakan
+        bahwa kolom isian wajib diisikan.</small
+      >
+    </div>
+    <div><br /></div>
+
+    <div class="formlayanan-row">
+      <div>
+        <label for="nama_layanan" class="formlayanan-label">
+          Layanan Fotografi<span class="formlayanan-required"></span>
+        </label>
+        <input
+          type="text"
+          id="nama_layanan"
+          name="nama_layanan"
+          class="formlayanan-input formlayanan-required"
+          value="{{ selected_layanan_nama if selected_layanan_nama else 'layanan yang dipilih' }}"
+          disabled
+          required
+        />
+      </div>
+      <div>
+        <label for="paket_nama" class="formlayanan-label">
+          Paket<span class="formlayanan-required"></span>
+        </label>
+        <input
+          type="text"
+          id="paket_nama"
+          name="paket_nama"
+          class="formlayanan-input formlayanan-required"
+          value="{{ selected_paket_nama if selected_paket_nama else 'paket yang dipilih' }} (Rp {{ selected_paket_harga if selected_paket_harga else
+          '0' }})"
+          disabled
+          required
+        />
+        <small style="color: green">
+          Deposit: Rp {{ selected_paket_deposit if selected_paket_deposit else  
+                  '0' }}
+        </small>
+      </div>
+      <div>
+        <label for="nama_klien" class="formlayanan-label">
+          Nama lengkap klien<span class="formlayanan-required">*</span>
+        </label>
+        <input
+          type="text"
+          id="nama_klien"
+          name="nama_klien"
+          placeholder="Masukkan nama lengkap klien"
+          class="formlayanan-input formlayanan-required"
+          required
+        />
+      </div>
+
+      <div>
+        <label for="nama_orang_tua" class="formlayanan-label">
+          Nama orang tua klien<span class="formlayanan-required">*</span>
+        </label>
+        <input
+          type="text"
+          id="nama_orang_tua"
+          name="nama_orang_tua"
+          placeholder="Masukkan nama orang tua klien"
+          class="formlayanan-input formlayanan-required"
+          required
+        />
+      </div>
+
+      <div>
+        <label for="email_klien" class="formlayanan-label">
+          Email<span class="formlayanan-required">*</span>
+        </label>
+        <input
+          type="email"
+          id="email_klien"
+          name="email_klien"
+          placeholder="Masukkan email klien"
+          class="formlayanan-input formlayanan-required"
+          required
+        />
+        <p class="formlayanan-text-xs">Contoh: ovalphoto@gmail.com</p>
+      </div>
+
+      <div>
+        <label for="telepon_klien" class="formlayanan-label">
+          Nomor telepon aktif/WhatsApp<span class="formlayanan-required"
+            >*</span
+          >
+        </label>
+        <input
+          type="text"
+          id="telepon_klien"
+          name="telepon_klien"
+          placeholder="Masukkan nomor telepon aktif/WhatsApp klien"
+          class="formlayanan-input formlayanan-required"
+          required
+        />
+        <p class="formlayanan-text-xs">Contoh: +62-861-3409-8790</p>
+      </div>
+
+      <div>
+        <label for="instagram_klien" class="formlayanan-label">Instagram</label>
+        <input
+          type="text"
+          id="instagram_klien"
+          name="instagram_klien"
+          placeholder="Masukkan akun instagram klien"
+          class="formlayanan-input"
+        />
+        <p class="formlayanan-text-xs">Contoh: @ovalphoto</p>
+      </div>
+
+      <div>
+        <label for="facebook_klien" class="formlayanan-label">Facebook</label>
+        <input
+          type="text"
+          id="facebook_klien"
+          name="facebook_klien"
+          placeholder="Masukkan akun facebook klien"
+          class="formlayanan-input"
+        />
+        <p class="formlayanan-text-xs">Contoh: Oval Photo</p>
+      </div>
+
+      <div>
+        <label for="formlayanan-jam-acara" class="formlayanan-label">
+          Jam acara/pemotretan<span class="formlayanan-required">*</span>
+        </label>
+        <div style="display: flex; align-items: center; gap: 6px">
+          <input
+            type="time"
+            class="form-control"
+            name="jam_acara"
+            id="jam_acara"
+            required
+            style="
+              border: 1px solid #ccc;
+              border-radius: 5px;
+              padding: 6px 10px;
+              width: 90px;
+            "
+          />
+          <span class="formlayanan-text-xs">WIB</span>
+        </div>
+        <p class="formlayanan-text-xs">Contoh: 12:30 WIB</p>
+      </div>
+
+      <div>
+        <label for="formlayanan-tanggal-acara" class="formlayanan-label">
+          Tanggal acara/pemotretan<span class="formlayanan-required">*</span>
+        </label>
+        <div
+          style="
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            max-width: 500px;
+          "
+        >
+          <input
+            type="date"
+            class="form-control"
+            name="tanggal_mulai_acara"
+            id="tanggal_mulai_acara"
+            required
+            style="
+              border: 1px solid #ccc;
+              border-radius: 5px;
+              padding: 6px 10px;
+              width: 140px;
+            "
+            placeholder="Tanggal Mulai"
+          />
+          <span>-</span>
+          <input
+            type="date"
+            class="form-control"
+            name="tanggal_selesai_acara"
+            id="tanggal_selesai_acara"
+            required
+            style="
+              border: 1px solid #ccc;
+              border-radius: 5px;
+              padding: 6px 10px;
+              width: 140px;
+            "
+            placeholder="Tanggal Selesai"
+          />
+        </div>
+        <p
+          id="date-range-error"
+          class="formlayanan-text-xs"
+          style="color: red; display: none"
+        >
+          Tanggal yang dipilih sudah tidak tersedia. Silakan pilih tanggal lain.
+        </p>
+        <p class="formlayanan-text-xs">Contoh: 01/01/2025 - 03/01/2025</p>
+      </div>
+
+      <div class="formlayanan-radio-group">
+        <p class="formlayanan-label">
+          Apakah lokasi acara/pemotretan kamu berada di luar Kab. Labuhanbatu
+          Selatan?
+          <span class="formlayanan-required">*</span>
+        </p>
+        <label class="formlayanan-radio-label">
+          <input
+            type="radio"
+            name="lokasi_luar"
+            value="iya"
+            class="formlayanan-required"
+            required
+          />
+          <div>
+            <span class="formlayanan-text-bold">Iya, berada di luar</span><br />
+            <span class="formlayanan-radio-desc">
+              Ket: ada biaya tambahan transportasi dan akomodasi yang akan
+              diinformasikan melalui riwayat pemesanan kamu
+            </span>
+          </div>
+        </label>
+
+        <label class="formlayanan-radio-label">
+          <input
+            type="radio"
+            name="lokasi_luar"
+            value="tidak"
+            class="formlayanan-required"
+            required
+          />
+          <div>
+            <span class="formlayanan-text-bold">Tidak</span><br />
+            <span class="formlayanan-radio-desc">
+              Ket: tidak ada biaya tambahan transportasi dan akomodasi
+            </span>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <div class="formlayanan-row">
+      <div>
+        <label for="lokasiSelect" class="formlayanan-label">
+          Lokasi acara/pemotretan<span class="formlayanan-required">*</span>
+        </label>
+        <select
+          id="lokasiSelect"
+          name="lokasi_id"
+          class="formlayanan-select formlayanan-required"
+          required
+        >
+          <option value="" disabled>Pilih lokasi dari daftar</option>
+          {% for lokasi in lokasi_list %}
+          <option value="{{ lokasi._id|string }}">{{ lokasi.nama }}</option>
+          {% endfor %}
+          <option value="pilih_lokasi_sendiri" selected>
+            Pilih lokasi saya sendiri
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="formlayanan-row">
+      <div>
+        <label for="alamat_lokasi_manual" class="formlayanan-label">
+          Alamat lokasi acara/pemotretan<span class="formlayanan-required"
+            >*</span
+          >
+        </label>
+        <textarea
+          id="alamat_lokasi_manual"
+          name="alamat_lokasi_manual"
+          rows="5"
+          placeholder="Masukan alamat lokasi pemotretan/acara kamu"
+          class="formlayanan-textarea formlayanan-required"
+        ></textarea>
+        <p class="formlayanan-text-xs">Isikan alamat dengan lengkap</p>
+      </div>
+
+      <div>
+        <label for="link_maps_manual" class="formlayanan-label"
+          >Link maps</label
+        >
+        <textarea
+          id="link_maps_manual"
+          name="link_maps_manual"
+          rows="5"
+          placeholder="Masukan link maps dari lokasi pemotretan/acara kamu"
+          class="formlayanan-textarea"
+        ></textarea>
+        <p class="formlayanan-text-xs">
+          Contoh: https://maps.app.goo.gl/F28Y86DMYdHLySvT7
+        </p>
+      </div>
+    </div>
+
+    <div class="formlayanan-buttons">
+      <button
+        type="button"
+        class="formlayanan-btn formlayanan-btn-kembali"
+        onclick="window.history.back();"
+      >
+        Kembali
+      </button>
+      <button
+        type="button"
+        id="showNotesButton"
+        class="formlayanan-btn formlayanan-btn-pesan"
+        disabled
+      >
+        Pesan
+      </button>
+    </div>
+  </form>
+</div>
+
+<div id="notesModal" class="modal">
+  <div class="modal-content">
+    <span class="close-button" id="closeNotesModal">×</span>
+    <h2 class="modal-title">
+      Catatan Penting<span class="text-red-catatan">!!</span>
+    </h2>
+    <div class="modal-body">
+      <ol class="catatan">
+        <li class="catatan">
+          Lokasi pemotretan yang direkomendasikan Oval Photo dikenakan biaya
+          tambahan yang akan diinformasikan setelah pesanan dikonfirmasi,
+          kecuali untuk lokasi 'Pilihan Saya Sendiri'.
+        </li>
+        <li class="catatan">
+          Pesanan yang berhasil terkirim akan dilakukan pemeriksaan selama 1 x
+          24 jam. Pastikan selalu memeriksa riwayat pesanan kamu dan lakukan
+          pembayaran deposit setelah pesanan kamu dikonfirmasi.
+        </li>
+        <li class="catatan">
+          Klien wajib membayar deposit sebagai tanda jadi atas layanan dan paket
+          yang dipilih, sebesar:
+          <ul class="catatan">
+            <li class="catatan">
+              Rp500.000 untuk layanan paket enggagement I, semua paket layanan
+              prewedding, dan semua paket layanan wedding, atau
+            </li>
+            <li class="catatan">
+              Rp200.000 untuk layanan paket enggagement II
+            </li>
+          </ul>
+          Sisa pembayaran (pelunasan) dapat dilakukan setelah sesi pemotretan
+          selesai atau setelah deposit dibayarkan melalui menu ‘Riwayat
+          Pemesanan’. Klien juga diperbolehkan membayar seluruh biaya layanan
+          sekaligus di awal.
+        </li>
+        <li class="catatan">
+          <span class="text-red-catatan"
+            >Jadwal pemotretan hanya dapat diubah satu kali</span
+          >, dan perubahan dapat dilakukan melalui menu ‘Riwayat Pemesanan’ pada
+          tab ‘Diproses’ dengan memilih opsi ‘Ubah Jadwal’. Sebelum melakukan
+          perubahan, pastikan jadwal yang diinginkan masih tersedia dengan
+          memeriksa terlebih dahulu di menu ‘Katalog Layanan’.
+          <span class="text-red-catatan"
+            >Jika perubahan jadwal melibatkan penambahan hari, maka akan
+            dikenakan biaya tambahan</span
+          >
+          yang akan diinformasikan melalui menu ‘Riwayat Pemesanan’ pada tab
+          ‘Telah Dikonfirmasi’ setelah perubahan jadwal berhasil dikonfirmasi.
+        </li>
+        <li class="catatan">
+          <span class="text-red-catatan"
+            >Klien yang mengubah jadwal lebih dari satu kali akan dikenakan
+            biaya tambahan</span
+          >. Hal ini diberlakukan untuk menghindari bentrok jadwal dengan klien
+          lain dan sebagai bentuk kompensasi atas penyesuaian waktu dan sumber
+          daya tim. Informasi mengenai biaya tambahan ini dapat dilihat melalui
+          menu ‘Riwayat Pemesanan’ pada tab ‘Telah Dikonfirmasi’ setelah
+          perubahan jadwal berhasil dikonfirmasi.
+        </li>
+        <li class="catatan">
+          Lokasi acara/pemotretan yang berada di luar Kab. Labuhanbatu Selatan
+          akan dikenakan biaya tambahan untuk transportasi dan akomodasi. Oval
+          Photo akan menginformasikan biaya tambahan ini melalui telepon atau
+          WhatsApp sebelum klien melakukan pembayaran deposit (pastikan nomor
+          yang kamu isikan bisa dihubungi ya!). Jika klien menyetujui biaya
+          tambahan tersebut, maka jumlahnya akan tercantum pada rincian
+          pembayaran di menu ‘Riwayat Pemesanan’ pada tab ‘Telah Dikonfirmasi’.
+          Namun, jika tidak disetujui, maka pemesanan akan dibatalkan.
+        </li>
+        <li class="catatan">
+          Lokasi acara/pemotretan yang memerlukan perizinan, diharapkan untuk
+          mengunggah surat perizinan pada menu ‘Riwayat Pemesanan’ pada tab
+          ‘Menunggu Konfirmasi’ sebelum dilakukan sesi pemotretan.
+        </li>
+        <li class="catatan">
+          Link Google Drive yang berisi
+          <span class="text-red-catatan"
+            >file foto hasil edit akan dikirim dalam 3-5 hari</span
+          >
+          setelah hari pemotretan yang dapat diakses melalui menu ‘Riwayat
+          Pemesanan’ pada tab ‘Selesai’.
+          <span class="text-red-catatan"
+            >Album foto akan diproduksi dalam 2-3 minggu</span
+          >
+          dan akan dikirimkan melalui jasa pengiriman.
+        </li>
+        <li class="catatan">
+          Jika kamu memiliki pertanyaan lain seputar layanan fotografi Oval
+          Photo, kamu dapat meng-klik
+          <a
+            href="/formfaq"
+            class="faq-btn-catatan"
+            role="button"
+            aria-label="FAQ"
+          >
+            <i class="bi bi-question-circle-fill" aria-hidden="true"></i>FAQ
+          </a>
+          untuk melihat pertanyaan yang serupa dengan yang ingin kamu tanyakan.
+          Jika tidak menemukan pertanyaan serupa, maka kamu dapat menanyakannya
+          melalui tempat yang sudah disediakan pada halaman ‘FAQ’.
+        </li>
+        <li class="catatan">
+          Jika mengalami kendala yang belum terselesaikan atau membutuhkan
+          bantuan serta konsultasi, maka kamu dapat menghubungi nomor +62
+          813-6233-8236 (via telepon) atau meng–klik
+          <a
+            href="https://wa.me/+6281362338236"
+            class="whatsapp-btn-catatan"
+            role="button"
+            aria-label="Konsultasi Sekarang"
+          >
+            <i class="bi bi-whatsapp" aria-hidden="true"></i>Konsultasi Sekarang
+          </a>
+        </li>
+      </ol>
+      <div class="checkbox-container">
+        <input type="checkbox" id="agreeCheckbox" />
+        <label for="agreeCheckbox"
+          >Saya telah membaca dan menyetujui semua ketentuan.</label
+        >
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button
+        id="sendButton"
+        class="formlayanan-btn formlayanan-btn-pesan"
+        disabled
+      >
+        Kirim
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .formlayanan-btn-pesan[disabled] {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+  }
+
+  .formlayanan-btn-pesan:not([disabled]) {
+    background-color: #86ade8;
+    color: #ffffff;
+    cursor: pointer;
+  }
+
+  .formlayanan-btn-pesan:not([disabled]):hover {
+    background-color: #5b90ed;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 700px;
+    border-radius: 8px;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .close-button:hover,
+  .close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .modal-title {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+  }
+
+  .modal-body {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 15px;
+  }
+
+  .catatan-modal {
+    list-style-type: decimal;
+    padding-left: 20px;
+    margin-bottom: 15px;
+  }
+
+  .catatan-modal li {
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+
+  .catatan-modal ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin-top: 5px;
+  }
+
+  .text-red-catatan {
+    color: red;
+    font-weight: bold;
+  }
+
+  .checkbox-container {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .checkbox-container input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+  }
+
+  .checkbox-container label {
+    font-size: 1rem;
+    cursor: pointer;
+  }
+
+  .modal-footer {
+    padding-top: 20px;
+    text-align: right;
+    border-top: 1px solid #eee;
+    margin-top: 20px;
+  }
+
+  #sendButton {
+    background-color: #2b5ea3;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  }
+
+  #sendButton:hover:not([disabled]) {
+    background-color: #244a87;
+  }
+
+  #sendButton[disabled] {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+  }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    let allLokasiData = [];
+    const bookedRanges = {{ booked_date_ranges|tojson|safe }};
+
+    function validateDateRange() {
+      const tanggalMulaiInput = document.getElementById("tanggal_mulai_acara");
+      const tanggalSelesaiInput = document.getElementById("tanggal_selesai_acara");
+      const errorDiv = document.getElementById("date-range-error");
+      const startDateValue = tanggalMulaiInput.value;
+      const endDateValue = tanggalSelesaiInput.value;
+
+      errorDiv.style.display = "none";
+
+      if (startDateValue && endDateValue) {
+        const startDate = new Date(startDateValue);
+        const endDate = new Date(endDateValue);
+        if (endDate < startDate) {
+          errorDiv.innerText = "Tanggal akhir tidak boleh sebelum tanggal mulai.";
+          errorDiv.style.display = "block";
+          return;
+        }
+        let isOverlap = false;
+        for (const range of bookedRanges) {
+          const bookedStart = new Date(range.start);
+          const bookedEnd = new Date(range.end);
+          if (startDate <= bookedEnd && endDate >= bookedStart) {
+            isOverlap = true;
+            break;
+          }
+        }
+        if (isOverlap) {
+          errorDiv.innerText = "Tanggal atau rentang tanggal yang dipilih sudah tidak tersedia. Silakan pilih tanggal lain.";
+          errorDiv.style.display = "block";
+        }
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const today = new Date();
+      document.getElementById("tanggal_pemesanan").value = today.toISOString().split("T")[0];
+
+      fetch("/api/all_lokasi")
+        .then((response) => response.json())
+        .then((data) => {
+          allLokasiData = data;
+          displayLokasiPrice();
+          checkFormValidity();
+        });
+
+      const form = document.getElementById("bookingForm");
+      const showNotesButton = document.getElementById("showNotesButton");
+      const notesModal = document.getElementById("notesModal");
+      const closeNotesModal = document.getElementById("closeNotesModal");
+      const agreeCheckbox = document.getElementById("agreeCheckbox");
+      const sendButton = document.getElementById("sendButton");
+
+      const todayString = new Date().toISOString().split("T")[0];
+      const tanggalMulaiInput = document.getElementById("tanggal_mulai_acara");
+      const tanggalSelesaiInput = document.getElementById("tanggal_selesai_acara");
+
+      tanggalMulaiInput.min = todayString;
+      tanggalSelesaiInput.min = todayString;
+
+      tanggalMulaiInput.addEventListener('change', function() {
+        if (tanggalMulaiInput.value) {
+          tanggalSelesaiInput.min = tanggalMulaiInput.value;
+          if (tanggalSelesaiInput.value && tanggalSelesaiInput.value < tanggalMulaiInput.value) {
+              tanggalSelesaiInput.value = '';
+          }
+        }
+        validateDateRange();
+        checkFormValidity();
+      });
+
+      tanggalSelesaiInput.addEventListener('change', function() {
+        validateDateRange();
+        checkFormValidity();
+      });
+
+      const requiredInputs = form.querySelectorAll("[required]");
+      requiredInputs.forEach((input) => {
+        if (input.type !== 'date') {
+          input.addEventListener("input", checkFormValidity);
+          input.addEventListener("change", checkFormValidity);
+        }
+      });
+
+      const radioGroups = document.querySelectorAll('input[name="lokasi_luar"]');
+      radioGroups.forEach((radio) => {
+        radio.addEventListener("change", checkFormValidity);
+      });
+
+      // Secara manual pasang event listener untuk textarea alamat agar selalu diperiksa.
+      document.getElementById("alamat_lokasi_manual").addEventListener("input", checkFormValidity);
+
+      document.getElementById("lokasiSelect").addEventListener("change", function() {
+          displayLokasiPrice();
+          checkFormValidity();
+      });
+
+      checkFormValidity();
+
+      showNotesButton.addEventListener("click", function (event) {
+        event.preventDefault();
+
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+
+        validateDateRange();
+        if (document.getElementById('date-range-error').style.display !== 'none') {
+          return;
+        }
+
+        notesModal.style.display = "flex";
+        agreeCheckbox.checked = false;
+        sendButton.disabled = true;
+      });
+
+      closeNotesModal.addEventListener("click", function () {
+        notesModal.style.display = "none";
+      });
+      window.addEventListener("click", function (event) {
+        if (event.target == notesModal) {
+          notesModal.style.display = "none";
+        }
+      });
+      agreeCheckbox.addEventListener("change", function () {
+        sendButton.disabled = !agreeCheckbox.checked;
+      });
+      sendButton.addEventListener("click", function () {
+        if (agreeCheckbox.checked) {
+          Swal.fire({
+            title: "Sudah yakin melakukan pemesanan?",
+            text: "Periksa kembali pesanan kamu dan pastikan tidak ada data yang salah!",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Sudah Yakin",
+            cancelButtonText: "Periksa Dulu",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              Swal.fire({
+                title: "Pesanan kamu berhasil terkirim!",
+                text: "Tunggu selama 1 x 24 jam hingga pesanan kamu dikonfirmasi. Setelah itu segera lakukan pembayaran deposit ya! ",
+                icon: "success",
+                timerProgressBar: true,
+                timer: 4000,
+                showConfirmButton: false,
+                willClose: () => {
+                  form.submit();
+                },
+              });
+              notesModal.style.display = "none";
+            }
+          });
+        }
+      });
+    });
+
+    function displayLokasiPrice() {
+    const lokasiId = document.getElementById("lokasiSelect").value;
+    const alamatInput = document.getElementById("alamat_lokasi_manual");
+    const mapsInput = document.getElementById("link_maps_manual");
+    const lokasiSelect = document.getElementById("lokasiSelect");
+
+    alamatInput.value = "";
+    mapsInput.value = "";
+    // Hapus atribut required terlebih dahulu
+    alamatInput.removeAttribute("required");
+
+    if (lokasiId === "pilih_lokasi_sendiri") {
+      // Tambahkan kembali jika opsi yang benar dipilih
+      alamatInput.setAttribute("required", "true");
+      // Pastikan select dianggap valid karena pilihan ini memang valid
+      lokasiSelect.setCustomValidity("");
+    } else if (lokasiId === "") {
+      // Jika user kembali ke opsi "Pilih lokasi..."
+      lokasiSelect.setCustomValidity("Pilih salah satu lokasi.");
+    }
+    else {
+      const lokasi = allLokasiData.find((loc) => loc._id === lokasiId);
+      if (lokasi) {
+        alamatInput.value = lokasi.alamat || "";
+        mapsInput.value = lokasi.link_maps || "";
+      }
+      // Pastikan select dianggap valid
+      lokasiSelect.setCustomValidity("");
+    }
+  }
+
+    function handleLokasiLuarChange() {
+      checkFormValidity();
+    }
+
+    function checkFormValidity() {
+      const form = document.getElementById("bookingForm");
+      const showNotesButton = document.getElementById("showNotesButton");
+      let allRequiredFilled = true;
+
+      const requiredInputs = form.querySelectorAll("[required]");
+      requiredInputs.forEach((input) => {
+          if(input.type === 'radio') {
+              const radioGroup = document.querySelector(`input[name="${input.name}"]:checked`);
+              if(!radioGroup) {
+                  allRequiredFilled = false;
+              }
+          } else if (!input.value.trim()) {
+              allRequiredFilled = false;
+          }
+      });
+
+      const isDateErrorVisible = document.getElementById('date-range-error').style.display !== 'none';
+      if (isDateErrorVisible) {
+          allRequiredFilled = false;
+      }
+
+      showNotesButton.disabled = !allRequiredFilled;
+    }
+</script>
+{% endblock %}

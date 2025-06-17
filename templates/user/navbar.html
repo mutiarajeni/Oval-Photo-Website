@@ -1,0 +1,244 @@
+<nav class="navbar fixed-top navbar-expand-lg">
+  <a href="/" class="navbar-logo">
+    <img
+      src="{{ url_for('static', filename='img/logo.png') }}"
+      alt="Logo"
+      height="50"
+    />&nbsp;Oval Photo
+  </a>
+
+  <div class="navbar-nav">
+    <a
+      class="nav-link {{ 'active' if request.endpoint == 'beranda' else '' }}"
+      href="/"
+      >Beranda</a
+    >
+    <a
+      class="nav-link {{ 'active' if request.endpoint == 'galeri' else '' }}"
+      href="/galeri"
+      >Galeri</a
+    >
+    <a
+      class="nav-link {{ 'active' if request.endpoint == 'katalog' else '' }}"
+      href="/katalog_layanan"
+      >Katalog Layanan</a
+    >
+    <a
+      class="nav-link {{ 'active' if request.endpoint == 'tentang_kami' else '' }}"
+      href="/tentang-kami"
+      >Tentang Kami</a
+    >
+    <a
+      class="nav-link {{ 'active' if request.endpoint == 'kontak' else '' }}"
+      href="/kontak"
+      >Kontak</a
+    >
+  </div>
+
+  <div class="navbar-extra">
+    <div id="auth-section" class="d-flex align-items-center"></div>
+
+    <a href="#" id="hamburger-menu"><i class="bi bi-list"></i></a>
+
+    <div
+      id="navbar-dropdown"
+      class="navbar-dropdown"
+      role="menu"
+      aria-orientation="vertical"
+      aria-labelledby="user-icon"
+    ></div>
+  </div>
+
+  <script>
+    // Deklarasi timer di scope global agar bisa diakses semua fungsi
+    let inactivityTimer;
+
+    // ----- KUMPULAN FUNGSI -----
+
+    /**
+     * [BARU] Fungsi ini bertanya ke server untuk mendapatkan status login yang sebenarnya,
+     * lalu merender UI (tombol Masuk/Profil) dan memulai timer jika perlu.
+     */
+    async function checkSessionAndRender() {
+      const authSection = document.getElementById("auth-section");
+      const dropdown = document.getElementById("navbar-dropdown");
+
+      try {
+        const response = await fetch("/api/session_status");
+        if (!response.ok) {
+          throw new Error("Gagal menghubungi server.");
+        }
+        const data = await response.json();
+
+        // Bersihkan konten lama
+        authSection.innerHTML = "";
+        dropdown.innerHTML = "";
+        dropdown.classList.remove("show");
+
+        if (data.logged_in) {
+          // --- JIKA SERVER MENGATAKAN PENGGUNA LOGIN ---
+
+          // 1. Simpan status ke sessionStorage sebagai "cache" untuk UI
+          sessionStorage.setItem("isLoggedIn", "true");
+          sessionStorage.setItem("username", data.username);
+
+          // 2. Render tampilan profil
+          const userIconButton = document.createElement("a");
+          userIconButton.href = "#";
+          userIconButton.className = "user-icon";
+          userIconButton.id = "user-icon";
+          userIconButton.setAttribute("aria-haspopup", "true");
+          userIconButton.onclick = (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            dropdown.classList.toggle("show");
+          };
+          userIconButton.innerHTML = `<i class="bi bi-person-circle"></i>`;
+          authSection.appendChild(userIconButton);
+
+          dropdown.innerHTML = `
+                    <p style="padding: 0.5rem 1rem; margin-bottom: 0; color: #555; font-size: 0.9em; font-weight: bold;">Halo, ${
+                      data.username || ""
+                    }!</p>
+                    <hr style="margin: 0.2rem 0; border-top: 1px solid #eee;">
+                    <a href="/profil" class="navbar-item" role="menuitem"><i class="bi bi-person navbar-icon"></i><span>Profil</span></a>
+                    <a href="/ripe_menunggu_konfirmasi" class="navbar-item" role="menuitem"><i class="bi bi-card-list navbar-icon"></i><span>Riwayat Pemesanan</span></a>
+                    <a href="#" id="logout-button-js" class="navbar-item" role="menuitem"><i class="bi bi-box-arrow-right navbar-icon"></i><span>Keluar</span></a>
+                `;
+
+          document
+            .getElementById("logout-button-js")
+            .addEventListener("click", performLogout);
+
+          // 3. Mulai timer inactivity
+          setupInactivityTimer();
+        } else {
+          // --- JIKA SERVER MENGATAKAN PENGGUNA TIDAK LOGIN ---
+
+          // 1. Bersihkan sessionStorage untuk memastikan konsistensi
+          sessionStorage.removeItem("isLoggedIn");
+          sessionStorage.removeItem("username");
+
+          // 2. Render tombol "Masuk"
+          const loginLink = document.createElement("a");
+          loginLink.href = "/masuk";
+          loginLink.className = "btn-login";
+          loginLink.textContent = "Masuk";
+          authSection.appendChild(loginLink);
+        }
+      } catch (error) {
+        console.error("Gagal memeriksa status sesi:", error);
+        // Jika ada error jaringan, tampilkan tombol Masuk sebagai default yang aman
+        const loginLink = document.createElement("a");
+        loginLink.href = "/masuk";
+        loginLink.className = "btn-login";
+        loginLink.textContent = "Masuk";
+        authSection.innerHTML = "";
+        authSection.appendChild(loginLink);
+      }
+    }
+
+    /**
+     * Fungsi untuk menjalankan proses logout lengkap (konfirmasi, panggil server, update UI)
+     */
+    async function performLogout(event) {
+      if (event) event.preventDefault();
+      clearTimeout(inactivityTimer); // Selalu matikan timer saat proses logout dimulai
+
+      const result = await Swal.fire({
+        title: "Apakah kamu yakin ingin keluar?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Ya, keluar!",
+        cancelButtonText: "Batal",
+      });
+
+      if (result.isConfirmed) {
+        const response = await fetch("/logout"); // Panggil endpoint logout di Flask
+        if (response.ok) {
+          sessionStorage.removeItem("isLoggedIn");
+          sessionStorage.removeItem("username");
+          await Swal.fire({
+            title: "Berhasil!",
+            text: "Kamu telah berhasil keluar.",
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: false,
+          });
+          window.location.href = "/masuk";
+        } else {
+          Swal.fire("Error!", "Gagal logout dari server. Coba lagi.", "error");
+        }
+      }
+    }
+
+    /**
+     * Fungsi untuk mengatur dan me-reset timer logout karena tidak aktif
+     */
+    function setupInactivityTimer() {
+      const timeoutDuration = 60 * 60 * 1000; // 1 jam
+
+      const handleInactivity = () => {
+        if (sessionStorage.getItem("isLoggedIn") === "true") {
+          alert(
+            "Anda telah logout secara otomatis karena tidak ada aktivitas."
+          );
+          performLogout();
+        }
+      };
+
+      const resetTimer = () => {
+        clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(handleInactivity, timeoutDuration);
+      };
+
+      [
+        "load",
+        "mousemove",
+        "mousedown",
+        "click",
+        "scroll",
+        "keypress",
+        "touchstart",
+      ].forEach((event) => {
+        window.addEventListener(event, resetTimer);
+      });
+    }
+
+    // ----- EKSEKUSI SAAT HALAMAN DIMUAT -----
+    document.addEventListener("DOMContentLoaded", checkSessionAndRender);
+
+    // ----- FUNGSI BANTUAN LAINNYA (TIDAK DIUBAH) -----
+
+    function closeDropdownOnOutsideClick(e) {
+      const userIconButton = document.getElementById("user-icon");
+      const dropdown = document.getElementById("navbar-dropdown");
+      if (
+        userIconButton &&
+        dropdown &&
+        !userIconButton.contains(e.target) &&
+        !dropdown.contains(e.target)
+      ) {
+        dropdown.classList.remove("show");
+      }
+    }
+    document.addEventListener("click", closeDropdownOnOutsideClick);
+
+    const hamburgerMenu = document.getElementById("hamburger-menu");
+    const navbarNav = document.querySelector(".navbar-nav");
+    if (hamburgerMenu && navbarNav) {
+      hamburgerMenu.addEventListener("click", function (e) {
+        e.preventDefault();
+        navbarNav.classList.toggle("active");
+      });
+      document.addEventListener("click", function (e) {
+        if (
+          !hamburgerMenu.contains(e.target) &&
+          !navbarNav.contains(e.target)
+        ) {
+          navbarNav.classList.remove("active");
+        }
+      });
+    }
+  </script>
+</nav>
