@@ -97,8 +97,6 @@
             <i class="bi bi-telephone-fill"></i>Nomor Telepon Aktif/WhatsApp
           </div>
           <p class="riwayatpemesanan-value-bold">{{ p.telepon_klien }}</p>
-
-          
         </div>
 
         <div class="riwayatpemesanan-info-block">
@@ -283,7 +281,11 @@
       <div class="riwayatpemesanan-form-group">
         <label for="tautan-foto" style="font-weight: 500; font-size: 12px"
           ><br />
-          <br />Tautan hasil foto kamu <br />{% if p.link_google_drive %}
+          <br />Tautan hasil foto kamu
+          <span style="font-weight: 400; color: red"
+            >(dapat diakses selama 5 hari sejak link dibagikan)</span
+          >
+          <br />{% if p.link_google_drive %}
           <a
             href="{{ p.link_google_drive }}"
             target="_blank"
