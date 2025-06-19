@@ -328,6 +328,33 @@
                 </tr>
                 {% endfor %}
               </tbody>
+              <tfoot id="tableFooter">
+                <tr class="bg-light rounded-3 shadow-sm fw-bold">
+                  <td
+                    colspan="7"
+                    class="text-end pe-4 py-2"
+                    style="font-size: 12px"
+                  >
+                    Total Keseluruhan:
+                  </td>
+                  <td
+                    id="totalSum"
+                    class="py-2 text-center"
+                    style="font-size: 12px"
+                  >
+                    Rp 0
+                  </td>
+                  <td colspan="2" class="py-2 text-center"></td>
+                  <td
+                    id="sisaBayarSum"
+                    class="py-2 text-center"
+                    style="font-size: 12px"
+                  >
+                    Rp 0
+                  </td>
+                  <td colspan="2" class="py-2 text-center"></td>
+                </tr>
+              </tfoot>
             </table>
           </div>
         </section>
@@ -338,7 +365,6 @@
 
 <script>
   (() => {
-    // Data kini diambil dari Jinja, bukan dari script hardcoded
     const initialData = [
       {% for item in pesanan %}
       {
@@ -346,14 +372,14 @@
         nama: "{{ item.nama_klien }}",
         layanan: "{{ item.layanan }}",
         paket: "{{ item.paket }}",
-        paketHarga: "{{ item.harga_paket | rupiah }}",
-        lokasi: "{{ item.biaya_lokasi | rupiah }}",
-        tambahHari: "{{ item.biaya_tambah_hari | rupiah }}",
-        transportasi: "{{ item.biaya_transportasi_akomodasi | rupiah }}",
-        total: "{{ item.total_harga | rupiah }}",
-        deposit: "{{ item.deposit | rupiah }}",
+        paketHarga: {{ item.harga_paket | int }},
+        lokasi: {{ item.biaya_lokasi | int }},
+        tambahHari: {{ item.biaya_tambah_hari | int }},
+        transportasi: {{ item.biaya_transportasi_akomodasi | int }},
+        total: {{ item.total_harga | int }},
+        deposit: {{ item.deposit | int }},
         tanggalDeposit: "{{ item.tanggal_pembayaran_deposit_formatted if item.tanggal_pembayaran_deposit else 'Belum Bayar' }}", // Pastikan selalu string
-        sisaBayar: "{{ item.sisa_bayar | rupiah }}",
+        sisaBayar: {{ item.sisa_bayar | int }},
         tanggalPelunasan: "{{ item.tanggal_pembayaran_pelunasan_formatted if item.tanggal_pembayaran_pelunasan else 'Belum Bayar' }}", // Pastikan selalu string
         lunas: "{{ 'Sudah' if item.sisa_bayar <= 0 else 'Belum' }}",
       },
@@ -368,6 +394,18 @@
     const dateEndInput = document.getElementById("dateEnd");
     const resetBtn = document.getElementById("resetBtn");
     const printBtn = document.getElementById("printBtn");
+    const totalSumElement = document.getElementById("totalSum");
+    const sisaBayarSumElement = document.getElementById("sisaBayarSum");
+
+    // Fungsi Pembantu: Mengubah nilai numerik menjadi format Rupiah
+    function formatRupiah(number) {
+      return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      }).format(number);
+    }
 
     // Fungsi Pembantu: Mengubah format tanggal Indonesia ke objek Date
     // Menambahkan penanganan untuk 'Belum Bayar' dan input kosong
@@ -418,8 +456,13 @@
       if (dataToRender.length === 0) {
         tableBody.innerHTML =
           '<tr><td colspan="13" class="text-center py-4 text-muted">Tidak ada data ditemukan</td></tr>';
+        updateSummaryRow(0, 0); // Update summary to 0 if no data
         return;
       }
+
+      let currentTotalSum = 0;
+      let currentSisaBayarSum = 0;
+
       dataToRender.forEach((item, idx) => {
         const tr = document.createElement("tr");
         // Kelas Bootstrap untuk styling baris tabel (tanpa border antar sel)
@@ -437,29 +480,29 @@
             <td class="py-2 text-center" style="font-size: 12px; border-bottom: 0.2px solid #ebebeb; vertical-align: middle;">
                 ${item.paket}<br />
                 <span class="text-muted" style="font-size: 10px;">(${
-                  item.paketHarga
+                  formatRupiah(item.paketHarga)
                 })</span>
             </td>
             <td class="py-2 text-center" style="font-size: 12px; border-bottom: 0.2px solid #ebebeb; vertical-align: middle;">${
-              item.lokasi
+              formatRupiah(item.lokasi)
             }</td>
             <td class="py-2 text-center" style="font-size: 12px; border-bottom: 0.2px solid #ebebeb; vertical-align: middle;">${
-              item.tambahHari
+              formatRupiah(item.tambahHari)
             }</td>
             <td class="py-2 text-center" style="font-size: 12px; border-bottom: 0.2px solid #ebebeb; vertical-align: middle;">${
-              item.transportasi
+              formatRupiah(item.transportasi)
             }</td>
             <td class="py-2 text-center" style="font-size: 12px; border-bottom: 0.2px solid #ebebeb; vertical-align: middle;">${
-              item.total
+              formatRupiah(item.total)
             }</td>
             <td class="py-2 text-center" style="font-size: 12px; border-bottom: 0.2px solid #ebebeb; vertical-align: middle;">${
-              item.deposit
+              formatRupiah(item.deposit)
             }</td>
             <td class="py-2 text-center" style="font-size: 12px; border-bottom: 0.2px solid #ebebeb; vertical-align: middle;">${
               item.tanggalDeposit
             }</td>
             <td class="py-2 text-center" style="font-size: 12px; border-bottom: 0.2px solid #ebebeb; vertical-align: middle;">${
-              item.sisaBayar
+              formatRupiah(item.sisaBayar)
             }</td>
             <td class="py-2 text-center" style="font-size: 12px; border-bottom: 0.2px solid #ebebeb; vertical-align: middle;">${
               item.tanggalPelunasan
@@ -469,7 +512,17 @@
             }</td>
           `;
         tableBody.appendChild(tr);
+
+        currentTotalSum += item.total;
+        currentSisaBayarSum += item.sisaBayar;
       });
+      updateSummaryRow(currentTotalSum, currentSisaBayarSum);
+    }
+
+    // Fungsi untuk memperbarui baris ringkasan
+    function updateSummaryRow(totalSum, sisaBayarSum) {
+      totalSumElement.textContent = formatRupiah(totalSum);
+      sisaBayarSumElement.textContent = formatRupiah(sisaBayarSum);
     }
 
     // Fungsi Filter Data: Berdasarkan input pencarian dan filter tanggal
@@ -490,17 +543,18 @@
           item.nama,
           item.layanan,
           item.paket,
-          item.paketHarga,
-          item.lokasi,
-          item.tambahHari,
-          item.transportasi,
-          item.total,
-          item.deposit,
+          // item.paketHarga, // Don't search on formatted price
+          // item.lokasi,      // Don't search on formatted price
+          // item.tambahHari,  // Don't search on formatted price
+          // item.transportasi, // Don't search on formatted price
+          // item.total,       // Don't search on formatted price
+          // item.deposit,     // Don't search on formatted price
           item.tanggalDeposit,
-          item.sisaBayar,
+          // item.sisaBayar,   // Don't search on formatted price
           item.tanggalPelunasan,
           item.lunas,
-        ];
+        ].map(String); // Ensure all fields are strings for includes()
+
         const matchesSearch = searchableFields.some((field) =>
           field.toLowerCase().includes(searchTerm)
         );
@@ -557,14 +611,43 @@
                 .table-bordered th,
                 .table-bordered td { border: 1px solid #dee2e6 !important; } /* Menambahkan border untuk cetak */
                 .text-center { text-align: center !important; } /* Rata tengah untuk cetak */
+                .text-end { text-align: end !important; } /* Rata kanan untuk cetak */
+                .fw-bold { font-weight: 700 !important; }
             </style>
         `;
       // Mengambil innerHTML dari tabel dan membungkusnya dengan tabel baru yang ada border dan rata tengah
       const tableHTML = `<table class="table table-bordered text-center small text-secondary">${
         document.getElementById("dataTable").innerHTML
       }</table>`;
+
+      // Mendapatkan nilai filter tanggal untuk periode
+      const rawStartDate = dateStartInput.value;
+      const rawEndDate = dateEndInput.value;
+
+      let periodeText = "Semua Periode";
+      if (rawStartDate && rawEndDate) {
+        // Format tanggal untuk ditampilkan
+        const startDateFormatted = new Date(rawStartDate).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+        const endDateFormatted = new Date(rawEndDate).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+        periodeText = `Periode: ${startDateFormatted} - ${endDateFormatted}`;
+      } else if (rawStartDate) {
+        const startDateFormatted = new Date(rawStartDate).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+        periodeText = `Dari Tanggal: ${startDateFormatted}`;
+      } else if (rawEndDate) {
+        const endDateFormatted = new Date(rawEndDate).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+        periodeText = `Hingga Tanggal: ${endDateFormatted}`;
+      }
+
+      const headerHTML = `
+        <div style="text-align: center; margin-bottom: 20px;">
+          <h5>Oval Photo</h5>
+          <h5>Laporan Pendapatan</h5>
+          <p>${periodeText}</p>
+        </div>
+      `;
+
       printWindow.document.write(
-        `<html><head><title>&nbsp;</title>${style}</head><body><h2 class="mb-3 text-center">Data Pendapatan Oval Photo</h2>${tableHTML}</body></html>`
+        `<html><head><title>&nbsp</title>${style}</head><body>${headerHTML}${tableHTML}</body></html>`
       );
       printWindow.document.close();
       printWindow.print(); // Membuka dialog cetak
