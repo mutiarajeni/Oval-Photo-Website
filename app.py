@@ -1568,11 +1568,13 @@ def admin_pesanan_tambah():
             layanan_id = request.form['layanan_id']
             paket_id = request.form['paket_id']
             nama_klien = request.form['nama_klien']
-            nama_orang_tua = request.form['nama_orang_tua']
             email_klien = request.form['email_klien']
             telepon_klien = request.form['telepon_klien']
+            nama_alternatif = request.form['nama_alternatif']
+            telepon_alternatif = request.form['telepon_alternatif']
             instagram_klien = request.form.get('instagram_klien', '')
             facebook_klien = request.form.get('facebook_klien', '')
+
 
             jam_acara_str = request.form['jam_acara']
             tanggal_mulai_acara_str = request.form['tanggal_mulai_acara']
@@ -1640,9 +1642,10 @@ def admin_pesanan_tambah():
                 'layanan_id': ObjectId(layanan_id),
                 'paket_id': ObjectId(paket_id),
                 'nama_klien': nama_klien,
-                'nama_orang_tua': nama_orang_tua,
                 'email_klien': email_klien,
                 'telepon_klien': telepon_klien,
+                'nama_alternatif': nama_alternatif,
+                'telepon_alternatif': telepon_alternatif,
                 'instagram_klien': instagram_klien,
                 'facebook_klien': facebook_klien,
                 'jam_acara': jam_acara,
@@ -1660,7 +1663,7 @@ def admin_pesanan_tambah():
                 'deposit': deposit_paket,
                 'total_harga': recalculated_total_harga,
                 'sisa_bayar': recalculated_sisa_bayar,
-                'status_pesanan': 'Menunggu Konfirmasi',
+                'status_pesanan': 'Belum Pemotretan',
                 'tanggal_pembayaran_deposit': datetime.utcnow(),
                 'created_at': datetime.utcnow()
             }
@@ -1814,17 +1817,20 @@ def admin_pesanan_update(pesanan_id):
     recalculated_total_harga = harga_paket + biaya_tambah_hari + biaya_lokasi + biaya_transportasi
 
 
-    # Hitung ulang sisa_bayar sesuai status pembayaran
-    if status_pembayaran_deposit == 'Lunas' and status_pembayaran_pelunasan == 'Lunas' and status_sisa_pembayaran == 'Lunas':
-        recalculated_sisa_bayar = recalculated_total_harga - (last_pelunasan_attempt_amount + last_sisa_bayar_attempt_amount)
-    elif status_pembayaran_deposit == 'Lunas' and status_pembayaran_pelunasan == 'Belum Bayar' and status_sisa_pembayaran == 'Lunas':
-        recalculated_sisa_bayar = recalculated_total_harga - (deposit_paket + last_sisa_bayar_attempt_amount)
-    elif status_pembayaran_deposit == 'Lunas' and status_pembayaran_pelunasan == 'Lunas' and status_sisa_pembayaran == 'Belum Bayar':
-        recalculated_sisa_bayar = recalculated_total_harga - last_pelunasan_attempt_amount
-    elif status_pembayaran_deposit == 'Lunas' and status_pembayaran_pelunasan == 'Belum Bayar' and status_sisa_pembayaran == 'Belum Bayar':
-        recalculated_sisa_bayar = recalculated_total_harga - deposit_paket
+    # Hitung ulang sisa_bayar sesuai dengan status pembayaran
+    if status_pembayaran_deposit == 'Lunas':
+        if status_pembayaran_pelunasan == 'Lunas' and status_sisa_pembayaran == 'Lunas':
+            recalculated_sisa_bayar = recalculated_total_harga - (last_pelunasan_attempt_amount + last_sisa_bayar_attempt_amount)
+        elif status_pembayaran_pelunasan == 'Belum Bayar' and status_sisa_pembayaran == 'Lunas':
+            recalculated_sisa_bayar = recalculated_total_harga - (deposit_paket + last_sisa_bayar_attempt_amount)
+        elif status_pembayaran_pelunasan == 'Lunas' and status_sisa_pembayaran == 'Belum Bayar':
+            recalculated_sisa_bayar = recalculated_total_harga - last_pelunasan_attempt_amount
+        elif status_pembayaran_pelunasan == 'Belum Bayar' and status_sisa_pembayaran == 'Belum Bayar':
+            recalculated_sisa_bayar = recalculated_total_harga - deposit_paket
+        else:
+            recalculated_sisa_bayar = 0
     else:
-        recalculated_sisa_bayar = 0
+        recalculated_sisa_bayar = recalculated_total_harga
 
 
 
@@ -1844,7 +1850,7 @@ def admin_pesanan_update(pesanan_id):
     update_data['sisa_bayar'] = recalculated_sisa_bayar
 
 
-    if status == 'Selesai':
+    if status in ['Selesai', 'Sudah Kirim File & Album']:
         # Jika status pesanan diubah menjadi 'Selesai',
         # atur sisa_bayar menjadi 0 dan catat tanggal pelunasan
         recalculated_sisa_bayar = 0
@@ -2041,7 +2047,8 @@ def submit_booking():
         layanan_id = request.form["layanan_id"]
         paket_id = request.form["paket_id"]
         nama_klien = request.form["nama_klien"]
-        nama_orang_tua = request.form["nama_orang_tua"]
+        nama_alternatif = request.form['nama_alternatif']
+        telepon_alternatif = request.form['telepon_alternatif']
         email_klien = request.form[
             "email_klien"
         ]  # email yang diisi di form, bukan email login
@@ -2103,9 +2110,10 @@ def submit_booking():
             "layanan_id": ObjectId(layanan_id),
             "paket_id": ObjectId(paket_id),
             "nama_klien": nama_klien,
-            "nama_orang_tua": nama_orang_tua,
             "email_klien": email_klien,
             "telepon_klien": telepon_klien,
+            'nama_alternatif': nama_alternatif,
+            'telepon_alternatif': telepon_alternatif,
             "instagram_klien": instagram_klien,
             "facebook_klien": facebook_klien,
             "jam_acara": jam_acara,
@@ -2261,9 +2269,10 @@ def booking_ubah(pesanan_id):
         elif request.method == "POST":
             # Extract data from the form
             nama_klien = request.form['nama_klien']
-            nama_orang_tua = request.form['nama_orang_tua']
             email_klien = request.form['email_klien']
             telepon_klien = request.form['telepon_klien']
+            nama_alternatif = request.form['nama_alternatif']
+            telepon_alternatif = request.form['telepon_alternatif']
             instagram_klien = request.form.get('instagram_klien', '')
             facebook_klien = request.form.get('facebook_klien', '')
             jam_acara_str = request.form['jam_acara']
@@ -2299,9 +2308,10 @@ def booking_ubah(pesanan_id):
             # Update the booking document
             update_data = {
                 "nama_klien": nama_klien,
-                "nama_orang_tua": nama_orang_tua,
                 "email_klien": email_klien,
                 "telepon_klien": telepon_klien,
+                'nama_alternatif': nama_alternatif,
+                'telepon_alternatif': telepon_alternatif,
                 "instagram_klien": instagram_klien,
                 "facebook_klien": facebook_klien,
                 "jam_acara": jam_acara,
@@ -2584,7 +2594,7 @@ def ripe_diproses():
     pesanan_user_list = []
     try:
         # Filter pesanan berdasarkan user_id_pemesan dan status yang termasuk 'diproses'
-        diproses_statuses = ['Belum Pemotretan', 'Sudah Pemotretan', 'Belum Kirim File & Album']
+        diproses_statuses = ['Belum Pemotretan', 'Sudah Pemotretan']
         pesanan_cursor = db.pesanan.find({
             "user_id_pemesan": ObjectId(user_id),
             "status_pesanan": {"$in": diproses_statuses}
@@ -2617,7 +2627,7 @@ def ripe_diproses():
             else:
                 pesanan['tanggal_selesai_acara_formatted'] = 'N/A'
 
-            # Add formatted creation date for display
+            # Format Tanggal
             if isinstance(pesanan.get('created_at'), datetime):
                 pesanan['created_at_formatted'] = pesanan['created_at'].strftime('%d %b %Y %H:%M')
             else:
@@ -2631,6 +2641,9 @@ def ripe_diproses():
             pesanan['total_harga'] = pesanan.get('total_harga', 0)
             pesanan['last_pelunasan_attempt_amount'] = pesanan.get('last_pelunasan_attempt_amount', 0)
             pesanan['last_deposit_attempt_amount'] = pesanan.get('last_deposit_attempt_amount', 0)
+
+            # Menambahkan flag untuk melacak apakah jadwal sudah pernah diubah
+            pesanan['has_rescheduled'] = pesanan.get('has_rescheduled', False)
 
             pesanan_user_list.append(pesanan)
 
@@ -2646,7 +2659,6 @@ def ripe_diproses():
 @app.route("/jadwal/ubah/<pesanan_id>", methods=["GET", "POST"])
 @login_required
 def jadwal_ubah(pesanan_id):
-    # Ensure the logged-in user is the owner of this booking
     user_id = session.get('user_id')
     if not user_id:
         flash("Kamu harus login untuk mengakses halaman ini.", "danger")
@@ -2656,39 +2668,44 @@ def jadwal_ubah(pesanan_id):
         pesanan = db.pesanan.find_one({"_id": ObjectId(pesanan_id), "user_id_pemesan": ObjectId(user_id)})
         if not pesanan:
             flash("Pesanan tidak ditemukan atau kamu tidak memiliki izin untuk mengubahnya.", "danger")
-            return redirect(url_for("ripe_diproses")) # Redirect to general history if not found/authorized
+            return redirect(url_for("ripe_diproses")) 
 
-        # Check if the booking status allows modification (e.g., cannot modify if already in progress or completed)
-        # You can define which statuses allow modification. Example: only 'Menunggu Konfirmasi'
-        allowed_statuses_for_edit = ['Belum Pemotretan', 'Sudah Pemotretan', 'Belum Kirim File & Album']
+        allowed_statuses_for_edit = ['Belum Pemotretan', 'Sudah Pemotretan']
         if pesanan.get("status_pesanan") not in allowed_statuses_for_edit:
             flash(f"Pesanan dengan status '{pesanan.get('status_pesanan')}' tidak dapat diubah.", "warning")
-            return redirect(url_for("ripe_diproses")) # Redirect to history of that status
+            return redirect(url_for("ripe_diproses")) 
+        
 
 
-        # --- GET Request: Display the form with existing data ---
+         # pengecekan apakah jadwal sudah pernah diubah
+        if pesanan.get('has_rescheduled'): 
+            flash("Jadwal pesanan ini hanya dapat diubah satu kali dan sudah dilakukan.", "warning") 
+            return redirect(url_for("ripe_diproses"))
+
+
+
+       
         if request.method == "GET":
-            # Fetch related data for display
             selected_layanan = db.layanan.find_one({"_id": pesanan.get("layanan_id")})
             selected_paket = db.paket.find_one({"_id": pesanan.get("paket_id")})
             
             selected_layanan_nama = selected_layanan["nama"] if selected_layanan else "N/A"
             selected_paket_nama = selected_paket["nama"] if selected_paket else "N/A"
             
-            # Format harga dan deposit for display
+            
             selected_paket_harga_formatted = "{:,.0f}".format(pesanan.get("harga_paket", 0)).replace(",", ".")
             selected_paket_deposit_formatted = "{:,.0f}".format(pesanan.get("deposit", 0)).replace(",", ".")
 
-            # Get all active locations for the dropdown
+            
             lokasi_list = list(db.lokasi.find({"is_active": True}))
             for lokasi in lokasi_list:
-                lokasi["_id"] = str(lokasi["_id"]) # Convert ObjectId to string for template
+                lokasi["_id"] = str(lokasi["_id"]) 
 
-            # Format current booking dates for input fields (YYYY-MM-DD)
+            
             pesanan["tanggal_mulai_acara_str"] = pesanan["tanggal_mulai_acara"].strftime("%Y-%m-%d") if isinstance(pesanan.get("tanggal_mulai_acara"), datetime) else ""
             pesanan["tanggal_selesai_acara_str"] = pesanan["tanggal_selesai_acara"].strftime("%Y-%m-%d") if isinstance(pesanan.get("tanggal_selesai_acara"), datetime) else ""
 
-            # Fetch booked dates to disable in the calendar, excluding the current booking's dates
+           
             disabled_statuses = [
                 "Menunggu Konfirmasi",
                 "Telah Dikonfirmasi",
@@ -2722,9 +2739,8 @@ def jadwal_ubah(pesanan_id):
                 booked_date_ranges=booked_date_ranges
             )
 
-        # --- POST Request: Process form submission for update ---
+       
         elif request.method == "POST":
-            # Extract data from the form
             jam_acara_str = request.form['jam_acara']
             tanggal_mulai_acara_str = request.form['tanggal_mulai_acara']
             tanggal_selesai_acara_str = request.form['tanggal_selesai_acara']
@@ -2735,15 +2751,13 @@ def jadwal_ubah(pesanan_id):
             tanggal_selesai_acara = datetime.strptime(tanggal_selesai_acara_str, '%Y-%m-%d')
 
           
-
-           
-            
             update_data = {
                 "jam_acara": jam_acara,
                 "tanggal_mulai_acara": tanggal_mulai_acara,
                 "tanggal_selesai_acara": tanggal_selesai_acara,
                 "status_pesanan": "Menunggu Konfirmasi",
-                "last_updated": datetime.utcnow() # Track when it was last updated
+                "last_updated": datetime.utcnow(), 
+                "has_rescheduled": True
             }
 
             db.pesanan.update_one(
@@ -2769,20 +2783,20 @@ def jadwal_ubah(pesanan_id):
                 jenis_notifikasi="Perubahan Jadwal",
                 pesanan=pesanan_terbaru,
                 pesanan_id=pesanan_id,
-                nama_layanan=nama_layanan,  # Data baru
-                nama_paket=nama_paket      # Data baru
+                nama_layanan=nama_layanan,  
+                nama_paket=nama_paket      
             )
 
 
 
             flash("Pesanan kamu berhasil diperbarui!", "success")
-            return redirect(url_for("ripe_diproses")) # Redirect to pending confirmation
+            return redirect(url_for("ripe_diproses")) 
 
 
     except Exception as e:
         app.logger.error(f"Error in jadwal_ubah for pesanan_id {pesanan_id}: {e}", exc_info=True)
         flash(f"Terjadi kesalahan saat mengubah pesanan: {e}", "danger")
-        return redirect(url_for("ripe_diproses")) # Fallback redirect on error
+        return redirect(url_for("ripe_diproses")) 
 
 
 
@@ -3464,7 +3478,7 @@ def api_submit_ulasan():
         # Optionally, update the pesanan to mark it as reviewed
         db.pesanan.update_one(
             {"_id": ObjectId(pesanan_id)},
-            {"$set": {"reviewed": True}}
+            {"$set": {"reviewed": True, "status_pesanan": "Selesai"}}
         )
 
         return jsonify({"success": True, "message": "Ulasan berhasil dikirimkan!"}), 200
@@ -4939,6 +4953,18 @@ def create_midtrans_transaction():
         item_details = []
         order_id_prefix = ""
 
+
+        # mengambil data layanan berdasarkan layanan_id dari pesanan
+        layanan_data = db.layanan.find_one({"_id": pesanan.get('layanan_id')})
+        # mengambil data paket berdasarkan paket_id dari pesanan
+        paket_data = db.paket.find_one({"_id": pesanan.get('paket_id')})
+
+        # nama layanan, default 'N/A' jika tidak ditemukan
+        nama_layanan = layanan_data.get('nama', 'N/A') if layanan_data else 'N/A'
+        # nama paket, default 'N/A' jika tidak ditemukan
+        nama_paket = paket_data.get('nama', 'N/A') if paket_data else 'N/A'
+
+
         if payment_type == 'deposit':
             amount = pesanan.get('deposit', 0)
             order_id_prefix = "DEPOSIT-"
@@ -4946,7 +4972,7 @@ def create_midtrans_transaction():
                 "id": f"DEP-{pesanan_id}",
                 "price": int(amount),
                 "quantity": 1,
-                "name": f"Pembayaran Deposit Layanan {pesanan.get('layanan')} ({pesanan.get('paket')})"
+                "name": f"Pembayaran Deposit Layanan {nama_layanan} ({nama_paket})"
             })
         elif payment_type == 'pelunasan':
             amount = pesanan.get('total_harga', 0)
@@ -4955,7 +4981,7 @@ def create_midtrans_transaction():
                 "id": f"LUN-{pesanan_id}",
                 "price": int(amount),
                 "quantity": 1,
-                "name": f"Pembayaran Pelunasan Layanan {pesanan.get('layanan')} ({pesanan.get('paket')})"
+                "name": f"Pembayaran Pelunasan Layanan {nama_layanan} ({nama_paket})"
             })
         elif payment_type == 'sisa_bayar': 
             amount = pesanan.get('sisa_bayar', 0)
@@ -4964,7 +4990,7 @@ def create_midtrans_transaction():
                 "id": f"SISA-{pesanan_id}",
                 "price": int(amount),
                 "quantity": 1,
-                "name": f"Pembayaran Sisa Layanan {pesanan.get('layanan')} ({pesanan.get('paket')})"
+                "name": f"Pembayaran Sisa Layanan {nama_layanan} ({nama_paket})"
             })
         else:
             return jsonify({'success': False, 'message': 'Tipe pembayaran tidak valid.'}), 400

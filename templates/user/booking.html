@@ -90,14 +90,13 @@
           id="paket_nama"
           name="paket_nama"
           class="formlayanan-input formlayanan-required"
-          value="{{ selected_paket_nama if selected_paket_nama else 'paket yang dipilih' }} (Rp {{ selected_paket_harga if selected_paket_harga else
-          '0' }})"
+          value="{{ selected_paket_nama if selected_paket_nama else 'paket yang dipilih' }} (Rp {{ selected_paket_harga if selected_paket_harga else '0' }})"
           disabled
           required
         />
         <small style="color: green">
-          Deposit: Rp {{ selected_paket_deposit if selected_paket_deposit else  
-                  '0' }}
+          Deposit: Rp {{ selected_paket_deposit if selected_paket_deposit else
+          '0' }}
         </small>
       </div>
       <div>
@@ -115,34 +114,18 @@
       </div>
 
       <div>
-        <label for="nama_orang_tua" class="formlayanan-label">
-          Nama orang tua klien<span class="formlayanan-required">*</span>
+        <label for="nama_alternatif" class="formlayanan-label">
+          Nama kontak alternatif<span class="formlayanan-required">*</span>
         </label>
         <input
           type="text"
-          id="nama_orang_tua"
-          name="nama_orang_tua"
-          placeholder="Masukkan nama orang tua klien"
+          id="nama_alternatif"
+          name="nama_alternatif"
+          placeholder="Masukkan nama kontak alternatif"
           class="formlayanan-input formlayanan-required"
           required
         />
       </div>
-
-      <div>
-        <label for="email_klien" class="formlayanan-label">
-          Email<span class="formlayanan-required">*</span>
-        </label>
-        <input
-          type="email"
-          id="email_klien"
-          name="email_klien"
-          placeholder="Masukkan email klien"
-          class="formlayanan-input formlayanan-required"
-          required
-        />
-        <p class="formlayanan-text-xs">Contoh: ovalphoto@gmail.com</p>
-      </div>
-
       <div>
         <label for="telepon_klien" class="formlayanan-label">
           Nomor telepon aktif/WhatsApp<span class="formlayanan-required"
@@ -159,6 +142,39 @@
         />
         <p class="formlayanan-text-xs">Contoh: +62-861-3409-8790</p>
       </div>
+
+      <div>
+        <label for="telepon_alternatif" class="formlayanan-label">
+          Nomor telepon kontak alternatif<span class="formlayanan-required"
+            >*</span
+          >
+        </label>
+        <input
+          type="text"
+          id="telepon_alternatif"
+          name="telepon_alternatif"
+          placeholder="Masukkan nomor telepon kontak alternatif"
+          class="formlayanan-input formlayanan-required"
+          required
+        />
+        <p class="formlayanan-text-xs">Contoh: +62-861-3409-8790</p>
+      </div>
+
+      <div>
+        <label for="email_klien" class="formlayanan-label">
+          Email<span class="formlayanan-required">*</span>
+        </label>
+        <input
+          type="email"
+          id="email_klien"
+          name="email_klien"
+          placeholder="Masukkan email klien"
+          class="formlayanan-input formlayanan-required"
+          required
+        />
+        <p class="formlayanan-text-xs">Contoh: ovalphoto@gmail.com</p>
+      </div>
+      <div></div>
 
       <div>
         <label for="instagram_klien" class="formlayanan-label">Instagram</label>
@@ -787,7 +803,7 @@
           Swal.fire({
             title: "Sudah yakin melakukan pemesanan?",
             text: "Periksa kembali pesanan kamu dan pastikan tidak ada data yang salah!",
-            icon: "question",
+            icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",

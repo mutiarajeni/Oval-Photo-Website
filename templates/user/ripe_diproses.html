@@ -80,9 +80,9 @@
           <p class="riwayatpemesanan-value-bold">{{ p.nama_klien }}</p>
 
           <div class="riwayatpemesanan-label">
-            <i class="bi bi-people-fill"></i>Nama Orang Tua
+            <i class="bi bi-telephone-fill"></i>Nomor Telepon Aktif/WhatsApp
           </div>
-          <p class="riwayatpemesanan-value-bold">{{ p.nama_orang_tua }}</p>
+          <p class="riwayatpemesanan-value-bold">{{ p.telepon_klien }}</p>
 
           <div class="riwayatpemesanan-label">
             <i class="bi bi-envelope-fill"></i>Email
@@ -90,11 +90,14 @@
           <p class="riwayatpemesanan-value-bold">{{ p.email_klien }}</p>
 
           <div class="riwayatpemesanan-label">
-            <i class="bi bi-telephone-fill"></i>Nomor Telepon Aktif/WhatsApp
+            <i class="bi bi-people-fill"></i>Nama Kontak Alternatif
           </div>
-          <p class="riwayatpemesanan-value-bold">{{ p.telepon_klien }}</p>
+          <p class="riwayatpemesanan-value-bold">{{ p.nama_alternatif }}</p>
 
-          
+          <div class="riwayatpemesanan-label">
+            <i class="bi bi-telephone-fill"></i>Nomor Telepon Kontak Alternatif
+          </div>
+          <p class="riwayatpemesanan-value-bold">{{ p.telepon_alternatif }}</p>
         </div>
 
         <div class="riwayatpemesanan-info-block">
@@ -301,6 +304,7 @@
             style="margin-top: 60px;"
             type="button"
             data-id="{{ p._id }}"
+            data-has-rescheduled="{{ 'true' if p.has_rescheduled else 'false' }}"
           >
             Ubah Jadwal
           </button>
@@ -360,14 +364,23 @@
     data-client-key="{{ MIDTRANS_CLIENT_KEY }}"
   ></script>
   <script>
-    // --- START: Added JavaScript for "Ubah Jadwal" button ---
+    // --- Ubah jadwal button --
     document.querySelectorAll(".ubah-jadwal-btn").forEach((button) => {
       button.addEventListener("click", function () {
         const pesananId = this.getAttribute("data-id");
-        window.location.href = `/jadwal/ubah/${pesananId}`; // Navigate to the edit page
+        const hasRescheduled = this.getAttribute("data-has-rescheduled") === "true";
+
+        if (hasRescheduled) {
+          Swal.fire({
+            icon: "warning",
+            title: "Perubahan Jadwal Tidak Dapat Dilakukan",
+            text: "Jadwal pesanan ini hanya dapat diubah satu kali dan sudah dilakukan.",
+          });
+        } else {
+          window.location.href = `/jadwal/ubah/${pesananId}`; 
+        }
       });
     });
-    // --- END: Added JavaScript for "Ubah Pesanan" button ---
 
     // Tombol panah interaktif untuk sections
     document

@@ -141,7 +141,9 @@ Photo {% endblock %} {% block content %}
                     </tr>
                     <tr>
                       <td>
-                        <label for="nama_orang_tua">Nama Orang Tua</label>
+                        <label for="telepon_klien"
+                          >No. Telepon/WhatsApp Klien</label
+                        >
                       </td>
                       <td>
                         <div
@@ -151,8 +153,8 @@ Photo {% endblock %} {% block content %}
                           <input
                             type="text"
                             class="form-control"
-                            id="nama_orang_tua"
-                            name="nama_orang_tua"
+                            id="telepon_klien"
+                            name="telepon_klien"
                             required
                           />
                         </div>
@@ -177,8 +179,8 @@ Photo {% endblock %} {% block content %}
                     </tr>
                     <tr>
                       <td>
-                        <label for="telepon_klien"
-                          >No. Telepon/WhatsApp Klien</label
+                        <label for="nama_alternatif"
+                          >Nama Kontak Alternatif</label
                         >
                       </td>
                       <td>
@@ -189,13 +191,35 @@ Photo {% endblock %} {% block content %}
                           <input
                             type="text"
                             class="form-control"
-                            id="telepon_klien"
-                            name="telepon_klien"
+                            id="nama_alternatif"
+                            name="nama_alternatif"
                             required
                           />
                         </div>
                       </td>
                     </tr>
+                    <tr>
+                      <td>
+                        <label for="telepon_alternatif"
+                          >No. Telepon Kontak Alternatif</label
+                        >
+                      </td>
+                      <td>
+                        <div
+                          class="input-group input-group-outline"
+                          style="max-width: 500px"
+                        >
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="telepon_alternatif"
+                            name="telepon_alternatif"
+                            required
+                          />
+                        </div>
+                      </td>
+                    </tr>
+
                     <tr>
                       <td>
                         <label for="instagram_klien"

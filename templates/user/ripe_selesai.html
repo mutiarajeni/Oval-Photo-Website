@@ -84,9 +84,9 @@
           <p class="riwayatpemesanan-value-bold">{{ p.nama_klien }}</p>
 
           <div class="riwayatpemesanan-label">
-            <i class="bi bi-people-fill"></i>Nama Orang Tua
+            <i class="bi bi-telephone-fill"></i>Nomor Telepon Aktif/WhatsApp
           </div>
-          <p class="riwayatpemesanan-value-bold">{{ p.nama_orang_tua }}</p>
+          <p class="riwayatpemesanan-value-bold">{{ p.telepon_klien }}</p>
 
           <div class="riwayatpemesanan-label">
             <i class="bi bi-envelope-fill"></i>Email
@@ -94,9 +94,14 @@
           <p class="riwayatpemesanan-value-bold">{{ p.email_klien }}</p>
 
           <div class="riwayatpemesanan-label">
-            <i class="bi bi-telephone-fill"></i>Nomor Telepon Aktif/WhatsApp
+            <i class="bi bi-people-fill"></i>Nama Kontak Alternatif
           </div>
-          <p class="riwayatpemesanan-value-bold">{{ p.telepon_klien }}</p>
+          <p class="riwayatpemesanan-value-bold">{{ p.nama_alternatif }}</p>
+
+          <div class="riwayatpemesanan-label">
+            <i class="bi bi-telephone-fill"></i>Nomor Telepon Kontak Alternatif
+          </div>
+          <p class="riwayatpemesanan-value-bold">{{ p.telepon_alternatif }}</p>
         </div>
 
         <div class="riwayatpemesanan-info-block">
@@ -204,12 +209,20 @@
           <span class="riwayatpemesanan-bold">{{p.total_harga|rupiah}}</span>
         </div>
         <div class="riwayatpemesanan-payment-row">
-          <span>Sudah Bayar Deposit</span>
-          <span class="riwayatpemesanan-bold">{{p.deposit|rupiah}}</span>
+          <span>Deposit</span>
+          <span class="riwayatpemesanan-bold" id="status-deposit-{{ p._id }}"
+            >{{ p.deposit | rupiah}} ({{ p.status_pembayaran_deposit |
+            default('Belum Bayar') }})</span
+          >
         </div>
-        <div class="riwayatpemesanan-payment-row riwayatpemesanan-sisa">
-          <span>Sisa Pembayaran</span>
-          <span class="riwayatpemesanan-bold">{{p.sisa_bayar|rupiah}}</span>
+        <div class="riwayatpemesanan-payment-row">
+          <span>Sudah Bayar Sebesar</span> {% set sudah_bayar =
+          (p.last_pelunasan_attempt_amount or 0) +
+          (p.last_sisa_bayar_attempt_amount or 0) +
+          (p.last_deposit_attempt_amount or 0) %}
+          <span class="riwayatpemesanan-bold" id="status-deposit-{{ p._id }}"
+            >{{ sudah_bayar | rupiah}}</span
+          >
         </div>
       </div>
     </section>

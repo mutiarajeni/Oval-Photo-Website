@@ -2,7 +2,7 @@
 {% block content %}
 <header class="header">
   <div class="header-content text-center">
-    <h1>Ubah Jadwal Pemesanan</h1>
+    <h1>Formulir Ubah Jadwal Pemesanan</h1>
     <p>
       <i class="bi bi-headset" style="margin-right: 5px"></i>
       Butuh Bantuan? Hubungi Kita Sekarang!
@@ -109,19 +109,51 @@
         />
       </div>
       <div>
-        <label for="nama_orang_tua" class="formlayanan-label">
-          Nama orang tua klien<span class="formlayanan-required">*</span>
+        <label for="nama_alternatif" class="formlayanan-label">
+          Nama kontak alternatif<span class="formlayanan-required">*</span>
         </label>
         <input
           type="text"
-          id="nama_orang_tua"
-          name="nama_orang_tua"
-          placeholder="Masukkan nama orang tua klien"
+          id="nama_alternatif"
+          name="nama_alternatif"
+          placeholder="Masukkan nama kontak alternatif"
           class="formlayanan-input formlayanan-required"
-          value="{{ pesanan.nama_orang_tua }}"
+          value="{{ pesanan.nama_alternatif }}"
           disabled
           required
         />
+      </div>
+      <div>
+        <label for="telepon_klien" class="formlayanan-label">
+          Nomor telepon aktif/WhatsApp<span class="formlayanan-required">*</span>
+        </label>
+        <input
+          type="text"
+          id="telepon_klien"
+          name="telepon_klien"
+          placeholder="Masukkan nomor telepon aktif/WhatsApp klien"
+          class="formlayanan-input formlayanan-required"
+          value="{{ pesanan.telepon_klien }}"
+          disabled
+          required
+        />
+        <p class="formlayanan-text-xs">Contoh: +62-861-3409-8790</p>
+      </div>
+      <div>
+        <label for="telepon_alternatif" class="formlayanan-label">
+          Nomor telepon kontak alternatif<span class="formlayanan-required">*</span>
+        </label>
+        <input
+          type="text"
+          id="telepon_alternatif"
+          name="telepon_alternatif"
+          placeholder="Masukkan nomor telepon kontak alternatif"
+          class="formlayanan-input formlayanan-required"
+          value="{{ pesanan.telepon_alternatif }}"
+          disabled
+          required
+        />
+        <p class="formlayanan-text-xs">Contoh: +62-861-3409-8790</p>
       </div>
       <div>
         <label for="email_klien" class="formlayanan-label">
@@ -140,20 +172,7 @@
         <p class="formlayanan-text-xs">Contoh: ovalphoto@gmail.com</p>
       </div>
       <div>
-        <label for="telepon_klien" class="formlayanan-label">
-          Nomor telepon aktif/WhatsApp<span class="formlayanan-required">*</span>
-        </label>
-        <input
-          type="text"
-          id="telepon_klien"
-          name="telepon_klien"
-          placeholder="Masukkan nomor telepon aktif/WhatsApp klien"
-          class="formlayanan-input formlayanan-required"
-          value="{{ pesanan.telepon_klien }}"
-          disabled
-          required
-        />
-        <p class="formlayanan-text-xs">Contoh: +62-861-3409-8790</p>
+       
       </div>
       <div>
         <label for="instagram_klien" class="formlayanan-label">Instagram</label>
@@ -730,7 +749,7 @@
         Swal.fire({
           title: "Sudah yakin mengubah jadwal?",
           text: "Periksa kembali perubahan kamu dan pastikan tidak ada data yang salah!",
-          icon: "question",
+          icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
