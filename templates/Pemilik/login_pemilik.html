@@ -25,7 +25,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
       .swal2-popup {
-        font-family: 'Poppins', sans-serif;
+        font-family: "Poppins", sans-serif;
       }
       .swal2-title {
         font-size: 1.5rem;
@@ -35,13 +35,13 @@
       }
       /* Optional: Add custom button styles for SweetAlert2 if using Bootstrap */
       .swal2-confirm.btn-primary {
-          background-color: #007bff !important; /* Contoh warna primary Bootstrap */
-          border-color: #007bff !important;
+        background-color: #007bff !important; /* Contoh warna primary Bootstrap */
+        border-color: #007bff !important;
       }
     </style>
   </head>
   <body>
-    <div class="container-login" style=" min-height: 100vh;">
+    <div class="container-login" style="min-height: 100vh">
       <div class="login-logo">
         <img src="static/img/logo.png" alt="Logo" />
         <h2 class="mb-0">Oval Photo</h2>
@@ -86,7 +86,12 @@
           </div>
 
           <div class="text-end mb-4 text-right">
-            <a href="/lupa_kataSandi" class="forgot-link" style="color:black; font-weight:600px">Lupa Kata Sandi?</a>
+            <a
+              href="/lupa_kataSandi"
+              class="forgot-link"
+              style="color: black; font-weight: 600px"
+              >Lupa Kata Sandi?</a
+            >
           </div>
 
           <button type="submit" class="btn-masuk" id="masukButton" disabled>
@@ -103,13 +108,13 @@
           icon: icon, // 'success', 'error', 'warning', 'info', 'question'
           title: title,
           text: text,
-          showConfirmButton: true,
-          confirmButtonText: 'Oke',
+          showConfirmButton: false,
           customClass: {
-              confirmButton: 'btn btn-primary' // Sesuaikan dengan kelas CSS tombol Anda
-          }
+            confirmButton: "btn btn-primary", // Sesuaikan dengan kelas CSS tombol Anda
+          },
         }).then((result) => {
-          if (redirectUrl) { // Selalu redirect jika ada URL, terlepas dari isConfirmed
+          if (redirectUrl) {
+            // Selalu redirect jika ada URL, terlepas dari isConfirmed
             window.location.href = redirectUrl;
           }
         });
@@ -122,8 +127,12 @@
       const loginForm = document.getElementById("loginForm");
 
       function validateForm() {
-        masukButton.disabled = !(usernameInput.value.trim() && passwordInput.value.trim());
-        masukButton.style.cursor = masukButton.disabled ? "not-allowed" : "pointer";
+        masukButton.disabled = !(
+          usernameInput.value.trim() && passwordInput.value.trim()
+        );
+        masukButton.style.cursor = masukButton.disabled
+          ? "not-allowed"
+          : "pointer";
         masukButton.style.backgroundColor = masukButton.disabled
           ? "#d1d5db"
           : "#010101";
@@ -141,19 +150,19 @@
           togglePassword.classList.toggle("bi-eye-slash");
         });
 
-      loginForm.addEventListener('submit', async function(event) {
+      loginForm.addEventListener("submit", async function (event) {
         event.preventDefault();
 
         const username = usernameInput.value;
         const password = passwordInput.value;
 
         try {
-          const response = await fetch('/api/pemilik_masuk', {
-            method: 'POST',
+          const response = await fetch("/api/pemilik_masuk", {
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json'
+              "Content-Type": "application/json",
             },
-            body: JSON.stringify({ username, password })
+            body: JSON.stringify({ username, password }),
           });
 
           const result = await response.json();
@@ -161,13 +170,22 @@
           if (response.ok) {
             // Untuk login, langsung redirect saja karena SweetAlert akan hilang
             // jika langsung redirect tanpa menunggu user klik OK
-            showAlert('success', 'Login Berhasil!', result.message, result.redirect);
+            showAlert(
+              "success",
+              "Login Berhasil!",
+              result.message,
+              result.redirect
+            );
           } else {
-            showAlert('error', 'Login Gagal!', result.message);
+            showAlert("error", "Login Gagal!", result.message);
           }
         } catch (error) {
-          console.error('Error:', error);
-          showAlert('error', 'Error!', 'Terjadi kesalahan saat login. Silakan coba lagi.');
+          console.error("Error:", error);
+          showAlert(
+            "error",
+            "Error!",
+            "Terjadi kesalahan saat login. Silakan coba lagi."
+          );
         }
       });
 

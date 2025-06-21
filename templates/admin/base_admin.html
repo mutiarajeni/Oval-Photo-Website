@@ -71,8 +71,6 @@
       rel="stylesheet"
     />
 
-    {% if request.path in ['/product','/supplier', '/stock', '/user'] %}
-
     <style>
       .input-group-outline {
         position: relative;
@@ -109,7 +107,6 @@
         box-shadow: 0 0 0 0.2rem rgba(129, 196, 8, 0.25);
       }
     </style>
-    {% endif %}
   </head>
 
   <body class="g-sidenav-show bg-gray-200">
@@ -119,12 +116,6 @@
     <main
       class="main-content position-relative max-height-vh-100 h-100 border-radius-lg"
     >
-      <!-- Navbar -->
-      {% if request.path in ['/dashboard', '/product','/supplier', '/stock',
-      '/user','/pembelian','/penjualan'] %} {% include 'admin/navbar_admin.html'
-      %} {% endif %}
-
-      <!-- End Navbar -->
       {% if request.path != '/loginAdmin' and request.path != '/login' and
       request.path != '/register' %}
       <div class="container-fluid py-4">

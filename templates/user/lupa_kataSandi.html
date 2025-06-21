@@ -25,7 +25,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
       .swal2-popup {
-        font-family: 'Poppins', sans-serif;
+        font-family: "Poppins", sans-serif;
       }
       .swal2-title {
         font-size: 1.5rem;
@@ -35,100 +35,101 @@
       }
       /* Optional: Add custom button styles for SweetAlert2 if using Bootstrap */
       .swal2-confirm.btn-primary {
-          background-color: #007bff !important; /* Contoh warna primary Bootstrap */
-          border-color: #007bff !important;
+        background-color: #007bff !important; /* Contoh warna primary Bootstrap */
+        border-color: #007bff !important;
       }
     </style>
-
   </head>
   <body>
-    <div class="container-login" style=" min-height: 100vh;">
-  <div class="login-logo">
-    <img src="static/img/logo.png" alt="Logo" />
-    <h2 class="mb-0">Oval Photo</h2>
-  </div>
-
-  <div class="login-card">
-    <form id="lupaPasswordForm">
-      <h2 class="login-title">Lupa Kata Sandi?</h2>
-      <p class="login-subtitle">
-        Tidak perlu khawatir! Masukkan alamat email yang kamu gunakan untuk
-        membuat akun ini. Kami akan mengirimkan email dengan tautan untuk
-        mengubah kata sandi kamu.
-      </p>
-
-      <div class="mb-3">
-        <label for="emailInput" class="form-label">Alamat Email</label>
-        <input
-          type="email"
-          class="form-control"
-          id="emailInput"
-          placeholder="Masukkan alamat email kamu"
-          required
-        />
+    <div class="container-login" style="min-height: 100vh">
+      <div class="login-logo">
+        <img src="static/img/logo.png" alt="Logo" />
+        <h2 class="mb-0">Oval Photo</h2>
       </div>
-      <button type="submit" class="btn-masuk" id="kirimButton" disabled>
-        Kirim
-      </button>
-    </form>
-  </div>
-</div>
 
-<script>
-  const emailInput = document.getElementById("emailInput"); // Changed ID
-  const kirimButton = document.getElementById("kirimButton"); // Changed ID
-  const lupaPasswordForm = document.getElementById("lupaPasswordForm"); // Changed ID
+      <div class="login-card">
+        <form id="lupaPasswordForm">
+          <h2 class="login-title">Lupa Kata Sandi?</h2>
+          <p class="login-subtitle">
+            Tidak perlu khawatir! Masukkan alamat email yang kamu gunakan untuk
+            membuat akun ini. Kami akan mengirimkan email dengan tautan untuk
+            mengubah kata sandi kamu.
+          </p>
 
-  function validateForm() {
-    kirimButton.disabled = !emailInput.value.trim();
-    kirimButton.style.cursor = kirimButton.disabled ? "not-allowed" : "pointer";
-    kirimButton.style.backgroundColor = kirimButton.disabled
-      ? "#d1d5db"
-      : "#86ade8";
-  }
+          <div class="mb-3">
+            <label for="emailInput" class="form-label">Alamat Email</label>
+            <input
+              type="email"
+              class="form-control"
+              id="emailInput"
+              placeholder="Masukkan alamat email kamu"
+              required
+            />
+          </div>
+          <button type="submit" class="btn-masuk" id="kirimButton" disabled>
+            Kirim
+          </button>
+        </form>
+      </div>
+    </div>
 
-  emailInput.addEventListener("input", validateForm);
+    <script>
+      const emailInput = document.getElementById("emailInput"); // Changed ID
+      const kirimButton = document.getElementById("kirimButton"); // Changed ID
+      const lupaPasswordForm = document.getElementById("lupaPasswordForm"); // Changed ID
 
-  // Handle forgot password form submission
-  lupaPasswordForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    const email = emailInput.value.trim();
-
-    try {
-      const response = await fetch("/api/lupa_kataSandi", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        Swal.fire({
-          icon: "success",
-          title: "Berhasil!",
-          text: data.message,
-          showConfirmButton: true, // Keep confirm button to allow user to acknowledge
-        });
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Gagal!",
-          text: data.message,
-        });
+      function validateForm() {
+        kirimButton.disabled = !emailInput.value.trim();
+        kirimButton.style.cursor = kirimButton.disabled
+          ? "not-allowed"
+          : "pointer";
+        kirimButton.style.backgroundColor = kirimButton.disabled
+          ? "#d1d5db"
+          : "#86ade8";
       }
-    } catch (error) {
-      console.error("Error during forgot password request:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error!",
-        text: "Terjadi kesalahan koneksi. Silakan coba lagi.",
+
+      emailInput.addEventListener("input", validateForm);
+
+      // Handle forgot password form submission
+      lupaPasswordForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const email = emailInput.value.trim();
+
+        try {
+          const response = await fetch("/api/lupa_kataSandi", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            Swal.fire({
+              icon: "success",
+              title: "Berhasil!",
+              text: data.message,
+              showConfirmButton: false,
+            });
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Gagal!",
+              text: data.message,
+            });
+          }
+        } catch (error) {
+          console.error("Error during forgot password request:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: "Terjadi kesalahan koneksi. Silakan coba lagi.",
+          });
+        }
       });
-    }
-  });
-</script>
+    </script>
   </body>
 </html>

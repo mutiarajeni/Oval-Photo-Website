@@ -17,6 +17,13 @@
 </nav>
 
 <div class="subutama-container">
+  {% if pesanan|length == 0 %}
+  <div
+    style="text-align: center; padding: 50px 0; font-size: 16px; color: gray"
+  >
+    Tidak ada data riwayat pemesanan yang ditemukan
+  </div>
+  {% else %}
   {% for p in pesanan %}
   <main
     class="riwayatpemesanan-container"
@@ -347,6 +354,7 @@
     </section>
   </main>
   {% endfor %}
+  {% endif %}
 
   <script
     src="https://app.sandbox.midtrans.com/snap/snap.js"

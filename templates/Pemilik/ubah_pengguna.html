@@ -167,8 +167,7 @@
       icon: icon,
       title: title,
       text: text,
-      showConfirmButton: true,
-      confirmButtonText: 'Oke'
+      showConfirmButton: false,
     }).then((result) => {
       if (result.isConfirmed && redirectUrl) {
         window.location.href = redirectUrl;

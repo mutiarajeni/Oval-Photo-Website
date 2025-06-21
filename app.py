@@ -1013,7 +1013,7 @@ def admin_galeri_ubah(item_id):
             return redirect(url_for('admin_galeri_ubah', # Redirect ke halaman ubah itu sendiri dengan pesan sukses
                                      item_id=item_id,
                                      _sa_status='Berhasil',
-                                     _sa_message='Gambar galeri berhasil dihapus.'))
+                                     _sa_message='Gambar galeri berhasil dihapus.')) #MESSAGEOK
 
         # --- GET request (menampilkan form ubah) ---
         # Convert ObjectId to string for safe Jinja2 usage in select/input fields
@@ -3292,7 +3292,7 @@ def admin_faq_toggle_status(id_faq):
             },
         )
         
-        message = "FAQ berhasil dinonaktifkan." if not new_is_active else "FAQ berhasil diaktifkan."
+        message = "FAQ berhasil dinonaktifkan." if not new_is_active else "FAQ berhasil diaktifkan." #MESSAGEOK
         
         return jsonify(
             {
@@ -3998,7 +3998,7 @@ def api_update_profil():
                 f"DEBUG: Session profile_picture_url after update: {session['profile_picture_url']}"
             )  # Tambahkan ini
             return (
-                jsonify({"success": True, "message": "Profil berhasil diperbarui."}),
+                jsonify({"success": True, "message": "Profil berhasil diperbarui."}), #MESSAGEOK
                 200,
             )
         except Exception as e:

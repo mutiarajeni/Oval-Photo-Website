@@ -77,10 +77,8 @@
     <main
       class="main-content position-relative max-height-vh-100 h-100 border-radius-lg"
     >
-      {% if request.path in ['/dashboard', '/product','/supplier', '/stock',
-      '/user','/pembelian','/penjualan'] %} {% include 'admin/navbar_admin.html'
-      %} {% endif %} {% if request.path != '/loginAdmin' and request.path !=
-      '/login' and request.path != '/register' %}
+      {% if request.path != '/loginAdmin' and request.path != '/login' and
+      request.path != '/register' %}
       <div class="container-fluid py-4">
         {% endif %} {% block content %}{% endblock %} {% if request.path !=
         '/loginAdmin' and request.path != '/login' and request.path !=
