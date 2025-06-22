@@ -66,11 +66,14 @@ Photo {% endblock %} {% block content %}
                 </div>
               </div>
 
+
               <div class="d-flex align-items-start gap-2">
-                <i class="bi bi-people-fill" style="font-size: 14px"></i>
+                <i class="bi bi-telephone-fill" style="font-size: 14px"></i>
                 <div>
-                  <p class="text-black mb-1 fs-6 fw-normal">Nama Orang Tua</p>
-                  <p class="fw-bold fs-6 mb-0">{{ p.nama_orang_tua }}</p>
+                  <p class="text-black mb-1 fs-6 fw-normal">
+                    No. Telepon/WhatsApp Klien
+                  </p>
+                  <p class="fw-bold fs-6 mb-0">{{ p.telepon_klien }}</p>
                 </div>
               </div>
 
@@ -85,14 +88,22 @@ Photo {% endblock %} {% block content %}
               </div>
 
               <div class="d-flex align-items-start gap-2">
-                <i class="bi bi-telephone-fill" style="font-size: 14px"></i>
+                <i class="bi bi-people-fill" style="font-size: 14px"></i>
                 <div>
-                  <p class="text-black mb-1 fs-6 fw-normal">
-                    No. Telepon/WhatsApp Klien
-                  </p>
-                  <p class="fw-bold fs-6 mb-0">{{ p.telepon_klien }}</p>
+                  <p class="text-black mb-1 fs-6 fw-normal">Nama Kontak Alternatif</p>
+                  <p class="fw-bold fs-6 mb-0">{{ p.nama_alternatif }}</p>
                 </div>
               </div>
+
+              <div class="d-flex align-items-start gap-2">
+                <i class="bi bi-telephone-fill" style="font-size: 14px"></i>
+                <div>
+                  <p class="text-black mb-1 fs-6 fw-normal">No. Telepon Kontak Alternatif</p>
+                  <p class="fw-bold fs-6 mb-0">{{ p.telepon_alternatif }}</p>
+                </div>
+              </div>
+
+              
 
               <div class="d-flex align-items-start gap-2">
                 <i class="bi bi-instagram" style="font-size: 14px"></i>

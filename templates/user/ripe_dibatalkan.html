@@ -29,7 +29,7 @@
 <div class="subutama-container">
   {% if pesanan|length == 0 %}
   <div
-    style="text-align: center; padding: 50px 0; font-size: 16px; color: gray"
+    style="text-align: center; padding: 50px 0; font-size: 1rem; color: gray"
   >
     Tidak ada data riwayat pemesanan yang ditemukan
   </div>
@@ -75,7 +75,7 @@
       >
         Rincian Pesanan
         <i
-          class="bi bi-caret-up-fill riwayatpemesanan-arrow"
+          class="bi bi-caret-down-fill riwayatpemesanan-arrow"
           aria-hidden="true"
         ></i>
       </h2>
@@ -170,6 +170,79 @@
           </p>
         </div>
       </div>
+    </section>
+
+    <!-- surat izin -->
+    <section class="riwayatpemesanan-file-sesction">
+      <h2
+        class="riwayatpemesanan-section-title riwayatpemesanan-expanded"
+        tabindex="0"
+        aria-expanded="true"
+        aria-controls="riwayatpemesanan-pembayaran-details"
+        id="riwayatpemesanan-pembayaran-label"
+      >
+        Surat perizinan lokasi kamu
+      </h2>
+
+      <div>
+        <div
+          id="file-display-container-wrapper"
+          style="
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid #4da6ff;
+        border-radius: 8px;
+        padding: 10px;
+        max-width: 100%;
+        {% if p.surat_izin_lokasi %}cursor: default;{% else %}cursor: pointer;{% endif %}
+      "
+          {%
+          if
+          p.surat_izin_lokasi
+          %}onclick="window.open('{{ url_for('static', filename='suratIzin/' ~ p.surat_izin_lokasi) }}', '_blank')"
+          {%
+          endif
+          %}
+        >
+          <span id="file-name" style="font-size: 0.875rem; color: #4da6ff">
+            {% if p.surat_izin_lokasi %}
+            <div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="15"
+                height="15"
+                fill="currentColor"
+                class="bi bi-file-earmark text-primary me-2"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-3z"
+                />
+              </svg>
+              <span
+                class="text-decoration-underline"
+                style="word-break: break-all"
+              >
+                &nbsp; {{ p.surat_izin_lokasi }}</span
+              >
+            </div>
+            {% else %}
+            <p class="text-muted mb-0">Tidak ada file</p>
+            {% endif %}
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Catatan-->
+    <section
+      class="riwayatpemesanan-notes"
+      aria-live="polite"
+      aria-atomic="true"
+    >
+      Catatan: {{ p.catatan }}
     </section>
   </main>
 
