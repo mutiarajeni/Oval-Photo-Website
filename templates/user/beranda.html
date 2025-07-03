@@ -30,10 +30,8 @@
    <h2>Galeri</h2>
     <div class="gallery-grid">
         {% if random_gallery_images %}
-            {# Loop melalui gambar yang dikirim dari backend #}
+            {# Loop gambar yang dikirim dari backend #}
             {% for image_filename in random_gallery_images %}
-                {# Terapkan kelas 'wide' untuk setiap gambar kedua, atau 'tall' untuk setiap gambar ketiga #}
-                {# Ini adalah contoh sederhana untuk variasi. Anda bisa menggunakan logika yang lebih kompleks jika diinginkan. #}
                 {% set loop_index = loop.index %}
                 <img
                     src="{{ url_for('static', filename='images/imgGaleri/' + image_filename) }}"
@@ -61,7 +59,7 @@
     <div class="layanan">
                 <h2>Katalog Layanan</h2>
                 <div class="layanan-container">
-                    {% if layanan %} {# Tambahkan pengecekan ini untuk memastikan 'layanan' tidak kosong #}
+                    {% if layanan %} 
                         {% for layanan_item in layanan %}
                         <div class="layanan-card">
                             <img
@@ -167,16 +165,15 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  // Mengambil data testimoni yang sudah di-passing dari backend Flask.
-  // Filter `tojson` memastikan data aman untuk disisipkan ke dalam JavaScript.
+  // Mengambil data testimoni dari backend
   const testimonials = {{ testimonials|tojson }};
 
-  // Hanya jalankan skrip jika ada testimoni
+  // Hanya jalankan jika ada testimoni
   if (testimonials && testimonials.length > 0) {
     const testimonialCard = document.getElementById("testimonial-card");
     const nameEl = document.getElementById("testimonial-name");
     const dateEl = document.getElementById("testimonial-date");
-    const starsEl = document.getElementById("testimonial-stars"); // Pilih berdasarkan ID baru
+    const starsEl = document.getElementById("testimonial-stars");
     const packageEl = document.getElementById("testimonial-package");
     const textEl = document.getElementById("testimonial-text");
     const profileImg = testimonialCard.querySelector(".testimonial-profile img");
@@ -189,14 +186,14 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateTestimonial(index) {
       if (index === currentIndex && document.activeElement !== dots[index]) return; // Hindari update yang tidak perlu
       
-      testimonialCard.style.opacity = '0'; // Mulai fade out
+      testimonialCard.style.opacity = '0'; 
 
       setTimeout(() => {
         const t = testimonials[index];
         nameEl.textContent = t.name;
         dateEl.textContent = t.date;
         packageEl.textContent = t.package;
-        textEl.textContent = `"${t.text}"`; // Tambahkan tanda kutip
+        textEl.textContent = `"${t.text}"`; 
         profileImg.src = t.imgSrc;
         profileImg.alt = t.imgAlt;
 
@@ -212,9 +209,9 @@ document.addEventListener('DOMContentLoaded', function() {
           dot.setAttribute("tabindex", isActive ? "0" : "-1");
         });
 
-        testimonialCard.style.opacity = '1'; // Selesaikan dengan fade in
+        testimonialCard.style.opacity = '1'; 
         currentIndex = index;
-      }, 300); // Waktu harus cocok dengan durasi transisi CSS
+      }, 300);
     }
 
     // Fungsi untuk slide otomatis
@@ -243,7 +240,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
     
-    // Inisialisasi: Tambahkan transisi CSS dan generate bintang untuk item pertama
+    // Transisi CSS dan generate bintang untuk item pertama
     const style = document.createElement('style');
     style.innerHTML = `#testimonial-card { transition: opacity 0.3s ease-in-out; }`;
     document.head.appendChild(style);

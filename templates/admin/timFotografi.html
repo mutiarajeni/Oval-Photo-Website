@@ -137,7 +137,11 @@ endblock %} {% block content %}
                       class="text-dark d-flex align-items-center text-decoration-none"
                     >
                       <i class="material-icons me-1">edit</i>
-                      <span class="mb-0" style="font-weight: normal; margin-top:5px">Ubah</span>
+                      <span
+                        class="mb-0"
+                        style="font-weight: normal; margin-top: 5px"
+                        >Ubah</span
+                      >
                     </a>
                   </div>
                 </td>
@@ -221,7 +225,7 @@ endblock %} {% block content %}
     const toggle = document.getElementById("toggleAktif" + id);
     const label = document.getElementById("statusLabel" + id);
 
-    // Kembalikan toggle ke posisi sebelumnya dulu
+    // Kembalikan toggle ke posisi sebelumnya
     toggle.checked = !statusBaru;
 
     Swal.fire({
@@ -272,7 +276,7 @@ endblock %} {% block content %}
     });
   }
 
-  // ===== KODE BARU UNTUK FUNGSI PENCARIAN DIMULAI DI SINI =====
+  // ===== FUNGSI PENCARIAN =====
   document.addEventListener("DOMContentLoaded", function () {
     const searchInput = document.getElementById("searchInput");
     const dataTable = document.getElementById("dataTable");
@@ -295,6 +299,5 @@ endblock %} {% block content %}
       }
     });
   });
-  // ===== KODE BARU UNTUK FUNGSI PENCARIAN SELESAI DI SINI =====
 </script>
 {% endblock %}

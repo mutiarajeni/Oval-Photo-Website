@@ -207,7 +207,7 @@ endblock %} {% block content %}
   const gambarPreview = document.getElementById("gambar-preview");
   const dropArea = document.getElementById("drop-area");
 
-  // Store original values
+  // Simpan nilai asli
   const originalValues = {
     nama: namaInput.value.trim(),
     email: emailInput.value.trim(),
@@ -215,12 +215,12 @@ endblock %} {% block content %}
     peran: Array.from(peranCheckboxes)
       .filter((cb) => cb.checked)
       .map((cb) => cb.value),
-    gambar: "{{ tim.gambar }}", // Store original image filename
+    gambar: "{{ tim.gambar }}", // Simpan nama file gambar asli
   };
 
   let isNameDuplicate = false;
 
-  // Function to check if there are any changes
+  // Fungsi untuk memeriksa apakah ada perubahan
   function checkForChanges() {
     const currentPeran = Array.from(peranCheckboxes)
       .filter((cb) => cb.checked)
@@ -244,7 +244,7 @@ endblock %} {% block content %}
     );
   }
 
-  // Function to check if all required fields are filled
+  // Fungsi untuk memeriksa apakah semua field yang diperlukan sudah diisi
   function checkRequiredFields() {
     return (
       namaInput.value.trim() !== "" &&
@@ -254,7 +254,7 @@ endblock %} {% block content %}
     );
   }
 
-  // Function to toggle submit button
+  // Fungsi untuk toggle submit button
   function toggleSubmitButton() {
     submitButton.disabled = !(
       checkRequiredFields() &&
@@ -263,7 +263,7 @@ endblock %} {% block content %}
     );
   }
 
-  // Function to check name availability
+  // Fungsi untuk memeriksa ketersediaan nama
   function checkNameAvailability(currentTimId) {
     clearTimeout(typingTimer);
     const nama = namaInput.value.trim();
@@ -285,7 +285,7 @@ endblock %} {% block content %}
       })
         .then((res) => res.json())
         .then((data) => {
-          // If a team with this name exists AND its ID is different from the current team being edited
+          // Jika tim dengan nama ini ada dan ID-nya berbeda dari tim saat ini yang sedang diedit
           if (data.exists && data.tim_id !== currentTimId) {
             nameError.style.display = "block";
             isNameDuplicate = true;
@@ -297,19 +297,19 @@ endblock %} {% block content %}
         })
         .catch((error) => {
           console.error("Error checking name availability:", error);
-          isNameDuplicate = false; // Assume no duplicate on error
+          isNameDuplicate = false; // Asumsikan tidak ada duplikat jika terjadi kesalahan
           toggleSubmitButton();
         });
     }, doneTypingInterval);
   }
 
-  // Image preview function
+  // Fungsi preview gambar
   function previewImage(event) {
     const reader = new FileReader();
     reader.onload = function () {
       gambarPreview.src = reader.result;
       gambarPreview.style.display = "block";
-      // Remove any previous text/icon if a new image is selected
+      // Hapus teks/icon sebelumnya jika gambar baru dipilih
       const contentDiv = dropArea.querySelector(".content");
       const icon = contentDiv.querySelector("i");
       const p = contentDiv.querySelector("p");
@@ -319,7 +319,7 @@ endblock %} {% block content %}
     if (event.target.files[0]) {
       reader.readAsDataURL(event.target.files[0]);
     } else {
-      // If no file selected (e.g., user cancels), revert to original image or hide preview
+      // Jika tidak ada file yang dipilih (misalnya, pengguna membatalkan), kembalikan ke gambar asli atau sembunyikan preview
       if (originalValues.gambar) {
         gambarPreview.src =
           "{{ url_for('static', filename='images/imgTim/' + tim.gambar) }}";
@@ -338,10 +338,8 @@ endblock %} {% block content %}
 
   // Event listeners
   document.addEventListener("DOMContentLoaded", function () {
-    // Initial check for submit button state
     toggleSubmitButton();
 
-    // Attach input listeners
     namaInput.addEventListener("input", () =>
       checkNameAvailability("{{ tim._id }}")
     );
@@ -350,12 +348,11 @@ endblock %} {% block content %}
     peranCheckboxes.forEach((checkbox) =>
       checkbox.addEventListener("change", toggleSubmitButton)
     );
-    gambarInput.addEventListener("change", previewImage); // This will call toggleSubmitButton inside previewImage
+    gambarInput.addEventListener("change", previewImage);
 
-    // Handle click on drop area to trigger file input
     dropArea.addEventListener("click", () => gambarInput.click());
 
-    // Drag and drop functionality
+    // Drag & drop
     dropArea.addEventListener("dragover", (e) => {
       e.preventDefault();
       dropArea.classList.add("drag-over");
@@ -374,7 +371,7 @@ endblock %} {% block content %}
     });
   });
 
-  // Handle form submission with SweetAlert
+  // SweetAlert
   document
     .getElementById("ubahTimForm")
     .addEventListener("submit", function (event) {

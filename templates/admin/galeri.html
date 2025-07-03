@@ -57,25 +57,13 @@ endblock %} {% block content %}
                   class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
                   style="width: 5%"
                 ></th>
-                <th
-                  class="text-center fs-7 fw-bold"
-                  style="width: 15%"
-                >
+                <th class="text-center fs-7 fw-bold" style="width: 15%">
                   Thumbnail
                 </th>
-                <th class="text-center fs-7 fw-bold">
-                  Kategori
-                </th>
-                <th class="text-center fs-7 fw-bold">
-                  Layanan
-                </th>
-                <th class="text-center fs-7 fw-bold">
-                  Lokasi
-                </th>
-                <th
-                  class="text-center fs-7 fw-bold"
-                  style="width: 20%"
-                >
+                <th class="text-center fs-7 fw-bold">Kategori</th>
+                <th class="text-center fs-7 fw-bold">Layanan</th>
+                <th class="text-center fs-7 fw-bold">Lokasi</th>
+                <th class="text-center fs-7 fw-bold" style="width: 20%">
                   Aksi
                 </th>
               </tr>
@@ -121,7 +109,6 @@ endblock %} {% block content %}
                   <div
                     class="d-inline-flex align-items-center me-3 align-middle"
                   >
-                    {# Menggunakan switch Anda #}
                     <label class="switch">
                       <input
                         type="checkbox"
@@ -152,7 +139,7 @@ endblock %} {% block content %}
                     data-bs-placement="top"
                     title="Ubah Galeri"
                   >
-                    <i class="material-icons me-1 fs-4 mb-2">edit</i>Ubah 
+                    <i class="material-icons me-1 fs-4 mb-2">edit</i>Ubah
                   </a>
                 </td>
               </tr>
@@ -172,7 +159,6 @@ endblock %} {% block content %}
 </div>
 
 <style>
-  /* Global table alignment for consistency if not in base_admin.html */
   .table td,
   .table th {
     vertical-align: middle !important;
@@ -208,7 +194,7 @@ endblock %} {% block content %}
     background-color: #ccc;
     -webkit-transition: 0.4s;
     transition: 0.4s;
-    border-radius: 34px; /* Dari style yang Anda berikan */
+    border-radius: 34px;
   }
 
   .slider:before {
@@ -221,7 +207,7 @@ endblock %} {% block content %}
     background-color: white;
     -webkit-transition: 0.4s;
     transition: 0.4s;
-    border-radius: 50%; /* Dari style yang Anda berikan */
+    border-radius: 50%;
   }
 
   input:checked + .slider {
@@ -236,12 +222,10 @@ endblock %} {% block content %}
     transform: translateX(20px);
   }
 
-  /* Redundant if .slider already has border-radius: 34px, but keeping from your input */
   .slider.round {
     border-radius: 34px;
   }
 
-  /* Redundant if .slider:before already has border-radius: 50%, but keeping from your input */
   .slider.round:before {
     border-radius: 50%;
   }
@@ -249,27 +233,23 @@ endblock %} {% block content %}
   /* Style untuk teks status Aktif/Nonaktif */
   .status-text {
     font-size: 1rem;
-    font-weight:400; /* Ini mungkin membuat teks aktif/nonaktif bold */
+    font-weight: 400;
     color: #494949;
     white-space: nowrap;
   }
 
-
-  /* Mengubah tombol Ubah agar tidak bold */
   .admin-ubah-btn {
-    font-weight: normal !important; /* Gunakan !important untuk menimpa gaya Material Dashboard */
+    font-weight: normal !important;
     text-transform: none !important; /* Pastikan tidak uppercase */
     font-size: 1rem !important;
     line-height: 1 !important;
-    padding: 0.375rem 0.75rem !important; /* Menjaga padding yang Anda inginkan */
+    padding: 0.375rem 0.75rem !important;
   }
 
-  /* Optional: Jika teks header tabel juga ingin tidak bold */
   .table th.text-normal.font-weight-bolder {
     font-weight: normal !important;
   }
 
-  /* General table alignment (repeated from your code) */
   td.align-middle.text-center {
     vertical-align: middle !important;
     text-align: center !important;
@@ -277,7 +257,7 @@ endblock %} {% block content %}
 
   .btn-link {
     text-decoration: none !important; /* Hapus garis bawah */
-    box-shadow: none !important; /* Hapus shadow jika ada */
+    box-shadow: none !important; /* Hapus shadow */
   }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -290,7 +270,7 @@ endblock %} {% block content %}
     const saMessage = urlParams.get("_sa_message");
 
     if (saStatus && saMessage) {
-      let icon = "info"; // Default icon
+      let icon = "info";
       if (saStatus === "success") {
         icon = "success";
       } else if (saStatus === "error" || saStatus === "danger") {
@@ -300,12 +280,11 @@ endblock %} {% block content %}
       }
 
       Swal.fire({
-        title: saStatus.charAt(0).toUpperCase() + saStatus.slice(1), // Capitalize first letter of status (e.g., "Success")
+        title: saStatus.charAt(0).toUpperCase() + saStatus.slice(1),
         text: saMessage,
         icon: icon,
         confirmButtonText: "Oke",
       }).then(() => {
-        // Remove SweetAlert parameters from URL after displaying to prevent re-trigger on refresh
         urlParams.delete("_sa_status");
         urlParams.delete("_sa_message");
         const newUrl =
@@ -314,12 +293,8 @@ endblock %} {% block content %}
         window.history.replaceState({}, document.title, newUrl);
       });
     }
-    // --- Akhir SweetAlert Handler ---
 
-    // =======================================================================
-    // MULAI: Kode untuk Fungsi Pencarian (Search) - Tambahkan kode di bawah ini
-    // =======================================================================
-
+    //Fungsi Pencarian
     // 1. Dapatkan elemen input pencarian dan tabel
     const searchInput = document.getElementById("searchInput");
     const dataTable = document.getElementById("dataTableGaleri");
@@ -328,7 +303,7 @@ endblock %} {% block content %}
       .getElementsByTagName("tr");
 
     // Cek apakah ada baris data atau tidak.
-    // Jika ada pesan "Belum ada data", maka kita tidak perlu menjalankan fungsi search.
+    // Jika ada pesan "Belum ada data", maka tidak perlu menjalankan fungsi search.
     const noDataRow = dataTable.querySelector('tbody td[colspan="6"]');
 
     if (!noDataRow) {
@@ -368,33 +343,26 @@ endblock %} {% block content %}
       });
     }
 
-    // =======================================================================
-    // SELESAI: Kode untuk Fungsi Pencarian (Search)
-    // =======================================================================
-
-    // Initialize tooltips (if using Bootstrap JS)
+    // Initialize tooltips
     var tooltipTriggerList = [].slice.call(
       document.querySelectorAll('[data-bs-toggle="tooltip"]')
     );
     var tooltipList = tooltipTriggerList
       .map(function (tooltipTriggerEl) {
-        // Check if Bootstrap's Tooltip is available
         if (
           typeof bootstrap !== "undefined" &&
           typeof bootstrap.Tooltip === "function"
         ) {
           return new bootstrap.Tooltip(tooltipTriggerEl);
         }
-        return null; // Return null if Bootstrap's Tooltip is not loaded
+        return null;
       })
-      .filter(Boolean); // Filter out null values
+      .filter(Boolean);
 
-    // Function to handle status change confirmation
     window.konfirmasiUbahStatusGaleri = function (itemId, statusBaru) {
       const toggle = document.getElementById("toggleStatusGaleri" + itemId);
       const label = document.getElementById("labelStatusGaleri" + itemId);
 
-      // Temporarily revert the toggle's state for visual feedback during confirmation
       if (toggle) {
         toggle.checked = !statusBaru;
       }
@@ -408,13 +376,12 @@ endblock %} {% block content %}
           : "Item galeri ini tidak akan ditampilkan di halaman klien.",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: statusBaru ? "#3085d6" : "#3085d6", // blue for activate, blue for deactivate
-        cancelButtonColor: "#d33", // red
+        confirmButtonColor: statusBaru ? "#3085d6" : "#3085d6",
+        cancelButtonColor: "#d33",
         confirmButtonText: "Ya, lanjutkan!",
         cancelButtonText: "Batal",
       }).then((result) => {
         if (result.isConfirmed) {
-          // If confirmed, send AJAX request to backend
           fetch(`/admin_galeri_toggle_status/${itemId}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -422,7 +389,6 @@ endblock %} {% block content %}
           })
             .then((response) => {
               if (!response.ok) {
-                // If response is not OK (e.g., 404, 500), parse error message from JSON
                 return response.json().then((errData) => {
                   let errorMessage =
                     errData && errData.message
@@ -431,14 +397,13 @@ endblock %} {% block content %}
                   throw new Error(errorMessage);
                 });
               }
-              return response.json(); // Parse successful JSON response
+              return response.json();
             })
             .then((data) => {
               if (data.success) {
-                // Update UI if successful
-                if (toggle) toggle.checked = statusBaru; // Set toggle to new status
+                if (toggle) toggle.checked = statusBaru;
                 if (label)
-                  label.textContent = statusBaru ? "Aktif" : "Nonaktif"; // Update label text
+                  label.textContent = statusBaru ? "Aktif" : "Nonaktif";
                 Swal.fire({
                   icon: "success",
                   title: "Berhasil!",
@@ -447,12 +412,11 @@ endblock %} {% block content %}
                     (statusBaru
                       ? "Status galeri diaktifkan."
                       : "Status galeri dinonaktifkan."),
-                  timer: 1500, // Auto close after 1.5 seconds
-                  showConfirmButton: false, // No confirm button
+                  timer: 1500,
+                  showConfirmButton: false,
                 });
               } else {
-                // If backend reports failure
-                if (toggle) toggle.checked = !statusBaru; // Revert toggle state
+                if (toggle) toggle.checked = !statusBaru;
                 Swal.fire({
                   icon: "error",
                   title: "Gagal",
@@ -461,9 +425,8 @@ endblock %} {% block content %}
               }
             })
             .catch((error) => {
-              // Handle network errors or errors thrown from previous .then()
               console.error("Error saat mengubah status galeri:", error);
-              if (toggle) toggle.checked = !statusBaru; // Revert toggle state
+              if (toggle) toggle.checked = !statusBaru;
               Swal.fire({
                 icon: "error",
                 title: "Error",
@@ -471,7 +434,6 @@ endblock %} {% block content %}
               });
             });
         } else {
-          // If user cancels the SweetAlert confirmation, revert the toggle's state
           if (toggle) {
             toggle.checked = !statusBaru;
           }

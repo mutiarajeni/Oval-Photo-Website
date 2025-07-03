@@ -158,14 +158,13 @@ endblock %} {% block content %}
 </div>
 
 <script>
-  // Fungsi helper untuk menampilkan SweetAlert (ditempatkan di sini atau di file JS terpisah)
+  // Fungsi menampilkan SweetAlert
   function showAlert(icon, title, text, redirectUrl = null) {
     Swal.fire({
-      icon: icon, // 'success', 'error', 'warning', 'info', 'question'
+      icon: icon,
       title: title,
       text: text,
       showConfirmButton: false,
-      // customClass dan buttonsStyling dihilangkan untuk menggunakan gaya bawaan
     }).then((result) => {
       if (result.isConfirmed && redirectUrl) {
         window.location.href = redirectUrl;
@@ -193,8 +192,8 @@ endblock %} {% block content %}
     } else {
       emailRow.style.display = "none";
       emailInput.removeAttribute("required");
-      emailInput.value = ""; // Clear email when hidden
-      emailError.style.display = "none"; // Hide error if role changes
+      emailInput.value = ""; // Clear email ketika hidden
+      emailError.style.display = "none"; // Hide error jika peran berubah
     }
   }
 
@@ -240,11 +239,10 @@ endblock %} {% block content %}
       text: "Kamu akan menambahkan pengguna baru dengan informasi ini.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6", // Warna bawaan SweetAlert untuk konfirmasi
-      cancelButtonColor: "#d33", // Warna bawaan SweetAlert untuk batal
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
       confirmButtonText: "Ya, Simpan!",
       cancelButtonText: "Batal",
-      // customClass dan buttonsStyling dihilangkan
     }).then(async (result) => {
       if (result.isConfirmed) {
         const formData = {
@@ -303,9 +301,7 @@ endblock %} {% block content %}
     });
   });
 
-  namaLengkapInput.addEventListener("input", () => {
-    /* no specific error yet */
-  });
+  namaLengkapInput.addEventListener("input", () => {});
   namaPenggunaInput.addEventListener("input", () => {
     usernameError.style.display = "none";
   });

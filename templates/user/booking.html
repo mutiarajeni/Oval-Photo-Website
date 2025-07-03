@@ -763,7 +763,6 @@
         radio.addEventListener("change", checkFormValidity);
       });
 
-      // Secara manual pasang event listener untuk textarea alamat agar selalu diperiksa.
       document.getElementById("alamat_lokasi_manual").addEventListener("input", checkFormValidity);
 
       document.getElementById("lokasiSelect").addEventListener("change", function() {
@@ -841,16 +840,12 @@
 
     alamatInput.value = "";
     mapsInput.value = "";
-    // Hapus atribut required terlebih dahulu
     alamatInput.removeAttribute("required");
 
     if (lokasiId === "pilih_lokasi_sendiri") {
-      // Tambahkan kembali jika opsi yang benar dipilih
       alamatInput.setAttribute("required", "true");
-      // Pastikan select dianggap valid karena pilihan ini memang valid
       lokasiSelect.setCustomValidity("");
     } else if (lokasiId === "") {
-      // Jika user kembali ke opsi "Pilih lokasi..."
       lokasiSelect.setCustomValidity("Pilih salah satu lokasi.");
     }
     else {
@@ -859,7 +854,6 @@
         alamatInput.value = lokasi.alamat || "";
         mapsInput.value = lokasi.link_maps || "";
       }
-      // Pastikan select dianggap valid
       lokasiSelect.setCustomValidity("");
     }
   }

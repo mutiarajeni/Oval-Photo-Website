@@ -378,9 +378,9 @@
         transportasi: {{ item.biaya_transportasi_akomodasi | int }},
         total: {{ item.total_harga | int }},
         deposit: {{ item.deposit | int }},
-        tanggalDeposit: "{{ item.tanggal_pembayaran_deposit_formatted if item.tanggal_pembayaran_deposit else 'Belum Bayar' }}", // Pastikan selalu string
+        tanggalDeposit: "{{ item.tanggal_pembayaran_deposit_formatted if item.tanggal_pembayaran_deposit else 'Belum Bayar' }}",
         sisaBayar: {{ item.sisa_bayar | int }},
-        tanggalPelunasan: "{{ item.tanggal_pembayaran_pelunasan_formatted if item.tanggal_pembayaran_pelunasan else 'Belum Bayar' }}", // Pastikan selalu string
+        tanggalPelunasan: "{{ item.tanggal_pembayaran_pelunasan_formatted if item.tanggal_pembayaran_pelunasan else 'Belum Bayar' }}",
         lunas: "{{ 'Sudah' if item.sisa_bayar <= 0 else 'Belum' }}",
       },
       {% endfor %}
@@ -397,7 +397,7 @@
     const totalSumElement = document.getElementById("totalSum");
     const sisaBayarSumElement = document.getElementById("sisaBayarSum");
 
-    // Fungsi Pembantu: Mengubah nilai numerik menjadi format Rupiah
+    // Fungsi mengubah nilai numerik menjadi format Rupiah
     function formatRupiah(number) {
       return new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -407,7 +407,7 @@
       }).format(number);
     }
 
-    // Fungsi Pembantu: Mengubah format tanggal Indonesia ke objek Date
+    // Fungsi mengubah format tanggal Indonesia ke objek Date
     // Menambahkan penanganan untuk 'Belum Bayar' dan input kosong
     function parseIndoDate(dateStr) {
       if (!dateStr || dateStr.toLowerCase() === 'belum bayar') return null;
@@ -434,7 +434,7 @@
       return new Date(year, month, day); // Ini membuat objek Date pada 00:00:00 waktu lokal
     }
 
-    // Fungsi Pembantu: Menormalisasi objek Date ke awal hari (00:00:00.000)
+    // Fungsi menormalisasi objek Date ke awal hari (00:00:00.000)
     function normalizeDateToStartOfDay(date) {
         if (!date) return null;
         const d = new Date(date);
@@ -442,7 +442,7 @@
         return d;
     }
 
-    // Fungsi Pembantu: Menormalisasi objek Date ke akhir hari (23:59:59.999)
+    // Fungsi menormalisasi objek Date ke akhir hari (23:59:59.999)
     function normalizeDateToEndOfDay(date) {
         if (!date) return null;
         const d = new Date(date);
@@ -450,7 +450,7 @@
         return d;
     }
 
-    // Fungsi Utama: Merender data ke dalam tabel HTML
+    // Fungsi merender data ke dalam tabel HTML
     function renderTable(dataToRender) {
       tableBody.innerHTML = ""; // Bersihkan tabel terlebih dahulu
       if (dataToRender.length === 0) {
@@ -538,22 +538,15 @@
       const endDate = normalizeDateToEndOfDay(rawEndDate);
 
       let filtered = initialData.filter((item) => {
-        // Filter Pencarian: Cocokkan istilah pencarian dengan berbagai bidang data
+        // Filter Pencarian: Cocokkan istilah pencarian
         const searchableFields = [
           item.nama,
           item.layanan,
           item.paket,
-          // item.paketHarga, // Don't search on formatted price
-          // item.lokasi,      // Don't search on formatted price
-          // item.tambahHari,  // Don't search on formatted price
-          // item.transportasi, // Don't search on formatted price
-          // item.total,       // Don't search on formatted price
-          // item.deposit,     // Don't search on formatted price
           item.tanggalDeposit,
-          // item.sisaBayar,   // Don't search on formatted price
           item.tanggalPelunasan,
           item.lunas,
-        ].map(String); // Ensure all fields are strings for includes()
+        ].map(String);
 
         const matchesSearch = searchableFields.some((field) =>
           field.toLowerCase().includes(searchTerm)
@@ -580,7 +573,7 @@
             if (endDate && actualDate.getTime() > endDate.getTime()) return false;
           }
         }
-        return true; // Jika semua filter lolos, sertakan item ini
+        return true;
       });
 
       renderTable(filtered); // Render tabel dengan data yang sudah difilter
@@ -597,10 +590,9 @@
       renderTable(initialData); // Render semua data asli
     }
 
-    // Fungsi Cetak Tabel (disesuaikan agar versi cetak tetap ada bordernya dan rata tengah)
+    // Fungsi Cetak Tabel
     function printTable() {
       const printWindow = window.open("", "", "width=900,height=600");
-      // Gaya minimal untuk cetak, menggunakan kelas tabel Bootstrap dasar
       const style = `
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
             <style>

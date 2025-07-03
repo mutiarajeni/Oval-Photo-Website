@@ -131,7 +131,7 @@
 </div>
 
 <script>
-  // Bagian untuk enable/disable tombol tetap sama
+  // Bagian untuk enable/disable tombol
   let initialPertanyaan = "";
   let initialJawaban = "";
   document.addEventListener("DOMContentLoaded", function () {
@@ -155,7 +155,6 @@
     input.addEventListener("input", checkFormChanges);
   });
 
-  // --- BAGIAN INI YANG DIUBAH TOTAL ---
   document
     .getElementById("updateFaqForm")
     .addEventListener("submit", function (event) {

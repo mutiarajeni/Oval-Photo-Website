@@ -372,7 +372,7 @@
 </style>
 
 <script>
-  // Function to check for changes and enable/disable the save button
+  // Fungsi untuk memeriksa perubahan dan mengaktifkan/menonaktifkan tombol simpan
   function checkChanges(section) {
     const pesananId = section.getAttribute("data-pesanan-id");
     const saveButton = document.getElementById("saveButton-" + pesananId);
@@ -388,7 +388,7 @@
 
     let statusChanged = statusSelect.value !== initialData.status;
 
-    // For number inputs, treat empty string as 0 for initial comparison, but store empty string if initial value was 0 or null
+    // Untuk input angka, string kosong sebagai 0 untuk perbandingan awal, tetapi simpan string kosong jika nilai awal adalah 0 atau null
     let biayaTambahHariChanged = (parseInt(biayaTambahHariInput.value) || 0) !== (parseInt(initialData.biaya_tambah_hari) || 0);
     let biayaLokasiChanged = (parseInt(biayaLokasiInput.value) || 0) !== (parseInt(initialData.biaya_lokasi) || 0);
     let biayaTransportasiChanged = (parseInt(biayaTransportasiInput.value) || 0) !== (parseInt(initialData.biaya_transportasi) || 0);
@@ -409,7 +409,7 @@
     }
   }
 
-  // Initialize event listeners for each order section
+  
   document.querySelectorAll("section[data-pesanan-id]").forEach((section) => {
     const statusSelect = section.querySelector('select[name="status_pesanan"]');
     const biayaTambahHariInput = section.querySelector('input[name="biaya_tambah_hari"]');
@@ -418,12 +418,12 @@
     const catatanInput = section.querySelector('textarea[name="catatan"]');
     const linkGoogleDriveInput = section.querySelector('textarea[name="link_google_drive"]');
 
-    // Store initial data in a data attribute for comparison
+    // Simpan data awal dalam atribut data untuk perbandingan
     section.setAttribute(
       "data-initial",
       JSON.stringify({
         status: statusSelect.value,
-        biaya_tambah_hari: biayaTambahHariInput.value || null, // Store as null if empty for consistent comparison
+        biaya_tambah_hari: biayaTambahHariInput.value || null, // Simpan sebagai null jika kosong untuk perbandingan yang konsisten
         biaya_lokasi: biayaLokasiInput.value || null,
         biaya_transportasi: biayaTransportasiInput.value || null,
         catatan: catatanInput.value.trim(),
@@ -431,7 +431,7 @@
       })
     );
 
-    // Add event listeners to trigger checkChanges on input/change
+    // Tambahkan event listeners untuk memicu checkChanges pada input/perubahan
     statusSelect.addEventListener("change", () => checkChanges(section));
     biayaTambahHariInput.addEventListener("input", () => checkChanges(section));
     biayaLokasiInput.addEventListener("input", () => checkChanges(section));
@@ -440,7 +440,7 @@
     linkGoogleDriveInput.addEventListener("input", () => checkChanges(section));
   });
 
-  // Event for SweetAlert remains the same
+  // Event SweetAlert 
   document.querySelectorAll('[id^="saveButton-"]').forEach((button) => {
     button.addEventListener("click", function () {
       const pesananId = this.id.replace("saveButton-", "");

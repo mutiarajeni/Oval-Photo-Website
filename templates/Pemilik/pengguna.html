@@ -116,10 +116,10 @@
 </div>
 
 <script>
-  // Fungsi helper untuk menampilkan SweetAlert
+  // Fungsi untuk menampilkan SweetAlert
   function showAlert(icon, title, text, redirectUrl = null) {
     Swal.fire({
-      icon: icon, // 'success', 'error', 'warning', 'info', 'question'
+      icon: icon,
       title: title,
       text: text,
       showConfirmButton: true,
@@ -139,7 +139,7 @@
     const dataTable = document.getElementById("dataTable");
     const tableRows = dataTable.querySelectorAll("tbody tr");
 
-    // Fungsionalitas Pencarian
+    // Fungsi Pencarian
     searchInput.addEventListener("keyup", function () {
       const searchTerm = searchInput.value.toLowerCase();
       tableRows.forEach((row) => {
@@ -160,7 +160,7 @@
       });
     });
 
-    // Fungsionalitas Hapus Pengguna (sudah ada, tidak diubah)
+    // Fungsi Hapus Pengguna
     deleteButtons.forEach((button) => {
       button.addEventListener("click", function (event) {
         event.preventDefault();

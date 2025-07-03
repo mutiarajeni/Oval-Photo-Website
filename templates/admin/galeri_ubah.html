@@ -12,7 +12,6 @@
             </div>
 
             <div class="card-body px-4 pb-4">
-                {# SweetAlert messages will be handled by JS, no need for get_flashed_messages() here #}
 
                 <div class="row">
                     <div class="col-md-8">
@@ -31,14 +30,13 @@
                                             <div class="input-group input-group-outline is-filled"
                                                 >
                                                 <select class="form-control" id="kategori_disabled"
-                                                    name="kategori" disabled> {# Keep name="kategori" for backend to pick it up even if disabled, or use hidden input #}
+                                                    name="kategori" disabled> 
                                                     <option value="layanan"
                                                         {% if gallery_item.kategori == 'layanan' %}selected{% endif %}>
                                                         Layanan</option>
                                                     <option value="lokasi"
                                                         {% if gallery_item.kategori == 'lokasi' %}selected{% endif %}>
                                                         Lokasi</option>
-                                                    {# Fallback option for unexpected categories #}
                                                     {% if gallery_item.kategori != 'layanan' and gallery_item.kategori != 'lokasi' %}
                                                     <option value="{{ gallery_item.kategori }}" selected>
                                                         {{ gallery_item.kategori | capitalize }}</option>
@@ -55,7 +53,6 @@
                              font-size: 12px; /* Ukuran ikon, sesuaikan agar sesuai */
                              z-index: 2;
                            "></i>
-                                                {# Add a hidden input for the disabled select value to be sent with form #}
                                                 <input type="hidden" name="kategori" value="{{ gallery_item.kategori }}">
                                             </div>
                                         </td>
@@ -65,7 +62,7 @@
                                         <td>
                                             <div class="input-group input-group-outline is-filled">
                                                 <select class="form-control" id="layananSelect_disabled"
-                                                    name="layanan" disabled> {# Keep name="layanan" #}
+                                                    name="layanan" disabled> 
                                                     <option value="">
                                                         {% if gallery_item.kategori != 'layanan' %}- (Tidak relevan untuk kategori ini) -
                                                         {% else %}Pilih Layanan{% endif %}
@@ -88,7 +85,6 @@
                              font-size: 12px; /* Ukuran ikon, sesuaikan agar sesuai */
                              z-index: 2;
                            "></i>
-                                                {# Add a hidden input for the disabled select value #}
                                                 <input type="hidden" name="layanan" value="{{ gallery_item.id_layanan if gallery_item.id_layanan else '' }}">
                                             </div>
                                         </td>
@@ -98,7 +94,7 @@
                                         <td>
                                             <div class="input-group input-group-outline is-filled">
                                                 <select class="form-control" id="lokasiSelect_disabled"
-                                                    name="lokasi" disabled> {# Keep name="lokasi" #}
+                                                    name="lokasi" disabled> 
                                                     <option value="">
                                                         {% if gallery_item.kategori != 'lokasi' %}- (Tidak relevan untuk kategori ini) -
                                                         {% else %}Pilih Lokasi{% endif %}
@@ -121,7 +117,6 @@
                              font-size: 12px; /* Ukuran ikon, sesuaikan agar sesuai */
                              z-index: 2;
                            "></i>
-                                                {# Add a hidden input for the disabled select value #}
                                                 <input type="hidden" name="lokasi" value="{{ gallery_item.id_lokasi if gallery_item.id_lokasi else '' }}">
                                             </div>
                                         </td>
@@ -137,7 +132,6 @@
                             </table>
 
                             <div id="deletedImagesContainer">
-                                {# Hidden inputs for deleted images will be appended here by JS #}
                             </div>
 
                             <div class="text-end mt-3">
@@ -177,7 +171,6 @@
                                 {% endfor %}
                             {% endif %}
                         </div>
-                        {# You mentioned no new image upload function here, so leaving this text #}
                         <p class="text-center text-muted text-xs" id="noNewImagesText" style="display: none;">Tidak ada fungsi unggah gambar baru di halaman ini.</p>
                     </div>
                 </div>
@@ -195,7 +188,7 @@
         const saMessage = urlParams.get('_sa_message');
 
         if (saStatus && saMessage) {
-            let icon = 'info'; // Default
+            let icon = 'info'; 
             if (saStatus === 'Berhasil') {
                 icon = 'success';
             } else if (saStatus === 'error' || saStatus === 'danger') {
@@ -216,15 +209,12 @@
                 const newUrl = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '');
                 window.history.replaceState({}, document.title, newUrl);
 
-                // --- PERUBAHAN DIMULAI DI SINI ---
                 // Jika statusnya adalah 'Berhasil', alihkan (redirect) ke halaman daftar galeri.
                 if (saStatus === 'Berhasil') {
                     window.location.href = "{{ url_for('admin_galeri') }}";
                 }
-                // --- PERUBAHAN BERAKHIR DI SINI ---
             });
         }
-        // --- Akhir SweetAlert Handler ---
 
         const submitButton = document.getElementById("submitButton");
         const deletedImagesContainer = document.getElementById("deletedImagesContainer");
@@ -255,7 +245,6 @@
             const imageContainer = button.closest('.existing-image-preview');
             const filename = imageContainer.dataset.filename;
 
-            // Confirm deletion with SweetAlert
             Swal.fire({
                 title: 'Konfirmasi Penghapusan Gambar',
                 text: `Kamu yakin ingin menghapus gambar '${filename}' dari galeri ini?`,
@@ -273,8 +262,8 @@
                     hiddenInput.value = filename;
                     deletedImagesContainer.appendChild(hiddenInput);
 
-                    imageContainer.remove(); // Remove from DOM immediately
-                    updateExistingImagesDisplay(); // Update display and button state
+                    imageContainer.remove(); 
+                    updateExistingImagesDisplay(); 
 
                     Swal.fire({
                         icon: 'success',
@@ -293,22 +282,22 @@
             }
         });
 
-        // Function to check if form is ready for submission
+        // Fungsi untuk memeriksa apakah formulir siap untuk dikirimkan
         function checkFormFilled() {
-            // Check if any images are marked for deletion
+            // Periksa apakah ada gambar yang ditandai untuk dihapus
             const hasDeletedImages = deletedImagesContainer.children.length > 0;
             
-            // Re-enable submit button only if there are images to delete
+            // Aktifkan kembali button kirim hanya jika ada gambar yang akan dihapus
             submitButton.disabled = !hasDeletedImages;
 
             console.log("Tombol Simpan Perubahan Gambar disabled:", submitButton.disabled);
         }
 
         ubahGaleriForm.addEventListener('submit', function (event) {
-            event.preventDefault(); // Prevent default form submission initially
+            event.preventDefault(); 
 
             const hasDeletedImages = deletedImagesContainer.children.length > 0;
-            const currentTotalImages = existingImageCount; // Images still visible
+            const currentTotalImages = existingImageCount; 
 
             if (!hasDeletedImages) {
                 Swal.fire({
@@ -320,7 +309,7 @@
                 return;
             }
 
-            // Check if all images are being deleted
+            // Periksa apakah semua gambar dihapus
             if (currentTotalImages === 0 && hasDeletedImages) {
                 Swal.fire({
                     title: 'Konfirmasi Penghapusan Item Galeri?',
@@ -333,7 +322,7 @@
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        ubahGaleriForm.submit(); // Proceed with actual form submission
+                        ubahGaleriForm.submit(); 
                     }
                 });
             } else {
@@ -348,15 +337,13 @@
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        ubahGaleriForm.submit(); // Proceed with actual form submission
+                        ubahGaleriForm.submit(); 
                     }
                 });
             }
         });
 
-        // Initial calls when page loads
         updateExistingImagesDisplay();
-        // checkFormFilled() is called inside updateExistingImagesDisplay
     });
 </script>
 {% endblock %}

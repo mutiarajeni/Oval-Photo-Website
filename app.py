@@ -29,8 +29,8 @@ import jwt
 
 import midtransclient
 
-import logging # Tambahkan di bagian atas file Python Anda
-import uuid # Tambahkan import uuid
+import logging 
+import uuid 
 import random # random untuk gambar galeri di beranda user
 
 from dateutil.relativedelta import relativedelta
@@ -47,16 +47,15 @@ app = Flask(__name__)
 app.secret_key = "super-secret-key"
 
 
-# Konfigurasi logging dasar jika belum ada
 logging.basicConfig(level=logging.DEBUG)
 
 
 
 
-# -- Tambahan untuk bagian login, daftar, dkk ---
+# -- Tambahan untuk bagian login, daftar, dll ---
 app.config["SECRET_KEY"] = os.environ.get("FLASK_SECRET_KEY", "DANANDA34")
 app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY", "KILLING23")
-app.config["PASSWORD_RESET_TIMEOUT_MINUTES"] = 30  # Token valid for 30 minutes
+app.config["PASSWORD_RESET_TIMEOUT_MINUTES"] = 30  # Token valid 30 menit
 
 
 
@@ -93,15 +92,13 @@ DEFAULT_GCS_PROFILE_PIC_URL = (
     "https://storage.googleapis.com/a1aa/image/10b4ac45-2b8b-450f-888c-bd7182757e8a.jpg"
 )
 
-# --- PERUBAHAN DI SINI ---
-UPLOAD_FOLDER = "gambar_profil_user"  # Sesuai dengan folder Anda
-# --- AKHIR PERUBAHAN ---
+UPLOAD_FOLDER = "gambar_profil_user"
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 #app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # Maks 16MB untuk upload
 
 # --- Flask-Mail Configuration ---
-app.config["MAIL_SERVER"] = "smtp.gmail.com"  # Contoh: untuk Gmail
+app.config["MAIL_SERVER"] = "smtp.gmail.com" 
 app.config["MAIL_PORT"] = 587
 app.config["MAIL_USE_TLS"] = True
 app.config["MAIL_USERNAME"] = os.environ.get(
@@ -134,7 +131,7 @@ def send_owner_notification(subject, template, **context):
         html_body = render_template(template, **context)
         msg = Message(
             subject=subject,
-            recipients=["ovalphotoo@gmail.com"],  # Email pemilik di-hardcode
+            recipients=["ovalphotoo@gmail.com"],  #Email pemilik
             html=html_body
         )
         mail.send(msg)
@@ -142,10 +139,10 @@ def send_owner_notification(subject, template, **context):
     except Exception as e:
         app.logger.error(f"Gagal mengirim email notifikasi pemilik '{subject}': {e}", exc_info=True)
         # Flash message ini akan muncul di halaman user berikutnya, memberi tahu bahwa proses utama berhasil
-        # meskipun notifikasi ke admin mungkin gagal.
+        # meskipun notifikasi ke admin mungkin gagal
         flash("Proses kamu berhasil, namun notifikasi email ke pemilik mungkin gagal terkirim.", "warning")
 
-#Terikat Login
+#Login
 def login_required(f):
     """Decorator to protect routes that require user login."""
     @wraps(f)
@@ -164,25 +161,22 @@ def role_required(allowed_roles):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            # Tentukan URL login default berdasarkan peran yang diizinkan untuk dashboard ini
+            # Tentukan URL login default berdasarkan peran yang diizinkan untuk dashboard
             login_url_for_role = url_for('masuk') # Default ke login user
             if 'admin' in allowed_roles:
                 login_url_for_role = url_for('admin_login')
             elif 'pemilik' in allowed_roles:
                 login_url_for_role = url_for('pemilik_login_page')
 
-            # --- PERBAIKAN DI SINI ---
             # Jika user_id tidak ada di session, redirect ke halaman login yang relevan
             if 'user_id' not in session:
                 flash("Kamu harus login untuk mengakses halaman ini.", "danger")
-                return redirect(login_url_for_role) # <--- DIUBAH KE login_url_for_role
-            # --- AKHIR PERBAIKAN ---
+                return redirect(login_url_for_role) 
 
             user = users_collection.find_one({"_id": ObjectId(session['user_id'])})
             if not user or user.get('role') not in allowed_roles:
                 flash("Kamu tidak memiliki izin untuk mengakses halaman ini.", "danger")
                 # Redirect ke halaman login yang relevan jika tidak berizin
-                # Ini sudah benar, karena sudah disesuaikan di atas
                 return redirect(login_url_for_role) 
             return f(*args, **kwargs)
         return decorated_function
@@ -208,8 +202,8 @@ def mask_name(full_name):
     return " ".join(masked_parts)
 
 
-# Function to format date to Indonesian locale
-@app.template_filter('tanggal_id') # Make this a Jinja2 filter as well
+# Format tanggal Indonesia
+@app.template_filter('tanggal_id')
 def tanggal_id(date_obj):
     if not date_obj:
         return "N/A"
@@ -234,7 +228,7 @@ def tanggal_id(date_obj):
 @app.route('/')
 def beranda():
     try:
-        # --- Bagian Layanan & Galeri (tidak ada perubahan) ---
+        # --- Bagian Layanan & Galeri ---
         layanan_data = list(db.layanan.find({'status': True}))
         if not layanan_data:
             print("PERINGATAN: Tidak ada data layanan aktif ditemukan di database.")
@@ -248,8 +242,8 @@ def beranda():
         random.shuffle(all_images)
         random_gallery_images = all_images[:8]
 
-        # --- Bagian Ulasan (Logika diubah total) ---
-        # Mengambil 5 ulasan terbaru untuk ditampilkan di beranda.
+        # --- Bagian Ulasan ---
+        # Mengambil 5 ulasan terbaru untuk ditampilkan di beranda
         latest_reviews_cursor = db.reviews.find().sort('created_at', -1).limit(5)
         testimonials_data = []
         for review in latest_reviews_cursor:
@@ -271,7 +265,7 @@ def beranda():
                 if paket:
                     nama_paket = paket.get('nama', nama_paket)
 
-            # Bangun string format baru sesuai permintaan
+           
             service_package_string = f"Layanan {nama_layanan} - Paket {nama_paket}"
 
             if user:
@@ -279,9 +273,9 @@ def beranda():
                     "name": mask_name(user.get('full_name', 'Pengguna Anonim')),
                     "date": tanggal_id(review.get('created_at')),
                     "stars": review.get('rating', 5),
-                    "package": service_package_string, # Menggunakan string format baru
+                    "package": service_package_string, 
                     "text": review.get('comment', ''),
-                    "imgSrc": user.get('profile_picture_url', 'URL_GAMBAR_DEFAULT_ANDA'), # Ganti URL Default
+                    "imgSrc": user.get('profile_picture_url', 'URL_GAMBAR_DEFAULT_ANDA'), 
                     "imgAlt": f"Foto profil {mask_name(user.get('full_name', 'Pengguna Anonim'))}"
                 })
 
@@ -302,6 +296,12 @@ def beranda():
             testimonials=[],
             error_message="Gagal memuat konten. Silakan coba lagi nanti."
         )
+
+
+
+
+
+
 
 
 
@@ -499,7 +499,6 @@ def katalog_layanan():
 def tanggal_id(dt: datetime) -> str:
     """
     Ubah datetime ⇢ string "01 Januari 2025".
-    Jatuh-bakal ke locale default jika `id_ID` tidak tersedia.
     """
     try:
         locale.setlocale(locale.LC_TIME, "id_ID.UTF-8")
@@ -763,7 +762,7 @@ def admin_galeri():
             else:
                 item['thumbnail'] = None
 
-            # Convert ObjectId to string for safe JSON/Jinja2 usage
+            # Convert ObjectId ke string untuk penggunaan JSON/Jinja2
             item['_id'] = str(item['_id'])
             if 'id_layanan' in item and isinstance(item['id_layanan'], ObjectId):
                 item['id_layanan'] = str(item['id_layanan'])
@@ -775,7 +774,6 @@ def admin_galeri():
     except Exception as e:
         logger.error(f"Error di route /admin_galeri: {e}", exc_info=True)
         processed_gallery_items = []
-        # Mengirim pesan error melalui SweetAlert jika terjadi di sini
         sa_status = 'error'
         sa_message = "Terjadi kesalahan saat mengambil data galeri."
 
@@ -783,8 +781,8 @@ def admin_galeri():
         'admin/galeri.html',
         galeri_items=processed_gallery_items,
         current_route=request.path,
-        _sa_status=sa_status,  # Teruskan ke template
-        _sa_message=sa_message # Teruskan ke template
+        _sa_status=sa_status,  
+        _sa_message=sa_message 
     )
 
 @app.route("/admin_galeri_toggle_status/<item_id>", methods=["POST"])
@@ -886,7 +884,7 @@ def admin_galeri_tambah():
         try:
             db.galeri.insert_one(doc)
             app.logger.info(f"Dokumen galeri berhasil disimpan ke DB: {doc.get('_id')}")
-            # PERUBAHAN: Kembalikan JSON jika berhasil, bukan redirect.
+            # Kembalikan JSON jika berhasil, bukan redirect.
             return jsonify({
                 'status': 'success',
                 'message': 'Galeri berhasil ditambahkan!',
@@ -905,7 +903,7 @@ def admin_galeri_tambah():
                     except OSError as del_err:
                         app.logger.error(f"Gagal menghapus file {nf}: {del_err}")
             
-            # PERUBAHAN: Jika ada error, kembalikan JSON juga agar bisa ditangani di frontend.
+            # Jika ada error, kembalikan JSON juga agar bisa ditangani di frontend.
             return jsonify({
                 'status': 'error',
                 'message': 'Gagal menyimpan data galeri ke database.'
@@ -946,9 +944,7 @@ def admin_galeri_ubah(item_id):
         if request.method == 'POST':
             app.logger.info(f"Menerima POST request untuk ubah gambar galeri ID: '{item_id}' (hanya hapus)")
 
-            # Retrieve form fields for update (if any, current code only handles deletions)
-            # category = request.form.get('kategori') # Example of retrieving other fields
-            # ... and so on for other fields you might want to update
+           
 
             deleted_images_filenames = request.form.getlist('deleted_images[]')
 
@@ -968,39 +964,31 @@ def admin_galeri_ubah(item_id):
                             app.logger.warning(f"File lama '{existing_filename}' tidak ditemukan di disk saat mencoba menghapus. Mungkin sudah dihapus sebelumnya.")
                     except Exception as e_del:
                         app.logger.error(f"ERROR: Gagal menghapus file fisik '{existing_filename}': {e_del}", exc_info=True)
-                        # Tidak ada flash di sini, akan ditangani oleh redirect SweetAlert di akhir
+                        
 
                 else:
                     images_after_deletion.append(existing_filename)
 
             updated_image_list = images_after_deletion
 
-            # --- LOGIKA UNTUK UPDATE THUMBNAIL DI SINI ---
+            # --- UPDATE THUMBNAIL ---
             thumbnail_to_update = None
             if updated_image_list:
                 thumbnail_to_update = updated_image_list[0]
-            # --- AKHIR LOGIKA UPDATE THUMBNAIL ---
 
-            # Prepare update document for MongoDB
+            # Prepare update document MongoDB
             doc_to_update = {
                 'gambar': updated_image_list,
                 'tanggal_modifikasi': datetime.now(),
-                # Keep other fields as they were if not explicitly updated via form
                 'kategori': request.form.get('kategori', gallery_item_to_edit.get('kategori')),
                 'id_layanan': ObjectId(request.form.get('layanan')) if request.form.get('layanan') else gallery_item_to_edit.get('id_layanan'),
                 'id_lokasi': ObjectId(request.form.get('lokasi')) if request.form.get('lokasi') else gallery_item_to_edit.get('id_lokasi'),
-                'status': gallery_item_to_edit.get('status', True), # Assuming status is not changed in this form
+                'status': gallery_item_to_edit.get('status', True), 
                 'thumbnail': thumbnail_to_update
             }
             
-            # Additional check if there are no images left
+            
             if not updated_image_list:
-                # Optionally, delete the whole gallery item if no images are left
-                # db.galeri.delete_one({"_id": ObjectId(item_id)})
-                # app.logger.info(f"Item galeri ID '{item_id}' dihapus dari DB karena tidak ada gambar tersisa.")
-                # return redirect(url_for('admin_galeri', _sa_status='success', _sa_message='Item galeri berhasil dihapus karena tidak ada gambar tersisa.'))
-                
-                # Or, just redirect with a warning if no images left
                 return redirect(url_for('admin_galeri_ubah',
                                         item_id=item_id,
                                         _sa_status='warning',
@@ -1016,17 +1004,17 @@ def admin_galeri_ubah(item_id):
                                      _sa_message='Gambar galeri berhasil dihapus.')) #MESSAGEOK
 
         # --- GET request (menampilkan form ubah) ---
-        # Convert ObjectId to string for safe Jinja2 usage in select/input fields
+        # Konversi ObjectId ke string
         if 'id_layanan' in gallery_item_to_edit and isinstance(gallery_item_to_edit['id_layanan'], ObjectId):
             gallery_item_to_edit['id_layanan'] = str(gallery_item_to_edit['id_layanan'])
         if 'id_lokasi' in gallery_item_to_edit and isinstance(gallery_item_to_edit['id_lokasi'], ObjectId):
             gallery_item_to_edit['id_lokasi'] = str(gallery_item_to_edit['id_lokasi'])
-        gallery_item_to_edit['_id'] = str(gallery_item_to_edit['_id']) # Ensure _id is string for template
+        gallery_item_to_edit['_id'] = str(gallery_item_to_edit['_id']) 
 
         layanan_all_list = list(db.layanan.find({}, {"nama": 1, "_id": 1}))
         lokasi_all_list = list(db.lokasi.find({}, {"nama": 1, "_id": 1}))
 
-        # Convert ObjectId to string for select options
+        # Konversi ObjectId ke string untuk select options
         for lay in layanan_all_list: lay['_id'] = str(lay['_id'])
         for loc in lokasi_all_list: loc['_id'] = str(loc['_id'])
 
@@ -1057,14 +1045,12 @@ def get_galeri_data():
     """Endpoint API untuk mengambil data galeri berdasarkan filter."""
     kategori = request.args.get('kategori')
     pilihan_kategori_id = request.args.get('pilihan_kategori')
-    limit = request.args.get('limit', type=int) # New: Optional limit for preview sections
-
+    limit = request.args.get('limit', type=int)
     app.logger.debug(f"API call received: kategori='{kategori}', pilihan_kategori_id='{pilihan_kategori_id}', limit='{limit}'")
 
     query = {"status": True}  # Hanya tampilkan yang aktif
 
     galeri_items = []
-    # Description data will only be populated for specific selections, not 'all'
     description_data = {}
 
     try:
@@ -1102,18 +1088,15 @@ def get_galeri_data():
                         galeri_items = []
                         # Jika terjadi kesalahan, pastikan description_data kosong agar tidak ditampilkan
                         return jsonify({"gallery_items": galeri_items, "description_data": {}})
-                # If specific category and choice are selected, description data is relevant
-                # Set default values if keys don't exist yet, to ensure consistent structure
+                
                 description_data.setdefault("nama_layanan", "-")
                 description_data.setdefault("lokasi", "-")
                 description_data.setdefault("maps", "-")
                 description_data.setdefault("biaya", "-")
             else:
-                # When a specific category is selected but 'all' choice, description should be empty
                 description_data = {}
                 app.logger.debug(f"Kategori selected, but specific choice is 'all'. Query: {query}")
         else:
-            # When 'all' category is selected, no description data is relevant
             description_data = {}
             app.logger.debug(f"Kategori 'all' selected. Query: {query}")
 
@@ -1121,15 +1104,13 @@ def get_galeri_data():
         
         cursor = db.galeri.find(query)
         if limit:
-            cursor = cursor.limit(limit) # Apply limit if provided
+            cursor = cursor.limit(limit) 
         
-        # Check if there are documents matching the query before iterating
-        # Note: count_documents() is a more robust way to check than cursor.count() (deprecated)
+        
         if db.galeri.count_documents(query) == 0:
             app.logger.warning(f"No gallery items found for query: {query}")
         
         for item in cursor:
-            # Ensure all ObjectId are converted to string for JSON serialization
             item['_id'] = str(item['_id'])
             if item.get('id_layanan'):
                 item['id_layanan'] = str(item['id_layanan'])
@@ -1366,7 +1347,7 @@ def admin_jadwal():
                 )
             else:
                 pesanan["tanggal_mulai_acara_formatted"] = (
-                    "N/A"  # Fallback for missing or invalid date
+                    "N/A"  
                 )
             if isinstance(pesanan.get("tanggal_selesai_acara"), datetime):
                 pesanan["tanggal_selesai_acara_formatted"] = tanggal_id(
@@ -1374,7 +1355,7 @@ def admin_jadwal():
                 )
             else:
                 pesanan["tanggal_selesai_acara_formatted"] = (
-                    "N/A"  # Fallback for missing or invalid date
+                    "N/A"  
                 )
 
             all_pesanan_list.append(pesanan)
@@ -1385,7 +1366,7 @@ def admin_jadwal():
 
     except Exception as e:
         flash(f"Terjadi kesalahan saat mengambil data jadwal: {e}", "danger")
-        # Jika terjadi kesalahan, Anda bisa me-render template dengan daftar kosong
+        # Jika terjadi kesalahan, bisa me-render template dengan daftar kosong
         # atau redirect ke halaman dashboard admin.
         return render_template(
             "admin/jadwal.html", pesanan=[], current_route=request.path
@@ -1405,18 +1386,18 @@ def admin_jadwal_ubah(_id):
         lokasi_list = list(db.lokasi.find())
         paket_list = list(db.paket.find())
 
-        # --- START: New logic to fetch booked dates excluding current order ---
+        
         disabled_statuses = [
             "Menunggu Konfirmasi",
             "Telah Dikonfirmasi",
             "Belum Pemotretan",
         ]
 
-        # Fetch all booked dates that are NOT the current schedule being edited
+     
         booked_dates_cursor = db.pesanan.find(
             {
                 "status_pesanan": {"$in": disabled_statuses},
-                "_id": {"$ne": ObjectId(_id)}  # Exclude the current order
+                "_id": {"$ne": ObjectId(_id)}  
             },
             {"tanggal_mulai_acara": 1, "tanggal_selesai_acara": 1, "_id": 0},
         )
@@ -1432,7 +1413,7 @@ def admin_jadwal_ubah(_id):
                         "end": end_date.strftime("%Y-%m-%d"),
                     }
                 )
-        # --- END: New logic to fetch booked dates excluding current order ---
+      
 
         if request.method == "POST":
             jam_acara = request.form.get("jam_acara")
@@ -1488,7 +1469,7 @@ def admin_jadwal_ubah(_id):
             paket=paket_list,
             formatted_tanggal_mulai=formatted_tanggal_mulai,
             formatted_tanggal_selesai=formatted_tanggal_selesai,
-            booked_date_ranges=booked_date_ranges, # Pass booked dates to the template
+            booked_date_ranges=booked_date_ranges, 
         )
 
     except Exception as e:
@@ -1594,8 +1575,7 @@ def admin_pesanan_tambah():
             tanggal_mulai_acara = datetime.strptime(tanggal_mulai_acara_str, '%Y-%m-%d')
             tanggal_selesai_acara = datetime.strptime(tanggal_selesai_acara_str, '%Y-%m-%d')
 
-            # Retrieve harga_paket and deposit from the hidden inputs
-            # Ensure these are parsed as integers or floats as appropriate
+            # Ambil harga_paket dan deposit dari hidden input
             harga_paket = int(request.form.get('harga_paket_dasar', '0'))
             deposit_paket = int(request.form.get('deposit', '0'))
 
@@ -1603,7 +1583,7 @@ def admin_pesanan_tambah():
             biaya_tambah_hari = int(request.form.get("biayaTambahHari") or 0)
             biaya_lokasi = int(request.form.get("biayaLokasi") or 0)
 
-            # Determine Lokasi details and cost
+            # Lokasi details
             alamat_lokasi_final = None
             link_maps_final = None
             lokasi_id_db = None
@@ -1624,13 +1604,13 @@ def admin_pesanan_tambah():
             recalculated_total_harga = harga_paket + biaya_tambah_hari + biaya_lokasi + biaya_transportasi
             recalculated_sisa_bayar = recalculated_total_harga - deposit_paket
 
-            # Handle upload Surat Izin Lokasi (Opsional)
+            # Upload Surat Izin Lokasi (Opsional)
             surat_izin_lokasi_filename = None
             if 'surat_izin_lokasi' in request.files:
                 surat_izin_file = request.files['surat_izin_lokasi']
                 if surat_izin_file and surat_izin_file.filename != '':
                     filename_ext = os.path.splitext(surat_izin_file.filename)
-                    # Use sanitized client name for filename
+                    # Menggunakan sanitized client name untuk filename
                     unique_filename = f"{sanitize_filename(nama_klien)}_surat_izin_{int(time.time())}{filename_ext[1]}"
                     file_path = os.path.join(app.config['UPLOAD_FOLDER_SURAT_IZIN'], unique_filename)
                     surat_izin_file.save(file_path)
@@ -1687,12 +1667,11 @@ def admin_pesanan_tambah():
                                    error_message=f"Terjadi kesalahan: {e}",
                                    selected_paket_id=request.form.get('paket_id'),
                                    selected_layanan_id=request.form.get('layanan_id'),
-                                   # Removed selected_paket_nama and raw prices as they are now handled by hidden inputs
-                                   booked_date_ranges=[] # You might want to pass this if there's an error and the form needs to be re-rendered
+                                   booked_date_ranges=[] 
                                    )
 
 
-    # --- START: LOGIKA BARU UNTUK METHOD GET ---
+    # --- METHOD GET ---
     layanan_list = list(db.layanan.find({'status': True}))
     lokasi_list = list(db.lokasi.find({'is_active': True}))
     for layanan in layanan_list:
@@ -1720,7 +1699,6 @@ def admin_pesanan_tambah():
                     "end": end_date.strftime("%Y-%m-%d"),
                 }
             )
-    # --- END: LOGIKA BARU UNTUK METHOD GET ---
 
     return render_template('admin/pesanan_tambah.html',
                            layanan_list=layanan_list,
@@ -1732,7 +1710,7 @@ def admin_pesanan_tambah():
 
 
 
-
+# Admin - Detail Pesanan
 @app.route('/admin_pesanan_detail')
 @role_required(['admin', 'pemilik'])
 def admin_pesanan_detail():
@@ -1868,7 +1846,7 @@ def admin_pesanan_update(pesanan_id):
 
 
 
-
+# Kirim Pengingat
 def kirim_email_pengingat(to, subject, body):
     try:
         msg = Message(subject, recipients=[to])
@@ -2013,7 +1991,7 @@ def booking():
                 flash(f"Paket dengan ID '{paket_id}' tidak ditemukan.", "danger")
                 return redirect(
                     url_for("katalog_layanan")
-                )  # Redirect if package not found
+                )  
         except Exception as e:
             print(f"Error fetching package data: {e}")
             flash("Terjadi kesalahan saat memuat detail paket.", "danger")
@@ -2144,15 +2122,15 @@ def submit_booking():
         result = db.pesanan.insert_one(pesanan_doc)
         inserted_id = result.inserted_id
         
-        # --- PENAMBAHAN: Ambil nama layanan dan paket ---
+        # --- Ambil nama layanan dan paket ---
         layanan_data = db.layanan.find_one({"_id": pesanan_doc['layanan_id']})
         paket_data = db.paket.find_one({"_id": pesanan_doc['paket_id']})
         
         nama_layanan = layanan_data.get('nama', 'N/A') if layanan_data else 'N/A'
         nama_paket = paket_data.get('nama', 'N/A') if paket_data else 'N/A'
-        # --- AKHIR PENAMBAHAN ---
+        
 
-        # --- PENYESUAIAN: Kirim nama ke fungsi notifikasi ---
+        # --- Kirim nama ke fungsi notifikasi ---
         send_owner_notification(
             subject=f"🔔 Pesanan Baru Diterima - ID: {inserted_id}",
             template="email/notifikasi_pemilik.html",
@@ -2160,12 +2138,9 @@ def submit_booking():
             jenis_notifikasi="Pesanan Baru",
             pesanan=pesanan_doc,
             pesanan_id=inserted_id,
-            nama_layanan=nama_layanan,  # Data baru
-            nama_paket=nama_paket      # Data baru
+            nama_layanan=nama_layanan,  
+            nama_paket=nama_paket      
         )
-
-
-
 
         flash("Pesanan berhasil dibuat!", "success")
         return redirect(url_for("ripe_menunggu_konfirmasi"))
@@ -2189,7 +2164,7 @@ def submit_booking():
 @app.route("/booking/ubah/<pesanan_id>", methods=["GET", "POST"])
 @login_required
 def booking_ubah(pesanan_id):
-    # Ensure the logged-in user is the owner of this booking
+    # Pastikan pengguna yang masuk adalah pemilik pemesanan 
     user_id = session.get('user_id')
     if not user_id:
         flash("Kamu harus login untuk mengakses halaman ini.", "danger")
@@ -2199,39 +2174,37 @@ def booking_ubah(pesanan_id):
         pesanan = db.pesanan.find_one({"_id": ObjectId(pesanan_id), "user_id_pemesan": ObjectId(user_id)})
         if not pesanan:
             flash("Pesanan tidak ditemukan atau kamu tidak memiliki izin untuk mengubahnya.", "danger")
-            return redirect(url_for("riwayat_pemesanan")) # Redirect to general history if not found/authorized
+            return redirect(url_for("riwayat_pemesanan")) 
 
-        # Check if the booking status allows modification (e.g., cannot modify if already in progress or completed)
-        # You can define which statuses allow modification. Example: only 'Menunggu Konfirmasi'
-        allowed_statuses_for_edit = ["Menunggu Konfirmasi"] # Add other statuses if allowed
+        # Periksa apakah status pemesanan memungkinkan modifikasi (hanya 'Menunggu Konfirmasi')
+        allowed_statuses_for_edit = ["Menunggu Konfirmasi"] 
         if pesanan.get("status_pesanan") not in allowed_statuses_for_edit:
             flash(f"Pesanan dengan status '{pesanan.get('status_pesanan')}' tidak dapat diubah.", "warning")
-            return redirect(url_for("ripe_menunggu_konfirmasi")) # Redirect to history of that status
+            return redirect(url_for("ripe_menunggu_konfirmasi")) 
 
 
-        # --- GET Request: Display the form with existing data ---
+        # --- GET Request: Menampilkan formulir dengan data yang ada ---
         if request.method == "GET":
-            # Fetch related data for display
             selected_layanan = db.layanan.find_one({"_id": pesanan.get("layanan_id")})
             selected_paket = db.paket.find_one({"_id": pesanan.get("paket_id")})
             
             selected_layanan_nama = selected_layanan["nama"] if selected_layanan else "N/A"
             selected_paket_nama = selected_paket["nama"] if selected_paket else "N/A"
             
-            # Format harga dan deposit for display
+            # Format harga dan deposit 
             selected_paket_harga_formatted = "{:,.0f}".format(pesanan.get("harga_paket", 0)).replace(",", ".")
             selected_paket_deposit_formatted = "{:,.0f}".format(pesanan.get("deposit", 0)).replace(",", ".")
 
-            # Get all active locations for the dropdown
+            
             lokasi_list = list(db.lokasi.find({"is_active": True}))
             for lokasi in lokasi_list:
-                lokasi["_id"] = str(lokasi["_id"]) # Convert ObjectId to string for template
+                lokasi["_id"] = str(lokasi["_id"]) 
 
-            # Format current booking dates for input fields (YYYY-MM-DD)
+            
             pesanan["tanggal_mulai_acara_str"] = pesanan["tanggal_mulai_acara"].strftime("%Y-%m-%d") if isinstance(pesanan.get("tanggal_mulai_acara"), datetime) else ""
             pesanan["tanggal_selesai_acara_str"] = pesanan["tanggal_selesai_acara"].strftime("%Y-%m-%d") if isinstance(pesanan.get("tanggal_selesai_acara"), datetime) else ""
 
-            # Fetch booked dates to disable in the calendar, excluding the current booking's dates
+            # Ambil tanggal pemesanan untuk dinonaktifkan di kalender
             disabled_statuses = [
                 "Menunggu Konfirmasi",
                 "Telah Dikonfirmasi",
@@ -2265,9 +2238,8 @@ def booking_ubah(pesanan_id):
                 booked_date_ranges=booked_date_ranges
             )
 
-        # --- POST Request: Process form submission for update ---
+        # --- POST Request: Proses pengiriman formulir untuk update ---
         elif request.method == "POST":
-            # Extract data from the form
             nama_klien = request.form['nama_klien']
             email_klien = request.form['email_klien']
             telepon_klien = request.form['telepon_klien']
@@ -2279,17 +2251,17 @@ def booking_ubah(pesanan_id):
             tanggal_mulai_acara_str = request.form['tanggal_mulai_acara']
             tanggal_selesai_acara_str = request.form['tanggal_selesai_acara']
             lokasi_luar_str = request.form['lokasi_luar']
-            lokasi_id_selected = request.form.get('lokasi_id') # This is the value from the select
+            lokasi_id_selected = request.form.get('lokasi_id') 
             alamat_lokasi_manual = request.form.get('alamat_lokasi_manual', '')
             link_maps_manual = request.form.get('link_maps_manual', '')
 
-            # Convert types
+            
             lokasi_luar_labuhanbatu = True if lokasi_luar_str == 'iya' else False
             jam_acara = jam_acara_str
             tanggal_mulai_acara = datetime.strptime(tanggal_mulai_acara_str, '%Y-%m-%d')
             tanggal_selesai_acara = datetime.strptime(tanggal_selesai_acara_str, '%Y-%m-%d')
 
-            # Determine final location details and ID to store
+            
             final_lokasi_id = None
             final_alamat_lokasi_acara = ""
             final_link_maps_acara = ""
@@ -2303,9 +2275,9 @@ def booking_ubah(pesanan_id):
                     final_lokasi_id = ObjectId(lokasi_id_selected)
                     final_alamat_lokasi_acara = selected_lokasi_data.get('alamat', '')
                     final_link_maps_acara = selected_lokasi_data.get('link_maps', '')
-            # If nothing selected, keep it empty string and None for ID
+          
 
-            # Update the booking document
+            # Update booking document
             update_data = {
                 "nama_klien": nama_klien,
                 "email_klien": email_klien,
@@ -2321,7 +2293,7 @@ def booking_ubah(pesanan_id):
                 "lokasi_id": final_lokasi_id,
                 "alamat_lokasi_acara": final_alamat_lokasi_acara,
                 "link_maps_acara": final_link_maps_acara,
-                "last_updated": datetime.utcnow() # Track when it was last updated
+                "last_updated": datetime.utcnow() 
             }
 
             db.pesanan.update_one(
@@ -2331,16 +2303,15 @@ def booking_ubah(pesanan_id):
 
 
 
-            # --- PENAMBAHAN: Ambil data terbaru termasuk nama layanan dan paket ---
+            # --- Ambil data terbaru termasuk nama layanan dan paket ---
             pesanan_terbaru = db.pesanan.find_one({"_id": ObjectId(pesanan_id)})
             layanan_data = db.layanan.find_one({"_id": pesanan_terbaru['layanan_id']})
             paket_data = db.paket.find_one({"_id": pesanan_terbaru['paket_id']})
             
             nama_layanan = layanan_data.get('nama', 'N/A') if layanan_data else 'N/A'
             nama_paket = paket_data.get('nama', 'N/A') if paket_data else 'N/A'
-            # --- AKHIR PENAMBAHAN ---
 
-            # --- PENYESUAIAN: Kirim nama ke fungsi notifikasi ---
+            # --- Kirim nama ke fungsi notifikasi ---
             send_owner_notification(
                 subject=f"📝 Pesanan Diubah oleh Klien - ID: {pesanan_id}",
                 template="email/notifikasi_pemilik.html",
@@ -2348,20 +2319,20 @@ def booking_ubah(pesanan_id):
                 jenis_notifikasi="Perubahan Pesanan",
                 pesanan=pesanan_terbaru,
                 pesanan_id=pesanan_id,
-                nama_layanan=nama_layanan,  # Data baru
-                nama_paket=nama_paket      # Data baru
+                nama_layanan=nama_layanan,  
+                nama_paket=nama_paket      
             )
 
 
 
             flash("Pesanan kamu berhasil diperbarui!", "success")
-            return redirect(url_for("ripe_menunggu_konfirmasi")) # Redirect to pending confirmation
+            return redirect(url_for("ripe_menunggu_konfirmasi")) 
 
 
     except Exception as e:
         app.logger.error(f"Error in booking_ubah for pesanan_id {pesanan_id}: {e}", exc_info=True)
         flash(f"Terjadi kesalahan saat mengubah pesanan: {e}", "danger")
-        return redirect(url_for("ripe_menunggu_konfirmasi")) # Fallback redirect on error
+        return redirect(url_for("ripe_menunggu_konfirmasi")) 
 
 
 
@@ -2413,7 +2384,7 @@ def ripe_menunggu_konfirmasi():
             else:
                 pesanan['tanggal_selesai_acara_formatted'] = 'N/A'
 
-            # Add formatted creation date for display
+           
             if isinstance(pesanan.get('created_at'), datetime):
                 pesanan['created_at_formatted'] = pesanan['created_at'].strftime('%d %b %Y %H:%M')
             else:
@@ -2540,18 +2511,17 @@ def riwayat_pemesanan():
             else:
                 pesanan['tanggal_selesai_acara_formatted'] = 'N/A'
 
-            # Add formatted creation date for display
+            
             if isinstance(pesanan.get('created_at'), datetime):
                 pesanan['created_at_formatted'] = pesanan['created_at'].strftime('%d %b %Y %H:%M')
             else:
                 pesanan['created_at_formatted'] = 'N/A'
 
-            # --- TAMBAHAN PENTING UNTUK STATUS PEMBAYARAN ---
+            # --- STATUS PEMBAYARAN ---
             # Mengambil status pembayaran deposit dan pelunasan dari database
             # Memberikan nilai default 'Belum Bayar' jika tidak ada di dokumen pesanan
             pesanan['status_pembayaran_deposit'] = pesanan.get('status_pembayaran_deposit', 'Belum Bayar')
             pesanan['status_pembayaran_pelunasan'] = pesanan.get('status_pembayaran_pelunasan', 'Belum Bayar')
-            # --- AKHIR TAMBAHAN ---
 
             pesanan_user_list.append(pesanan)
 
@@ -2559,7 +2529,7 @@ def riwayat_pemesanan():
             "user/riwayat_pemesanan.html",
             pesanan=pesanan_user_list,
             current_route=request.path,
-            MIDTRANS_CLIENT_KEY=MIDTRANS_CLIENT_KEY # Pass client key to frontend
+            MIDTRANS_CLIENT_KEY=MIDTRANS_CLIENT_KEY 
         )
 
     except Exception as e:
@@ -2577,7 +2547,6 @@ def riwayat_pemesanan():
             current_route=request.path,
             MIDTRANS_CLIENT_KEY=MIDTRANS_CLIENT_KEY
         )
-
 
 
 
@@ -2766,16 +2735,15 @@ def jadwal_ubah(pesanan_id):
             )
 
 
-            # --- PENAMBAHAN: Ambil data terbaru termasuk nama layanan dan paket ---
+            # --- Ambil data terbaru termasuk nama layanan dan paket ---
             pesanan_terbaru = db.pesanan.find_one({"_id": ObjectId(pesanan_id)})
             layanan_data = db.layanan.find_one({"_id": pesanan_terbaru['layanan_id']})
             paket_data = db.paket.find_one({"_id": pesanan_terbaru['paket_id']})
 
             nama_layanan = layanan_data.get('nama', 'N/A') if layanan_data else 'N/A'
             nama_paket = paket_data.get('nama', 'N/A') if paket_data else 'N/A'
-            # --- AKHIR PENAMBAHAN ---
 
-            # --- PENYESUAIAN: Kirim nama ke fungsi notifikasi ---
+            # --- Kirim nama ke fungsi notifikasi ---
             send_owner_notification(
                 subject=f"📅 Jadwal Diubah oleh Klien - ID: {pesanan_id}",
                 template="email/notifikasi_pemilik.html",
@@ -2847,7 +2815,7 @@ def ripe_selesai():
             else:
                 pesanan['tanggal_selesai_acara_formatted'] = 'N/A'
 
-            # Add formatted creation date for display
+            # Format tanggal
             if isinstance(pesanan.get('created_at'), datetime):
                 pesanan['created_at_formatted'] = pesanan['created_at'].strftime('%d %b %Y %H:%M')
             else:
@@ -2917,7 +2885,7 @@ def ripe_dibatalkan():
             else:
                 pesanan['tanggal_selesai_acara_formatted'] = 'N/A'
 
-            # Add formatted creation date for display
+            # Format Tanggal
             if isinstance(pesanan.get('created_at'), datetime):
                 pesanan['created_at_formatted'] = pesanan['created_at'].strftime('%d %b %Y %H:%M')
             else:
@@ -3148,7 +3116,7 @@ def admin_faq():
 
 
 @app.route("/admin_faq_tambah", methods=["GET", "POST"])
-@role_required(['admin', 'pemilik']) # Pastikan decorator ini ada dan berfungsi
+@role_required(['admin', 'pemilik']) 
 def admin_faq_tambah():
     # --- GET Request (Menampilkan halaman) ---
     if request.method == "GET":
@@ -3285,9 +3253,8 @@ def admin_faq_toggle_status(id_faq):
             {"_id": ObjectId(id_faq)},
             {
                 "$set": {
-                    "is_active": new_is_active,  # <-- Hanya ubah ini
+                    "is_active": new_is_active,  
                     "tanggal_diperbarui": datetime.now()
-                    # Field 'status' tidak disentuh sama sekali
                 }
             },
         )
@@ -3351,7 +3318,7 @@ def form_faq_user():
             }
             koleksi_faqs.insert_one(dokumen_faq_baru)
             
-            # --- PERUBAHAN UTAMA: Kembalikan JSON, bukan redirect ---
+            # --- Kembalikan JSON, bukan redirect ---
             # JavaScript akan menangkap JSON ini dan menampilkannya di SweetAlert
             return jsonify({
                 'status': 'success', 
@@ -3415,7 +3382,7 @@ def formulasan(pesanan_id):
     layanan_nama = layanan.get('nama', 'Layanan Tidak Ditemukan') if layanan else 'Layanan Tidak Ditemukan'
     paket_nama = paket.get('nama', 'Paket Tidak Ditemukan') if paket else 'Paket Tidak Ditemukan'
     
-    # === PERUBAHAN DI SINI ===
+    
     # Membuat format string yang baru
     service_package_string = f"Layanan {layanan_nama} - Paket {paket_nama}"
 
@@ -3427,12 +3394,12 @@ def formulasan(pesanan_id):
         pesanan_id=pesanan_id,
         user_name=masked_full_name,
         profile_pic=profile_picture_url,
-        service_package=service_package_string,  # Menggunakan format baru
+        service_package=service_package_string,  
         review_date=formatted_booking_date
     )
 
 
-# NEW: API to Submit Review
+# API untuk Mengirimkan Ulasan
 @app.route("/api/ulasan/submit", methods=["POST"])
 @login_required
 def api_submit_ulasan():
@@ -3446,17 +3413,17 @@ def api_submit_ulasan():
         return jsonify({"success": False, "message": "Rating, komentar, dan ID pemesanan harus diisi."}), 400
 
     try:
-        # Validate pesanan_id and ensure user owns it
+        # Validasi pesanan_id dan pastikan pengguna adalah pemiliknya
         pesanan = db.pesanan.find_one({"_id": ObjectId(pesanan_id), "user_id_pemesan": ObjectId(user_id)})
         if not pesanan:
             return jsonify({"success": False, "message": "Pemesanan tidak valid atau kamu tidak memiliki izin untuk mengulasnya."}), 403
 
-        # Check if a review already exists for this order
+        # Periksa apakah ulasan sudah ada untuk pesanan ini
         existing_review = reviews_collection.find_one({"pesanan_id": ObjectId(pesanan_id)})
         if existing_review:
             return jsonify({"success": False, "message": "Kamu sudah memberikan ulasan untuk pemesanan ini."}), 409
 
-        # Get service and package details for review storage
+        # Dapatkan detail layanan dan paket untuk penyimpanan ulasan
         layanan = db.layanan.find_one({"_id": pesanan['layanan_id']})
         paket = db.paket.find_one({"_id": pesanan['paket_id']})
         
@@ -3470,12 +3437,12 @@ def api_submit_ulasan():
             "comment": comment,
             "layanan_id": pesanan['layanan_id'],
             "paket_id": pesanan['paket_id'],
-            "service_package_name": f"{layanan_name} - {paket_name}", # Store combined name for quick display
+            "service_package_name": f"{layanan_name} - {paket_name}", 
             "created_at": datetime.now()
         }
         reviews_collection.insert_one(review_data)
 
-        # Optionally, update the pesanan to mark it as reviewed
+        
         db.pesanan.update_one(
             {"_id": ObjectId(pesanan_id)},
             {"$set": {"reviewed": True, "status_pesanan": "Selesai"}}
@@ -3487,7 +3454,7 @@ def api_submit_ulasan():
         logging.error(f"Error submitting review: {e}")
         return jsonify({"success": False, "message": f"Gagal menyimpan ulasan: {e}"}), 500
 
-# NEW: Kumpulan Ulasan (All Reviews) Page
+# Kumpulan Ulasan
 @app.route("/ulasan")
 def ulasan():
     # Mengurutkan ulasan terbaru di paling atas
@@ -3497,7 +3464,6 @@ def ulasan():
     for review in all_reviews:
         user = users_collection.find_one({"_id": review['user_id']})
         
-        # === PERUBAHAN DIMULAI DI SINI ===
         nama_layanan = "Tidak Diketahui"
         nama_paket = "Tidak Diketahui"
 
@@ -3515,7 +3481,6 @@ def ulasan():
 
         # Bangun string format baru
         service_package_string = f"Layanan {nama_layanan} - Paket {nama_paket}"
-        # === PERUBAHAN SELESAI DI SINI ===
 
         masked_name = mask_name(user.get('full_name', '')) if user else 'Pengguna Anonim'
         profile_pic_url = user.get('profile_picture_url', DEFAULT_GCS_PROFILE_PIC_URL) if user else DEFAULT_GCS_PROFILE_PIC_URL
@@ -3527,17 +3492,17 @@ def ulasan():
             'profile_pic': profile_pic_url,
             'review_date': formatted_date,
             'rating': review['rating'],
-            'service_package': service_package_string, # Menggunakan format baru
+            'service_package': service_package_string, 
             'comment': review['comment']
         })
     
     return render_template("user/ulasan.html", reviews=processed_reviews)
 
-# NEW: API to fetch reviews for homepage testimonial slider
+# API untuk mengambil ulasan untuk slider testimonial beranda
 @app.route("/api/reviews")
 def api_get_reviews():
     try:
-        latest_reviews = list(db.reviews.find().sort('created_at', -1).limit(10)) # Adjust limit as needed
+        latest_reviews = list(db.reviews.find().sort('created_at', -1).limit(10)) 
         processed_reviews = []
         for review in latest_reviews:
             user = db.users.find_one({"_id": review['user_id']})
@@ -3554,7 +3519,7 @@ def api_get_reviews():
         return jsonify(processed_reviews)
     except Exception as e:
         logging.error(f"Error fetching reviews for API: {e}")
-        return jsonify([]), 500 # Return empty array and 500 status on error
+        return jsonify([]), 500 
 
 
 
@@ -3664,8 +3629,8 @@ def api_daftar():
             "email": email,
             "password_hash": hashed_password,
             "created_at": datetime.now(),
-            "profile_picture_url":  "https://storage.googleapis.com/a1aa/image/10b4ac45-2b8b-450f-888c-bd7182757e8a.jpg", # Default profile picture for general users
-            "role": "user" # Default role for general users
+            "profile_picture_url":  "https://storage.googleapis.com/a1aa/image/10b4ac45-2b8b-450f-888c-bd7182757e8a.jpg", # Gambar profil default
+            "role": "user" # Peran default 
         })
         return jsonify({"success": True, "message": "Pendaftaran berhasil! Silakan masuk."}), 201
     except Exception as e:
@@ -3695,7 +3660,7 @@ def api_masuk():
         session['email'] = user.get('email', '')
         # Pastikan profile_picture_url di-set, jika tidak ada, gunakan default_url
         session['profile_picture_url'] = user.get('profile_picture_url') if user.get('profile_picture_url') else DEFAULT_GCS_PROFILE_PIC_URL
-        session['role'] = user.get('role', 'user') # Store role in session, default to 'user'
+        session['role'] = user.get('role', 'user') # Simpan peran dalam sesi, default ke 'pengguna'
 
         return jsonify({"success": True, "message": "Login berhasil!"}), 200
     else:
@@ -3855,7 +3820,7 @@ def api_update_profil():
     user_id = session["user_id"]
     user = users_collection.find_one({"_id": ObjectId(user_id)})
     if not user:
-        print(f"DEBUG: User with ID {user_id} not found in DB.")  # Tambahkan ini
+        print(f"DEBUG: User with ID {user_id} not found in DB.")  
         return jsonify({"success": False, "message": "Pengguna tidak ditemukan."}), 404
 
     data = request.form
@@ -3864,15 +3829,15 @@ def api_update_profil():
     email = data.get("email")
     photo = request.files.get("photo")
 
-    print(f"DEBUG: Received update request for user {user_id}")  # Tambahkan ini
+    print(f"DEBUG: Received update request for user {user_id}")  
     print(
         f"DEBUG: Name: {full_name}, Username: {username}, Email: {email}"
-    )  # Tambahkan ini
+    ) 
 
     if photo:
-        print(f"DEBUG: Photo file received: {photo.filename}")  # Tambahkan ini
+        print(f"DEBUG: Photo file received: {photo.filename}") 
         if photo.filename == "":
-            print("DEBUG: No filename provided for photo.")  # Tambahkan ini
+            print("DEBUG: No filename provided for photo.") 
             return (
                 jsonify(
                     {
@@ -3885,7 +3850,7 @@ def api_update_profil():
         if not allowed_file(photo.filename):
             print(
                 f"DEBUG: File extension not allowed: {photo.filename}"
-            )  # Tambahkan ini
+            ) 
             return (
                 jsonify(
                     {
@@ -3929,20 +3894,20 @@ def api_update_profil():
 
         try:
             photo.save(filepath)
-            print(f"DEBUG: Photo saved to: {filepath}")  # Tambahkan ini
+            print(f"DEBUG: Photo saved to: {filepath}")  
             updates = {}  # Pastikan updates diinisialisasi
             updates["profile_picture_url"] = f"/gambar_profil_user/{filename}"
             print(
                 f"DEBUG: Setting profile_picture_url to: {updates['profile_picture_url']}"
-            )  # Tambahkan ini
+            )  
         except Exception as e:
-            print(f"DEBUG ERROR: Error saving image: {e}")  # Tambahkan ini
+            print(f"DEBUG ERROR: Error saving image: {e}")  
             return (
                 jsonify({"success": False, "message": "Gagal menyimpan foto profil."}),
                 500,
             )
     else:
-        print("DEBUG: No photo file provided.")  # Tambahkan ini
+        print("DEBUG: No photo file provided.")  
         updates = {}  # Pastikan updates diinisialisasi untuk kasus tanpa foto
 
     # ... (bagian validasi nama, username, email seperti sebelumnya) ...
@@ -3983,7 +3948,7 @@ def api_update_profil():
         updates["username"] = username
 
     if updates:
-        print(f"DEBUG: Updating DB with: {updates}")  # Tambahkan ini
+        print(f"DEBUG: Updating DB with: {updates}")  
         try:
             users_collection.update_one({"_id": ObjectId(user_id)}, {"$set": updates})
             updated_user = users_collection.find_one({"_id": ObjectId(user_id)})
@@ -3996,7 +3961,7 @@ def api_update_profil():
             )
             print(
                 f"DEBUG: Session profile_picture_url after update: {session['profile_picture_url']}"
-            )  # Tambahkan ini
+            )  
             return (
                 jsonify({"success": True, "message": "Profil berhasil diperbarui."}), #MESSAGEOK
                 200,
@@ -4004,13 +3969,13 @@ def api_update_profil():
         except Exception as e:
             print(
                 f"DEBUG ERROR: Error updating profile in database: {e}"
-            )  # Tambahkan ini
+            )  
             return (
                 jsonify({"success": False, "message": "Gagal memperbarui profil."}),
                 500,
             )
     else:
-        print("DEBUG: No updates to perform (no changes detected).")  # Tambahkan ini
+        print("DEBUG: No updates to perform (no changes detected).")  
         return (
             jsonify(
                 {"success": True, "message": "Tidak ada perubahan yang dilakukan."}
@@ -4019,7 +3984,7 @@ def api_update_profil():
         )
 
 
-# ... (pastikan juga di bagian api_get_profil) ...
+# ... (api_get_profil) ...
 @app.route("/api/profil", methods=["GET"])
 @login_required
 def api_get_profil():
@@ -4076,7 +4041,7 @@ def api_delete_profile_photo():
 
     # Ekstrak nama file dari URL
     # URL contoh: /gambar_profil_user/some_filename.png
-    # Kita hanya perlu 'some_filename.png'
+    # hanya perlu 'some_filename.png'
     filename_from_url = os.path.basename(current_photo_url)
     filepath_to_delete = os.path.join(app.config["UPLOAD_FOLDER"], filename_from_url)
 
@@ -4091,7 +4056,7 @@ def api_delete_profile_photo():
             print(
                 f"DEBUG: File {filepath_to_delete} tidak ditemukan, mungkin sudah dihapus atau URL salah."
             )
-            # Kita tetap lanjutkan update DB meskipun file tidak ditemukan, anggap saja sudah tidak ada
+            # tetap lanjutkan update DB meskipun file tidak ditemukan, anggap saja sudah tidak ada
     except Exception as e:
         print(f"DEBUG ERROR: Gagal menghapus file {filepath_to_delete}: {e}")
         return (
@@ -4131,19 +4096,16 @@ def api_delete_profile_photo():
         )
 
 
-# ... (akhir kode) ...
+
 
 
 # --- Route untuk menyajikan file dari folder upload ---
-# --- PERUBAHAN DI SINI ---
 @app.route("/gambar_profil_user/<filename>")
 def uploaded_file(filename):
     safe_filename = secure_filename(filename)
     # Ini akan melayani file langsung dari direktori 'upload/profile_pictures'
     return send_from_directory(app.config["UPLOAD_FOLDER"], safe_filename)
 
-
-# --- AKHIR PERUBAHAN ---
 
 
 # --- Profil User (Tampilan HTML, Dilindungi Login) ---
@@ -4169,11 +4131,11 @@ def admin_akunKlien():
     # Mengambil semua user dari koleksi 'users' di MongoDB
     users_data = list(db.users.find({"role": {"$nin": ["admin", "pemilik"]}}))
 
-    print(f"DEBUG: Jumlah user yang ditemukan di database: {len(users_data)}") # --- TAMBAHKAN INI ---
+    print(f"DEBUG: Jumlah user yang ditemukan di database: {len(users_data)}") 
     if users_data:
-        print(f"DEBUG: Contoh data user pertama: {users_data[0]}") # --- TAMBAHKAN INI ---
+        print(f"DEBUG: Contoh data user pertama: {users_data[0]}") 
     else:
-        print("DEBUG: Tidak ada user ditemukan di database.") # --- TAMBAHKAN INI ---
+        print("DEBUG: Tidak ada user ditemukan di database.") 
 
     # Untuk setiap user, pastikan profile_picture_url diisi dengan default jika kosong di database
     for user in users_data:
@@ -4189,7 +4151,7 @@ def admin_akunKlien():
 
 # Route untuk halaman admin -admin dashboard
 @app.route('/admin_dashboard')
-@role_required(['admin', 'pemilik']) # Pastikan decorator ini sudah didefinisikan
+@role_required(['admin', 'pemilik']) 
 def admin_dashboard():
     """
     Menangani logika dan data untuk halaman dashboard admin.
@@ -4244,7 +4206,7 @@ def admin_dashboard():
     # Ubah hasil query menjadi format yang mudah digunakan
     data_map = {d['_id']['month']: d['count'] for d in pesanan_per_bulan_db}
 
-    # Siapkan data final untuk Chart.js
+    # Data final untuk Chart.js
     chart_labels = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"]
     chart_data = [data_map.get(month, 0) for month in range(1, 13)]
 
@@ -4387,14 +4349,13 @@ def pemilik_dashboard():
         
         total_pendapatan_tahun_ini = sum(chart_data)
 
-        # 4. LOGIKA DATA KARTU STATISTIK (Tambahan untuk pendapatan bulan ini) # <-- BARU
-        pendapatan_bulan_ini_pipeline = [ # <-- BARU
-            {"$match": {"created_at": {"$gte": this_month_start}}}, # <-- BARU
-            {"$group": {"_id": None, "total": {"$sum": "$total_harga"}}} # <-- BARU
-        ] # <-- BARU
-        hasil_pendapatan_bulan_ini = list(db.pesanan.aggregate(pendapatan_bulan_ini_pipeline)) # <-- BARU
-         # <-- BARU
-        total_pendapatan_bulan_ini = hasil_pendapatan_bulan_ini[0]['total'] if hasil_pendapatan_bulan_ini else 0 # <-- BARU
+        # 4. LOGIKA DATA KARTU STATISTIK (Tambahan untuk pendapatan bulan ini) 
+        pendapatan_bulan_ini_pipeline = [ 
+            {"$match": {"created_at": {"$gte": this_month_start}}}, 
+            {"$group": {"_id": None, "total": {"$sum": "$total_harga"}}} 
+        ] 
+        hasil_pendapatan_bulan_ini = list(db.pesanan.aggregate(pendapatan_bulan_ini_pipeline)) 
+        total_pendapatan_bulan_ini = hasil_pendapatan_bulan_ini[0]['total'] if hasil_pendapatan_bulan_ini else 0 
 
         # 5. RENDER TEMPLATE
         return render_template(
@@ -4407,7 +4368,7 @@ def pemilik_dashboard():
             chart_labels=json.dumps(chart_labels),
             chart_data=json.dumps(chart_data),
             total_pendapatan_tahun_ini=total_pendapatan_tahun_ini,
-            total_pendapatan_bulan_ini=total_pendapatan_bulan_ini # <-- BARU
+            total_pendapatan_bulan_ini=total_pendapatan_bulan_ini 
         )
 
     except Exception as e:
@@ -4423,7 +4384,7 @@ def pemilik_dashboard():
             chart_labels=json.dumps([]),
             chart_data=json.dumps([]),
             total_pendapatan_tahun_ini=0,
-            total_pendapatan_bulan_ini=0 # <-- BARU
+            total_pendapatan_bulan_ini=0 
         )
     
 
@@ -4615,8 +4576,7 @@ def pemilik_pengguna():
     
     # Ambil hanya pengguna dengan role 'pemilik' atau 'admin'
     # Sortir berdasarkan created_at secara menurun (terbaru di atas)
-    # Anda mungkin ingin menambahkan .sort([("created_at", -1)])
-    # Tapi kita akan memisahkan 'pemilik_riyan' dan mengurutkan sisanya.
+    # memisahkan 'pemilik_riyan' dan mengurutkan sisanya.
     management_users_cursor = users_collection.find({
         "role": {"$in": ["pemilik", "admin"]}
     }).sort("created_at", -1) # Urutkan terbaru di atas
@@ -4627,7 +4587,7 @@ def pemilik_pengguna():
     for user in management_users_cursor:
         user['_id'] = str(user['_id']) # Konversi ObjectId ke string
         # Pastikan profile_picture_url diisi dengan default jika kosong dan role adalah user
-        # (meskipun di sini kita hanya ambil admin/pemilik, antisipasi untuk data lama atau inkonsisten)
+        # (meskipun di sini hanya ambil admin/pemilik, antisipasi untuk data lama atau inkonsisten)
         if user.get('role') == 'user' and not user.get('profile_picture_url'):
             user['profile_picture_url'] = DEFAULT_GCS_PROFILE_PIC_URL
         
@@ -4646,8 +4606,8 @@ def pemilik_pengguna():
 
     return render_template('pemilik/pengguna.html', users=sorted_users)
 
-# ... (Pastikan Anda memiliki route untuk menghapus pengguna) ...
-# Contoh placeholder untuk route hapus (kita akan implementasikan nanti jika perlu)
+# ... (Pastikan memiliki route untuk menghapus pengguna) ...
+# Contoh placeholder untuk route hapus (kia akan implementasikan nanti jika perlu)
 @app.route('/api/pemilik_hapus_pengguna/<user_id>', methods=['DELETE'])
 @role_required(['pemilik'])
 def api_pemilik_hapus_pengguna(user_id):
@@ -4711,7 +4671,7 @@ def api_pemilik_tambah_pengguna():
 
     # Atur profile_picture_url berdasarkan peran
     profile_pic_to_save = None # Default None untuk admin/pemilik yang baru ditambahkan
-    if role == 'user': # Meskipun endpoint ini hanya untuk admin/pemilik, antisipasi jika logika berubah
+    if role == 'user': 
         profile_pic_to_save = DEFAULT_GCS_PROFILE_PIC_URL
 
     try:
@@ -4751,7 +4711,7 @@ def pemilik_ubah_pengguna(user_id):
 def api_pemilik_update_pengguna(user_id):
     """API untuk pemilik mengubah detail pengguna (nama lengkap, username, password, email)."""
     data = request.get_json()
-    # [MODIFIKASI] Ambil nama_lengkap dari request
+    # Ambil nama_lengkap dari request
     full_name = data.get('nama_lengkap')
     username = data.get('nama_pengguna')
     password = data.get('kata_sandi')
@@ -4769,7 +4729,7 @@ def api_pemilik_update_pengguna(user_id):
 
         update_fields = {}
 
-        # [MODIFIKASI] Update nama lengkap jika ada perubahan dan tidak kosong
+        # Update nama lengkap jika ada perubahan dan tidak kosong
         if full_name and full_name.strip() and full_name.strip() != existing_user.get('full_name'):
             update_fields['full_name'] = full_name.strip()
 
@@ -4807,7 +4767,7 @@ def api_pemilik_update_pengguna(user_id):
             elif existing_user.get('email'):
                 update_fields['email'] = None
 
-        # [MODIFIKASI] Komentar diperbarui karena Nama Lengkap sekarang bisa diubah.
+        # Komentar diperbarui karena Nama Lengkap sekarang bisa diubah.
         # Peran tetap tidak dapat diubah.
         # Role tidak boleh diubah.
 
@@ -4823,7 +4783,7 @@ def api_pemilik_update_pengguna(user_id):
 
 
 
-# Function to initialize default owner account
+# Fungsi untuk initialize default akun pemilik
 def initialize_owner_account():
     owner_username = "pemilik_riyan"
     owner_email = "ovalphotoo@gmail.com"
@@ -5024,7 +4984,7 @@ def create_midtrans_transaction():
         }
 
         # Simpan order_id Midtrans ke dalam dokumen pesanan di MongoDB
-        # Ini penting untuk melacak pembayaran yang masuk melalui webhook
+        # untuk melacak pembayaran yang masuk melalui webhook ( webhook adalah fitur penting yang digunakan untuk memberitahu sistem secara otomatis ketika ada perubahan status transaksi)
         if payment_type == 'deposit':
             db.pesanan.update_one(
                 {'_id': ObjectId(pesanan_id)},
@@ -5072,7 +5032,7 @@ def update_payment_status():
         pesanan_id = data.get('pesanan_id')
         payment_type = data.get('payment_type')
         transaction_status = data.get('transaction_status')
-        fraud_status = data.get('fraud_status') # Optional, for more detailed status
+        fraud_status = data.get('fraud_status') 
 
         if not pesanan_id or not payment_type or not transaction_status:
             return jsonify({'success': False, 'message': 'Missing data for update.'}), 400
@@ -5081,12 +5041,12 @@ def update_payment_status():
         if not pesanan:
             return jsonify({'success': False, 'message': 'Pesanan not found.'}), 404
 
-        # Ensure the logged-in user is the owner of this booking
+        # Pastikan pengguna yang masuk adalah pemilik pemesanan ini
         if str(pesanan.get('user_id_pemesan')) != session.get('user_id'):
             return jsonify({'success': False, 'message': 'Unauthorized access.'}), 403
 
         update_fields = {}
-        new_order_status = None # To return to frontend if changed
+        new_order_status = None 
         total_harga = pesanan.get('total_harga', 0)
         last_deposit_attempt_amount = pesanan.get('last_deposit_attempt_amount', 0)
         # last_pelunasan_attempt_amount = pesanan.get('last_pelunasan_attempt_amount', 0)
@@ -5104,7 +5064,7 @@ def update_payment_status():
 
 
 
-                     # If deposit is paid, update main order status to 'Belum Pemotretan'
+                     # Jika deposit sudah dibayar, update status pesanan utama menjadi 'Belum Pemotretan'
                     new_order_status = 'Belum Pemotretan'
                     update_fields['status_pesanan'] = new_order_status
                     app.logger.info(f"Frontend update: Deposit Lunas for pesanan {pesanan_id}. Main status set to 'Belum Pemotretan'.")
@@ -5117,7 +5077,7 @@ def update_payment_status():
                     update_fields['tanggal_pembayaran_pelunasan'] = datetime.utcnow()
                     update_fields['midtrans_pelunasan_status'] = transaction_status
                     
-                    # If pelunasan is paid, also mark deposit as Lunas (if not already)
+                    # Jika pelunasan sudah dibayarkan, tandai juga deposit sebagai Lunas (jika belum)
                     update_fields['status_pembayaran_deposit'] = 'Lunas'
                     update_fields['tanggal_pembayaran_deposit'] = datetime.utcnow()
 
@@ -5147,7 +5107,7 @@ def update_payment_status():
 
             
 
-        # Only update if there are fields to update
+        # Perbarui hanya jika ada bidang yang perlu diperbarui
         if update_fields:
             result = db.pesanan.update_one({'_id': ObjectId(pesanan_id)}, {'$set': update_fields})
             if result.matched_count > 0 and result.modified_count > 0:

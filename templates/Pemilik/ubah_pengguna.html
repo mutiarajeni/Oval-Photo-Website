@@ -161,7 +161,7 @@
 </div>
 
 <script>
-  // Fungsi helper untuk menampilkan SweetAlert
+  // Fungsi untuk menampilkan SweetAlert
   function showAlert(icon, title, text, redirectUrl = null) {
     Swal.fire({
       icon: icon,
@@ -185,7 +185,7 @@
     const peranSelect = document.getElementById('peranSelect');
     const emailInput = document.getElementById('email');
     const submitButton = document.getElementById('submitButton');
-    // [MODIFIKASI] Ambil elemen error untuk nama lengkap
+    // Ambil elemen error untuk nama lengkap
     const namaLengkapError = document.getElementById('namaLengkapError');
     const usernameError = document.getElementById('usernameError');
     const passwordError = document.getElementById('passwordError');
@@ -202,7 +202,7 @@
     // Fungsi untuk memeriksa apakah ada perubahan
     function checkForChanges() {
       const currentData = {
-        // [MODIFIKASI] Tambahkan pengecekan untuk nama lengkap
+        // Pengecekan untuk nama lengkap
         full_name: namaLengkapInput.value,
         username: namaPenggunaInput.value,
         password: kataSandiInput.value,
@@ -211,7 +211,7 @@
 
       let changed = false;
 
-      // [MODIFIKASI] Cek nama lengkap
+      // Cek nama lengkap
       if (currentData.full_name !== initialUserData.full_name) {
         changed = true;
       }
@@ -234,7 +234,7 @@
       submitButton.disabled = !changed;
     }
 
-    // [MODIFIKASI] Tambahkan event listener untuk input nama lengkap
+    // Event listener untuk input nama lengkap
     namaLengkapInput.addEventListener('input', checkForChanges);
     namaPenggunaInput.addEventListener('input', checkForChanges);
     kataSandiInput.addEventListener('input', checkForChanges);
@@ -253,7 +253,7 @@
       passwordError.style.display = 'none';
       emailError.style.display = 'none';
 
-      // [MODIFIKASI] Ambil nilai dari input nama lengkap
+      // Ambil nilai dari input nama lengkap
       const fullName = namaLengkapInput.value;
       const username = namaPenggunaInput.value;
       const password = kataSandiInput.value;
@@ -262,7 +262,7 @@
 
 
       // Validasi sisi klien
-      // [MODIFIKASI] Tambahkan validasi untuk nama lengkap
+      //Tambahkan validasi untuk nama lengkap
       if (!fullName.trim()) {
         showAlert('error', 'Validasi Gagal!', 'Nama Lengkap harus diisi.');
         namaLengkapError.style.display = 'block';
@@ -313,7 +313,7 @@
         if (result.isConfirmed) {
           try {
             const dataToSend = {
-              // [MODIFIKASI] Tambahkan nama_lengkap ke data yang dikirim
+              // Tambahkan nama_lengkap ke data yang dikirim
               nama_lengkap: fullName,
               nama_pengguna: username,
             };

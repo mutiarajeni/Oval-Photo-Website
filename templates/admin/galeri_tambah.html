@@ -10,8 +10,6 @@ Photo {% endblock %} {% block content %}
       </div>
 
       <div class="card-body px-4 pb-4">
-        {# Tidak ada lagi blok get_flashed_messages() di sini #}
-
         <div class="row">
           <div class="col-md-8">
             <form
@@ -193,13 +191,12 @@ Photo {% endblock %} {% block content %}
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    // --- SweetAlert Handler dari URL Parameters ---
     const urlParams = new URLSearchParams(window.location.search);
     const saStatus = urlParams.get("_sa_status");
     const saMessage = urlParams.get("_sa_message");
 
     if (saStatus && saMessage) {
-      let icon = "info"; // Default
+      let icon = "info";
       if (saStatus === "Berhasil") {
         icon = "success";
       } else if (saStatus === "error" || saStatus === "danger") {
@@ -223,7 +220,6 @@ Photo {% endblock %} {% block content %}
         window.history.replaceState({}, document.title, newUrl);
       });
     }
-    // --- Akhir SweetAlert Handler ---
 
     // --- Get DOM Elements ---
     const tambahGaleriForm = document.getElementById("tambahGaleriForm");
@@ -512,13 +508,12 @@ Photo {% endblock %} {% block content %}
             },
           });
 
-          // PERUBAHAN UTAMA: Gunakan fetch untuk mengirim form data
+          // Gunakan fetch untuk mengirim form data
           const formData = new FormData(form);
 
           fetch(form.action, {
             method: "POST",
             body: formData,
-            // 'headers' tidak diperlukan untuk FormData, browser akan mengaturnya
           })
             .then((response) => response.json()) // Harapkan respons JSON dari server
             .then((data) => {

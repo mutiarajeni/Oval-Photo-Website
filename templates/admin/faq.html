@@ -48,7 +48,6 @@
         </div>
       </div>
       <div class="card-body px-0 pb-2">
-
         <table id="dataTable" class="table align-items-center mb-0">
           <thead>
             <tr>
@@ -231,24 +230,22 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    // --- SweetAlert Handler dari URL Parameters (GLOBAL FOR ALL ADMIN PAGES) ---
     const urlParams = new URLSearchParams(window.location.search);
     const saStatus = urlParams.get("_sa_status");
     const saMessage = urlParams.get("_sa_message");
 
     if (saStatus && saMessage) {
-      let icon = "info"; // Default
+      let icon = "info";
       if (saStatus === "success") {
         icon = "success";
       } else if (saStatus === "error" || saStatus === "danger") {
-        // danger is also mapped to error icon
         icon = "error";
       } else if (saStatus === "warning") {
         icon = "warning";
       }
 
       Swal.fire({
-        title: saStatus.charAt(0).toUpperCase() + saStatus.slice(1), // Capitalize first letter (e.g., "Success")
+        title: saStatus.charAt(0).toUpperCase() + saStatus.slice(1),
         text: saMessage,
         icon: icon,
         confirmButtonText: "Oke",
@@ -262,9 +259,8 @@
         window.history.replaceState({}, document.title, newUrl);
       });
     }
-    // --- Akhir SweetAlert Handler ---
 
-    // --- KODE BARU UNTUK FUNGSI PENCARIAN ---
+    // --- FUNGSI PENCARIAN ---
     const searchInput = document.getElementById("searchInput");
     const dataTable = document.getElementById("dataTable");
     const tableRows = dataTable
@@ -292,7 +288,6 @@
         }
       }
     });
-    // --- AKHIR KODE BARU ---
 
     const toggleSwitches = document.querySelectorAll(
       '.switch input[type="checkbox"]'
@@ -306,7 +301,6 @@
           `statusText_${faqId}`
         );
 
-        // Revert switch temporarily
         this.checked = !newIsActive;
 
         Swal.fire({
@@ -316,8 +310,8 @@
           } FAQ ini?`,
           icon: "warning",
           showCancelButton: true,
-          confirmButtonColor: newIsActive ? "#3085d6" : "#3085d6", // blue for activate, blue for deactivate
-          cancelButtonColor: "#d33", // red
+          confirmButtonColor: newIsActive ? "#3085d6" : "#3085d6",
+          cancelButtonColor: "#d33",
           confirmButtonText: "Ya, Lanjutkan!",
           cancelButtonText: "Batal",
         }).then((result) => {
@@ -327,7 +321,6 @@
               headers: {
                 "Content-Type": "application/json",
               },
-              // body: JSON.stringify({ is_active: newIsActive }), // Backend only needs ID, but sending status is harmless
             })
               .then((response) => {
                 if (!response.ok) {
@@ -343,8 +336,7 @@
               })
               .then((data) => {
                 if (data.success) {
-                  // Update UI if successful
-                  switchElement.checked = data.new_is_active; // Set status based on backend response
+                  switchElement.checked = data.new_is_active;
                   if (statusTextElement) {
                     statusTextElement.textContent = data.new_is_active
                       ? "Aktif"
@@ -359,13 +351,12 @@
                     "success"
                   );
                 } else {
-                  // If backend reports failure
                   Swal.fire(
                     "Gagal!",
                     data.message || "Gagal mengubah status FAQ.",
                     "error"
                   );
-                  switchElement.checked = !data.new_is_active; // Revert switch
+                  switchElement.checked = !data.new_is_active;
                 }
               })
               .catch((error) => {
@@ -376,10 +367,9 @@
                     error.message,
                   "error"
                 );
-                switchElement.checked = !newIsActive; // Revert switch if network/server error
+                switchElement.checked = !newIsActive;
               });
           } else {
-            // If user cancels, revert the switch to its original position
             switchElement.checked = !newIsActive;
           }
         });

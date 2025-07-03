@@ -10,7 +10,6 @@ endblock %} {% block content %}
       </div>
       <div class="card-body px-4 pb-4">
         <div class="table-responsive p-0">
-          <!-- Hapus container mt-5 karena card-body sudah memberi padding -->
           <form
             id="addFaqForm"
             method="POST"
@@ -22,7 +21,6 @@ endblock %} {% block content %}
                   <td><label for="pertanyaan">Pertanyaan</label></td>
                   <td>
                     <div class="input-group input-group-outline">
-                      <!-- Hapus value dari backend karena tidak ada lagi redirect dengan parameter -->
                       <textarea
                         class="form-control"
                         id="pertanyaan"
@@ -75,7 +73,7 @@ endblock %} {% block content %}
 </div>
 
 <script>
-  // Bagian untuk enable/disable tombol tetap sama
+  // Bagian untuk enable/disable tombol
   function checkFormFilled() {
     const pertanyaan = document.getElementById("pertanyaan").value.trim();
     const jawaban = document.getElementById("jawaban").value.trim();
@@ -87,7 +85,7 @@ endblock %} {% block content %}
   });
   document.addEventListener("DOMContentLoaded", checkFormFilled);
 
-  // --- BAGIAN SUBMIT DIUBAH MENGGUNAKAN FETCH (AJAX) ---
+  // --- BAGIAN SUBMIT ---
   document
     .getElementById("addFaqForm")
     .addEventListener("submit", function (event) {

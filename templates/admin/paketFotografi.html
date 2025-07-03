@@ -60,9 +60,7 @@ block content %}
                 <th class="text-center fs-7 fw-bold">Deposit</th>
                 <th class="text-center fs-7 fw-bold">Keuntungan</th>
                 <th class="text-center fs-7 fw-bold">Tim Pekerja</th>
-                <th class="text-center fs-7 fw-bold">
-                  Periode Paket
-                </th>
+                <th class="text-center fs-7 fw-bold">Periode Paket</th>
                 <th class="text-center fs-7 fw-bold">Aksi</th>
               </tr>
             </thead>
@@ -156,7 +154,11 @@ block content %}
                       class="text-dark d-flex align-items-center text-decoration-none"
                     >
                       <i class="material-icons me-1">edit</i>
-                      <span class="mb-0" style="font-weight: normal; margin-top:5px">Ubah</span>
+                      <span
+                        class="mb-0"
+                        style="font-weight: normal; margin-top: 5px"
+                        >Ubah</span
+                      >
                     </a>
                   </div>
                 </td>
@@ -172,7 +174,7 @@ block content %}
 
 <!-- STYLE -->
 <style>
-  /* Style untuk toggle switch seperti di FAQ */
+  /* Style untuk toggle switch */
   .switch {
     position: relative;
     display: inline-block;
@@ -269,13 +271,12 @@ block content %}
       }
     });
   });
-  //--- akhir code pencarian ---
 
   function konfirmasiStatus(id, statusBaru) {
     const toggle = document.getElementById("toggleAktif" + id);
     const label = document.getElementById("statusLabel" + id);
 
-    // Kembalikan toggle ke posisi sebelumnya dulu
+    // Kembalikan toggle ke posisi sebelumnya
     toggle.checked = !statusBaru;
 
     Swal.fire({

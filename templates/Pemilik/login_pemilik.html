@@ -33,9 +33,8 @@
       .swal2-html-container {
         font-size: 1rem;
       }
-      /* Optional: Add custom button styles for SweetAlert2 if using Bootstrap */
       .swal2-confirm.btn-primary {
-        background-color: #007bff !important; /* Contoh warna primary Bootstrap */
+        background-color: #007bff !important;
         border-color: #007bff !important;
       }
     </style>
@@ -102,19 +101,18 @@
     </div>
 
     <script>
-      // Fungsi helper untuk menampilkan SweetAlert (ditempatkan di sini atau di file JS terpisah)
+      // Fungsi helper untuk menampilkan SweetAlert
       function showAlert(icon, title, text, redirectUrl = null) {
         Swal.fire({
-          icon: icon, // 'success', 'error', 'warning', 'info', 'question'
+          icon: icon,
           title: title,
           text: text,
           showConfirmButton: false,
           customClass: {
-            confirmButton: "btn btn-primary", // Sesuaikan dengan kelas CSS tombol Anda
+            confirmButton: "btn btn-primary",
           },
         }).then((result) => {
           if (redirectUrl) {
-            // Selalu redirect jika ada URL, terlepas dari isConfirmed
             window.location.href = redirectUrl;
           }
         });
@@ -168,8 +166,6 @@
           const result = await response.json();
 
           if (response.ok) {
-            // Untuk login, langsung redirect saja karena SweetAlert akan hilang
-            // jika langsung redirect tanpa menunggu user klik OK
             showAlert(
               "success",
               "Login Berhasil!",
