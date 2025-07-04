@@ -88,8 +88,8 @@ body {
 
 /* Button styles */
 .btn.bg-admin {
-  color: #fff; /* Ensure text color is white */
-  transition: background 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover effect */
+  color: #fff;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .btn.bg-gradient-custom:hover {
@@ -99,7 +99,7 @@ body {
     rgba(0, 0, 0, 0.9) 100%
   );
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3), 0 6px 12px rgba(0, 0, 0, 0.2);
-  color: #fff; /* Text color remains white on hover */
+  color: #fff;
 }
 
 /* Upload foto */
@@ -284,13 +284,13 @@ select.form-control:disabled {
   color: white !important;
 }
 
-/* Hover effect for sidebar navigation links (pertahankan ini jika ingin hover juga hitam-putih) */
+/*  Efek hover untuk link navigasi sidebar */
 .sidenav .nav-item .nav-link:hover {
   background-color: black !important;
   color: white !important;
 }
 
-/* Ensure icons and text inside the nav-link also change color on hover */
+/* Pastikan icon dan teks di dalam nav-link juga berubah warna saat diarahkan */
 .sidenav .nav-item .nav-link:hover .material-icons,
 .sidenav .nav-item .nav-link:hover .nav-link-text {
   color: white !important;

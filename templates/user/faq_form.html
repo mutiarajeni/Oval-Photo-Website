@@ -78,7 +78,6 @@
       </div>
     </div>
 
-    {# --- BAGIAN YANG DIPINDAHKAN --- #}
     <div class="formlayanan-buttons">
       <button
         type="button"
@@ -97,17 +96,14 @@
         Kirim
       </button>
     </div>
-    {# --- AKHIR BAGIAN YANG DIPINDAHKAN --- #}
   </form>
 </div>
 
-{# SweetAlert2 CDN (pastikan sudah ada di base_user.html atau tambahkan di sini)
-#}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
   (() => {
-    // BAGIAN SWEETALERT DARI URL ANDA (TIDAK DIUBAH)
+    // BAGIAN SWEETALERT DARI URL
     const urlParams = new URLSearchParams(window.location.search);
     const saStatus = urlParams.get("_sa_status");
     const saMessage = urlParams.get("_sa_message");
@@ -140,7 +136,7 @@
       });
     }
 
-    // BAGIAN DEKLARASI & VALIDASI ASLI ANDA (TIDAK DIUBAH)
+    // BAGIAN DEKLARASI & VALIDASI
     const form = document.getElementById("formlayanan");
     const submitBtn = document.getElementById("formlayanan-submitBtn");
     const requiredFields = form.querySelectorAll(".formlayanan-required");
@@ -220,8 +216,6 @@
           cancelButtonText: "Tidak",
         }).then((result) => {
           if (result.isConfirmed) {
-            // ---- KODE PESAN "MENGIRIM..." SUDAH DIHAPUS DARI SINI ----
-
             // Langsung jalankan proses pengiriman data di latar belakang
             fetch(form.action, {
               method: "POST",

@@ -56,8 +56,8 @@
     // ----- KUMPULAN FUNGSI -----
 
     /**
-     * [BARU] Fungsi ini bertanya ke server untuk mendapatkan status login yang sebenarnya,
-     * lalu merender UI (tombol Masuk/Profil) dan memulai timer jika perlu.
+     * Fungsi ini bertanya ke server untuk mendapatkan status login yang sebenarnya,
+     * lalu merender UI (button Masuk/Profil) dan memulai timer jika perlu.
      */
     async function checkSessionAndRender() {
       const authSection = document.getElementById("auth-section");
@@ -209,8 +209,6 @@
 
     // ----- EKSEKUSI SAAT HALAMAN DIMUAT -----
     document.addEventListener("DOMContentLoaded", checkSessionAndRender);
-
-    // ----- FUNGSI BANTUAN LAINNYA (TIDAK DIUBAH) -----
 
     function closeDropdownOnOutsideClick(e) {
       const userIconButton = document.getElementById("user-icon");

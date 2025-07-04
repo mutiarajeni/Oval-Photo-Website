@@ -537,33 +537,33 @@
 </div>
 
 <style>
-  /* Base style for the "Pesan" button when disabled */
+  /* "Pesan" button ketika disabled */
   .formlayanan-btn-pesan[disabled] {
-    background-color: #cccccc; /* Greyed out color */
-    color: #666666; /* Darker text for disabled state */
+    background-color: #cccccc; 
+    color: #666666; 
     cursor: not-allowed;
   }
-  /* Style for the "Pesan" button when active (not disabled) */
+  /* "Pesan" button ketika aktif */
   .formlayanan-btn-pesan:not([disabled]) {
-    background-color: #86ade8; /* Blue color as per image */
-    color: #ffffff; /* White text color as per image */
+    background-color: #86ade8; 
+    color: #ffffff; 
     cursor: pointer;
   }
-  /* Optional: Add hover effect for active button */
+  
   .formlayanan-btn-pesan:not([disabled]):hover {
-    background-color: #5b90ed; /* Slightly darker blue on hover */
+    background-color: #5b90ed; 
   }
   /* Modal Styles */
   .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1000; /* Sit on top */
+    display: none; 
+    position: fixed; 
+    z-index: 1000; 
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0, 0, 0, 0.4); 
     justify-content: center;
     align-items: center;
   }
@@ -572,8 +572,8 @@
     margin: auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%; /* Could be responsive */
-    max-width: 700px; /* Max width for larger screens */
+    width: 80%; 
+    max-width: 700px; 
     border-radius: 8px;
     position: relative;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -596,9 +596,9 @@
     margin-bottom: 20px;
   }
   .modal-body {
-    max-height: 400px; /* Limit height for scrollable content */
-    overflow-y: auto; /* Enable scrolling */
-    padding-right: 15px; /* Space for scrollbar */
+    max-height: 400px;
+    overflow-y: auto; 
+    padding-right: 15px; 
   }
   .catatan-modal {
     list-style-type: decimal;
@@ -639,7 +639,7 @@
     border-top: 1px solid #eee;
     margin-top: 20px;
   }
-  /* Styles for the "Pesan" button within the modal (now "Kirim") */
+  
   #sendButton {
     background-color: #2b5ea3;
     color: white;
@@ -664,10 +664,10 @@
 <script>
   let allLokasiData = [];
   let bookedDateRanges = {{ booked_date_ranges | tojson }};
-  // Store initial form values to detect changes
+  
   const initialFormValues = {};
   document.addEventListener("DOMContentLoaded", function () {
-    // --- PENERAPAN LOGIC TANGGAL DARI PESANAN TAMBAH ADMIN (START) ---
+    // --- PENERAPAN LOGIC TANGGAL DARI PESANAN TAMBAH ADMIN  ---
     const startDateInput = document.getElementById('tanggal_mulai_acara');
     const endDateInput = document.getElementById('tanggal_selesai_acara');
     const todayString = new Date().toISOString().split('T')[0];
@@ -691,7 +691,6 @@
     endDateInput.removeAttribute('oninput');
     startDateInput.addEventListener('input', checkFormValidityAndChanges);
     endDateInput.addEventListener('input', checkFormValidityAndChanges);
-    // --- PENERAPAN LOGIC TANGGAL DARI PESANAN TAMBAH ADMIN (END) ---
     // Fetch all lokasi data
     fetch("/api/all_lokasi")
       .then((response) => response.json())
@@ -817,10 +816,9 @@
  function displayLokasiPrice() {
   const lokasiSelect = document.getElementById("lokasiSelect");
 
-  // SOLUSI: Jika dropdown lokasi dinonaktifkan, jangan lakukan apa-apa.
-  // Ini akan menjaga nilai yang sudah diisi oleh server.
+  
   if (lokasiSelect.disabled) {
-    return; // Keluar dari fungsi lebih awal
+    return; 
   }
 
   // Kode di bawah ini hanya akan berjalan jika dropdown lokasi AKTIF.

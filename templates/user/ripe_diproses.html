@@ -424,9 +424,9 @@
 
   // Logika untuk tombol Bayar Sisa Pembayaran 
   document.querySelectorAll(".bayar-sisa-btn").forEach((button) => {
-    button.addEventListener("click", async function () { // Added async keyword
-      const pesananId = this.getAttribute("data-pesanan-id"); // Changed to data-pesanan-id
-      const paymentType = this.getAttribute("data-payment-type"); // New payment type 'sisa_bayar'
+    button.addEventListener("click", async function () { 
+      const pesananId = this.getAttribute("data-pesanan-id"); 
+      const paymentType = this.getAttribute("data-payment-type"); 
       const sisaPembayaranValue = parseFloat(this.getAttribute("data-sisa-pembayaran"));
 
       if (sisaPembayaranValue === 0) {
@@ -435,10 +435,10 @@
           title: "Pembayaran Lunas",
           text: "Pembayaran pelunasan untuk pesanan ini sudah lunas.",
         });
-        return; // Stop execution if already paid
+        return; // Stop eksekusi jika sudah bayar
       }
 
-      // Disable the button immediately to prevent double clicks
+      // Disable button untuk mencegah klik ganda
       button.disabled = true;
 
       try {
@@ -459,7 +459,7 @@
           snap.pay(data.token, {
             onSuccess: async function (result) {
               console.log("Payment success:", result);
-              // Send explicit update to backend after successful payment
+              // Kirim pembaruan eksplisit ke backend setelah pembayaran berhasil
               const updateResponse = await fetch("/api/update_payment_status", {
                 method: "POST",
                 headers: {
@@ -490,7 +490,7 @@
                   "Gagal memperbarui status pembayaran di server.",
                   "error"
                 );
-                button.disabled = false; // Re-enable button on backend update failure
+                button.disabled = false; // Re-enable button pada backend jika update gagal
               }
             },
             onPending: function (result) {
@@ -500,7 +500,7 @@
                 title: "Pembayaran Anda Sedang Menunggu!",
                 text: "Harap selesaikan pembayaran Anda melalui metode yang dipilih.",
               });
-              button.disabled = false; // Re-enable button on pending
+              button.disabled = false; // Re-enable button pada pending
             },
             onError: function (result) {
               console.log("Payment error:", result);
@@ -509,7 +509,7 @@
                 title: "Pembayaran Gagal",
                 text: "Terjadi kesalahan saat memproses pembayaran Anda. Silakan coba lagi.",
               });
-              button.disabled = false; // Re-enable button on error
+              button.disabled = false; // Re-enable button pada error
             },
             onClose: function () {
               console.log("Pembayaran ditutup tanpa menyelesaikan transaksi");
@@ -518,12 +518,12 @@
                 title: "Pembayaran Dibatalkan",
                 text: "Anda menutup pop-up tanpa menyelesaikan pembayaran.",
               });
-              button.disabled = false; // Re-enable button on close
+              button.disabled = false; // Re-enable button pada close
             },
           });
         } else {
           Swal.fire("Error", data.message, "error");
-          button.disabled = false; // Re-enable button on initial API call failure
+          button.disabled = false; // Re-enable button pada kegagalan panggilan initial API
         }
       } catch (error) {
         console.error("Error initiating Midtrans transaction:", error);
@@ -532,7 +532,7 @@
           "Terjadi kesalahan jaringan atau server. Silakan coba lagi.",
           "error"
         );
-        button.disabled = false; // Re-enable button on fetch error
+        button.disabled = false; // Re-enable button pada fetch error
       }
     });
   });

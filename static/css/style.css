@@ -716,8 +716,6 @@ footer ul li {
 @media (max-width: 992px) {
   .layanan-container {
     gap: 20px;
-    /* justify-content: center; */ /* Hapus ini jika Anda ingin scrollable di tablet juga */
-    /* Biarkan flex-start agar konsisten untuk scroll */
   }
   .layanan-card {
     width: 240px;
@@ -2752,7 +2750,7 @@ ul .catatan > li {
   height: 80px; /* Pastikan width dan height sama seperti di HTML */
   border-radius: 50%; /* Membuatnya lingkaran, sesuai dengan rounded-circle */
   background-color: #eaf4ff; /* Sesuai dengan background-color di .profil-avatar */
-  padding: 1.5px; /* Sesuai dengan p-1.5 di HTML Anda */
+  padding: 1.5px;
 
   /* INI YANG PENTING UNTUK MENCEGAH PENYET: */
   object-fit: cover; /* Pastikan gambar mengisi lingkaran tanpa penyet, akan memotong jika perlu */

@@ -108,10 +108,8 @@
       const data = await response.json();
 
       if (data.success) {
-        // --- PERUBAHAN UTAMA DI SINI ---
         sessionStorage.setItem("isLoggedIn", "true"); // Simpan status login di localStorage
         sessionStorage.setItem("username", username); // Simpan username juga
-        // --- AKHIR PERUBAHAN ---
 
         Swal.fire({
           icon: "success",

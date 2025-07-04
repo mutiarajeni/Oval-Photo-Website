@@ -33,9 +33,8 @@
       .swal2-html-container {
         font-size: 1rem;
       }
-      /* Optional: Add custom button styles for SweetAlert2 if using Bootstrap */
       .swal2-confirm.btn-primary {
-        background-color: #007bff !important; /* Contoh warna primary Bootstrap */
+        background-color: #007bff !important;
         border-color: #007bff !important;
       }
     </style>
@@ -74,9 +73,9 @@
     </div>
 
     <script>
-      const emailInput = document.getElementById("emailInput"); // Changed ID
-      const kirimButton = document.getElementById("kirimButton"); // Changed ID
-      const lupaPasswordForm = document.getElementById("lupaPasswordForm"); // Changed ID
+      const emailInput = document.getElementById("emailInput");
+      const kirimButton = document.getElementById("kirimButton");
+      const lupaPasswordForm = document.getElementById("lupaPasswordForm");
 
       function validateForm() {
         kirimButton.disabled = !emailInput.value.trim();
@@ -90,7 +89,7 @@
 
       emailInput.addEventListener("input", validateForm);
 
-      // Handle forgot password form submission
+      // Handle lupa kata sandi
       lupaPasswordForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 

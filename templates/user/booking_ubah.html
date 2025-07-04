@@ -275,48 +275,36 @@
 </div>
 
 <style>
-  /* Base style for the "Pesan" button when disabled */
+  /* "Pesan" button saat disabled */
   .formlayanan-btn-pesan[disabled] {
     background-color: #cccccc;
-    /* Greyed out color */
     color: #666666;
-    /* Darker text for disabled state */
     cursor: not-allowed;
   }
 
-  /* Style for the "Pesan" button when active (not disabled) */
+  /* "Pesan" button saat aktif */
   .formlayanan-btn-pesan:not([disabled]) {
     background-color: #86ade8;
-    /* Blue color as per image */
     color: #ffffff;
-    /* White text color as per image */
     cursor: pointer;
   }
 
-  /* Optional: Add hover effect for active button */
+  
   .formlayanan-btn-pesan:not([disabled]):hover {
     background-color: #5b90ed;
-    /* Slightly darker blue on hover */
   }
 
   /* Modal Styles */
   .modal {
     display: none;
-    /* Hidden by default */
     position: fixed;
-    /* Stay in place */
     z-index: 1000;
-    /* Sit on top */
     left: 0;
     top: 0;
     width: 100%;
-    /* Full width */
     height: 100%;
-    /* Full height */
     overflow: auto;
-    /* Enable scroll if needed */
     background-color: rgba(0, 0, 0, 0.4);
-    /* Black w/ opacity */
     justify-content: center;
     align-items: center;
   }
@@ -327,9 +315,7 @@
     padding: 20px;
     border: 1px solid #888;
     width: 80%;
-    /* Could be responsive */
     max-width: 700px;
-    /* Max width for larger screens */
     border-radius: 8px;
     position: relative;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -357,11 +343,8 @@
 
   .modal-body {
     max-height: 400px;
-    /* Limit height for scrollable content */
     overflow-y: auto;
-    /* Enable scrolling */
     padding-right: 15px;
-    /* Space for scrollbar */
   }
 
   .catatan-modal {
@@ -411,7 +394,6 @@
     margin-top: 20px;
   }
 
-  /* Styles for the "Pesan" button within the modal (now "Kirim") */
   #sendButton {
     background-color: #2b5ea3;
     color: white;
@@ -616,7 +598,7 @@
     });
   });
 
-  // Fungsi-fungsi lain (tidak diubah)
+  // Fungsi-fungsi lain 
   function captureInitialFormValues() {
     const form = document.getElementById("bookingForm");
     const elements = form.elements;
@@ -654,7 +636,7 @@
     return false;
   }
 
-  // ========== FUNGSI YANG DIPERBAIKI ==========
+  
 function displayLokasiPrice() {
   const lokasiSelect = document.getElementById("lokasiSelect");
   const lokasiId = lokasiSelect.value;

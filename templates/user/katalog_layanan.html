@@ -148,16 +148,12 @@
               <ul
                 class="paket js-benefits-list"
                 data-benefits="{{ p.keuntungan }}"
-              >
-                {# Konten li akan diisi oleh JavaScript #}
-              </ul>
+              ></ul>
             </div>
 
             <div class="section-paket">
               <p class="title">Tim Pekerja</p>
-              <ul class="paket js-team-list" data-team="{{ p.tim_kerja }}">
-                {# Konten li akan diisi oleh JavaScript #}
-              </ul>
+              <ul class="paket js-team-list" data-team="{{ p.tim_kerja }}"></ul>
             </div>
 
             <div class="price-section-paket">
@@ -399,7 +395,7 @@
     opacity: 0.7; /* Sedikit transparan agar terlihat berbeda */
   }
 
-  /* Pastikan juga Anda mengatur gaya untuk sel kalender secara umum agar konsisten */
+  /* sel kalender secara umum agar konsisten */
   .calendar-table td {
     padding: 10px;
     text-align: center;
@@ -436,10 +432,9 @@
       const prevMonthBtn = document.getElementById("prevMonthBtn");
       const nextMonthBtn = document.getElementById("nextMonthBtn");
 
-      // --- PENTING: BARIS INI TETAP MENGAMBIL DARI BACKEND ANDA ---
-      // Pastikan backend Anda merender 'booked_dates' sebagai array JSON string (misalnya: ["2025-02-14", "2025-02-20"])
+
+      // Pastikan backend merender 'booked_dates' sebagai array JSON string (misalnya: ["2025-02-14", "2025-02-20"])
       const bookedDates = {{ booked_dates | tojson | safe }}; // Tetap gunakan |safe
-      // --- AKHIR PENTING ---
 
       // Konversi bookedDates ke Set untuk pencarian cepat.
       // Tidak perlu memprosesnya lebih lanjut karena sudah dalam format YYYY-MM-DD dari backend.
@@ -451,7 +446,7 @@
       ];
 
       const today = new Date();
-      // Untuk hari ini, kita akan membuat string YYYY-MM-DD secara konsisten juga.
+      // Untuk hari ini, string YYYY-MM-DD secara konsisten
       const todayString = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
 
       let currentYear = today.getFullYear();
@@ -549,7 +544,7 @@
                       td.setAttribute("aria-selected", "false");
                   }
 
-                  // *** PERBAIKAN PENTING DI SINI ***
+
                   // Gunakan string tanggal YYYY-MM-DD dari objek Date (UTC)
                   const dateStringForLookup = getDateStringFromDateObject(dayObj.date);
 

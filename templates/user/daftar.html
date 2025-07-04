@@ -1,7 +1,7 @@
 {% extends "user/base_user.html" %} {% block title %} Login | Oval Photo
 {%endblock %} {% block content %}
 
-<div class="container-login" style=" min-height: 150vh;">
+<div class="container-login" style="min-height: 150vh">
   <div class="login-logo">
     <img src="static/img/logo.png" alt="Logo" />
     <h2 class="mb-0">Oval Photo</h2>
@@ -105,11 +105,13 @@
   const usernameInput = document.getElementById("username");
   const passwordInput = document.getElementById("password");
   const konfirpasswordInput = document.getElementById("konfirpassword");
-  const daftarButton = document.getElementById("daftarButton"); // Changed ID
-  const daftarForm = document.getElementById("daftarForm"); // Changed ID
+  const daftarButton = document.getElementById("daftarButton");
+  const daftarForm = document.getElementById("daftarForm");
 
   const togglePassword = document.querySelector(".toggle-password i");
-  const toggleKonfirPassword = document.querySelector(".toggle-konfirpassword i");
+  const toggleKonfirPassword = document.querySelector(
+    ".toggle-konfirpassword i"
+  );
 
   // Fungsi untuk validasi semua field
   function validateForm() {
@@ -135,12 +137,14 @@
   ].forEach((input) => input.addEventListener("input", validateForm));
 
   // Toggle untuk password
-  document.querySelector(".toggle-password").addEventListener("click", function () {
-    const type = passwordInput.type === "password" ? "text" : "password";
-    passwordInput.type = type;
-    togglePassword.classList.toggle("bi-eye");
-    togglePassword.classList.toggle("bi-eye-slash");
-  });
+  document
+    .querySelector(".toggle-password")
+    .addEventListener("click", function () {
+      const type = passwordInput.type === "password" ? "text" : "password";
+      passwordInput.type = type;
+      togglePassword.classList.toggle("bi-eye");
+      togglePassword.classList.toggle("bi-eye-slash");
+    });
 
   // Toggle untuk konfirmasi password
   document
@@ -153,7 +157,7 @@
       toggleKonfirPassword.classList.toggle("bi-eye-slash");
     });
 
-  // Handle daftar form submission
+  // Handle formulir daftar
   daftarForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
@@ -188,7 +192,7 @@
           showConfirmButton: false,
           timer: 2000,
         }).then(() => {
-          window.location.href = "/masuk"; // Redirect to login page
+          window.location.href = "/masuk"; // Redirect ke halaman login
         });
       } else {
         Swal.fire({
