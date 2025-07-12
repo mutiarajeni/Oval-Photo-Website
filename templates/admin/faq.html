@@ -73,18 +73,18 @@
                   >{{ faq.nama_pengaju if faq.nama_pengaju else '-' }}</span
                 >
               </td>
-              <td class="align-middle text-center text-sm">
+              <td class="align-middle text-center text-base">
                 <span class="text-normal"
                   >{{ faq.email_pengaju if faq.email_pengaju else '-' }}</span
                 >
               </td>
-              <td class="align-middle text-center text-sm">
+              <td class="align-middle text-center text-base">
                 <span class="text-normal" title="{{ faq.pertanyaan }}"
                   >{{ faq.pertanyaan[:20] }}{% if faq.pertanyaan|length > 20
                   %}...{% endif %}</span
                 >
               </td>
-              <td class="align-middle text-center text-sm">
+              <td class="align-middle text-center text-base">
                 <span class="text-normal" title="{{ faq.jawaban }}"
                   >{{ faq.jawaban[:15] }}{% if faq.jawaban|length > 20 %}...{%
                   endif %}</span
@@ -125,7 +125,7 @@
                     style="
                       padding: 0.375rem 0.75rem;
                       text-transform: none;
-                      font-size: 12px;
+                      font-size: 16px;
                       line-height: 1;
                       font-weight: normal;
                     "

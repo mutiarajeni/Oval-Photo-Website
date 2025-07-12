@@ -2965,6 +2965,7 @@ def admin_timFotografi_tambah():
                 "telepon": telepon,
                 "peran": peran,
                 "gambar": nama_file_gambar,
+                "aktif": True,
             }
             db.tim.insert_one(doc)
             return redirect(url_for("admin_timFotografi"))
@@ -3662,7 +3663,7 @@ def api_masuk():
         session['profile_picture_url'] = user.get('profile_picture_url') if user.get('profile_picture_url') else DEFAULT_GCS_PROFILE_PIC_URL
         session['role'] = user.get('role', 'user') # Simpan peran dalam sesi, default ke 'pengguna'
 
-        return jsonify({"success": True, "message": "Login berhasil!"}), 200
+        return jsonify({"success": True, "message": "Kamu berhasil masuk ke dalam website!"}), 200
     else:
         return jsonify({"success": False, "message": "Nama pengguna atau kata sandi salah."}), 401
 
@@ -3737,7 +3738,7 @@ def api_lupa_kataSandi():
             jsonify(
                 {
                     "success": True,
-                    "message": "Oval Photo telah mengirimkan tautan untuk mengubah atau mereset password yang dikirimkan melalui email.",
+                    "message": "Oval Photo telah mengirimkan tautan untuk mengubah atau mereset kata sandi yang dikirimkan melalui email.",
                 }
             ),
             200,
@@ -4275,9 +4276,9 @@ def api_admin_masuk():
 
         # Redirect berdasarkan peran setelah login admin berhasil
         if session['role'] == 'pemilik':
-            return jsonify({"success": True, "message": "Login berhasil!", "redirect": url_for('pemilik_dashboard')}), 200
+            return jsonify({"success": True, "message": "Kamu berhasil masuk ke dalam website!", "redirect": url_for('pemilik_dashboard')}), 200
         else: # role == 'admin'
-            return jsonify({"success": True, "message": "Login berhasil!", "redirect": url_for('admin_dashboard')}), 200
+            return jsonify({"success": True, "message": "Kamu berhasil masuk ke dalam website!", "redirect": url_for('admin_dashboard')}), 200
     else:
         return jsonify({"success": False, "message": "Nama pengguna atau kata sandi salah."}), 401
     
@@ -4416,7 +4417,7 @@ def api_pemilik_masuk():
         session['email'] = user.get('email', '')
         session['profile_picture_url'] = user.get('profile_picture_url') # Admin/pemilik tidak perlu default PP
         session['role'] = user.get('role')
-        return jsonify({"success": True, "message": "Login berhasil!", "redirect": url_for('pemilik_dashboard')}), 200
+        return jsonify({"success": True, "message": "Kamu berhasil masuk ke dalam website!", "redirect": url_for('pemilik_dashboard')}), 200
     else:
         return jsonify({"success": False, "message": "Nama pengguna atau kata sandi salah."}), 401
 

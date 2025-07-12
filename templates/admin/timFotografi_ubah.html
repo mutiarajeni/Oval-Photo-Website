@@ -123,8 +123,8 @@ endblock %} {% block content %}
                         "
                       >
                         {% set existing_peran = tim.peran | default([]) %} {%
-                        for role in ['Fotografer', 'Videografer', 'Editor',
-                        'Sinematografer'] %}
+                        for role in ['Fotografer', 'Sinematografer',
+                        'Videografer', 'Editor'] %}
                         <label
                           style="
                             display: flex;
